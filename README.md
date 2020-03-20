@@ -5,5 +5,5 @@ Shared Preferences:
 - state of currently growing tree
 - SSID
 - MAC-address
-(- 1 virtual tree/day)
-(- 14 virtual trees --> 1 real tree)
+- (1 virtual tree/day)
+- (14 virtual trees --> 1 real tree)
