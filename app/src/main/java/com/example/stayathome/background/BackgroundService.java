@@ -11,17 +11,21 @@ import android.os.IBinder;
 
 import androidx.annotation.Nullable;
 
+import com.example.stayathome.helper.ChallengeHelper;
 import com.example.stayathome.helper.SharedPreferencesHelper;
 
+import org.threeten.bp.Duration;
 import org.threeten.bp.Instant;
 
 public class BackgroundService extends Service {
     private BroadcastReceiver rec;
     private Context mainContext;
+    private SharedPreferencesHelper prefHelper;
 
     public BackgroundService(Context mainContext){
         // Constructor
         this.mainContext = mainContext;
+        this.prefHelper = new SharedPreferencesHelper(this.mainContext);
     }
 
     @Nullable
@@ -41,21 +45,36 @@ public class BackgroundService extends Service {
     }
 
     @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        long currentTime = Instant.now().getEpochSecond();
+        this.prefHelper.storeLong("challenge_start_time", currentTime);
+        return START_STICKY;
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
 
         this.unregisterReceiver(this.rec);
+        stopSelf();
     }
+
+    private void scheduleWakeupCall(){
+
+    }
+
 } // End class BackgroundService
 
 
 class WifiBroadcasts extends BroadcastReceiver {
     private Context mainContext;
     private SharedPreferencesHelper prefHelper;
+    private ChallengeHelper challengeHelper;
 
     public WifiBroadcasts(Context mainContext){
         this.mainContext = mainContext;
         this.prefHelper = new SharedPreferencesHelper(this.mainContext);
+        this.challengeHelper = new ChallengeHelper(this.prefHelper);
     }
 
     @Override
@@ -69,30 +88,69 @@ class WifiBroadcasts extends BroadcastReceiver {
 
                 if(wifiInfo.getNetworkId() != -1){
                     // Connected to an access point
-                    String savedSSID = prefHelper.retrieveString("wifi_name");
                     String savedBSSID = prefHelper.retrieveString("wifi_id");
 
-                    if(wifiInfo.getSSID().equals(savedSSID)){
-                        // SSID is the same as the one that the user saved
+                    if(wifiInfo.getBSSID().equals(savedBSSID)){
+                        // Same network the user has been connected to before
+                        if(prefHelper.retrieveLong("last_disconnected") == 0){
+                            prefHelper.storeLong("actual_time_in_challenge", 0);
+                            scheduleWakeupCall();
+                        } else {
+                            long timeDisconnected = checkInterruptionTime();
+                            if (timeDisconnected < 120){
+                                // Disconnect time has been okay
+                                prefHelper.removeValueFromStorage("last_disconnected");
+                                scheduleWakeupCall();
+                            } else {
+                                // Disconnect has been too long
+                                prefHelper.removeValueFromStorage("actual_time_in_challenge");
+                                prefHelper.removeValueFromStorage("last_disconnected");
+                            }
+                        }
                         updateWifiConnectedTime();
-                    } else if(wifiInfo.getBSSID().equals(savedBSSID)) {
-                        // SSID is not the same, but MAC-address did not change -> update SSID
-                        prefHelper.storeString("wifi_name", wifiInfo.getSSID());
-                        updateWifiConnectedTime();
-                    } else{
+                    } else {
                         // Completely different network
+
                     }
 
                 } else {
                     // Not connected to an access point
+                    prefHelper.storeLong("actual_time_in_challenge", challengeHelper.getTimeInChallenge());
+                    updateWifiDisconnectedTime();
                 }
             } else {
-                //Wi-Fi adapter is disabled (off)
+                // Wi-Fi adapter is disabled (off)
             }
         }
     }
 
     private void updateWifiConnectedTime(){
         Instant instant = Instant.now();
+        prefHelper.storeLong("last_connected", instant.getEpochSecond());
     }
+
+    private void updateWifiDisconnectedTime(){
+        Instant instant = Instant.now();
+        prefHelper.storeLong("last_disconnected", instant.getEpochSecond());
+    }
+
+    private long checkInterruptionTime(){
+        long lastDisconnectedTime = prefHelper.retrieveLong("last_disconnected");
+        Instant lastDisconnectedInstant = Instant.ofEpochSecond(lastDisconnectedTime);
+        Instant currentInstant = Instant.now();
+        return Duration.between(lastDisconnectedInstant, currentInstant).getSeconds();
+    }
+
+    private void scheduleWakeupCall(){
+        long challenge_duration = prefHelper.retrieveLong("challenge_duration");
+
+    }
+
+
+
+    public void wakeupCall(){
+
+    }
+
+
 } // End class WiFiBroadcasts
