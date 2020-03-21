@@ -11,23 +11,24 @@ import android.widget.Toast;
 public class GrownTrees extends AppCompatActivity {
 
     int numGrownTrees;
-    SharedPreferences grownTreesVirtual;
+    SharedPreferences sharedPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grown_trees);
 
-        grownTreesVirtual = getSharedPreferences("grownTreesVirtual", MODE_PRIVATE);
-        numGrownTrees = grownTreesVirtual.getInt("grown_trees_virtual", 0);
-        TextView currentVirtualTrees = (TextView) findViewById(R.id.currentVirtualTrees);
+        // Assign SharedPreferences when the Activity is created
+        sharedPrefs = getSharedPreferences(getResources().getString(R.string.shared_prefs), MODE_PRIVATE);
+
+        numGrownTrees = sharedPrefs.getInt("grown_trees_virtual", 0);
+        TextView currentVirtualTrees = findViewById(R.id.currentVirtualTrees);
         currentVirtualTrees.setText(numGrownTrees + "");
     }
 
     public void plantTree(View v) {
         //retrieve # of already grown virtual trees
-        grownTreesVirtual = getSharedPreferences("grownTreesVirtual", MODE_PRIVATE);
-        numGrownTrees = grownTreesVirtual.getInt("grown_trees_virtual", 0);
+        numGrownTrees = sharedPrefs.getInt("grown_trees_virtual", 0);
 
         //max. # of virtual trees
         int virtualTreesLimit = 14;
@@ -36,7 +37,7 @@ public class GrownTrees extends AppCompatActivity {
         if (numGrownTrees == virtualTreesLimit) {
             Toast.makeText(getApplicationContext(), "Baum gepflanzt", Toast.LENGTH_LONG).show();
             //reset # of virtual trees
-            SharedPreferences.Editor resetTrees = grownTreesVirtual.edit();
+            SharedPreferences.Editor resetTrees = sharedPrefs.edit();
             resetTrees.putInt("grown_trees_virtual", 0);
             resetTrees.apply();
             finish();

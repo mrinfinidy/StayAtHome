@@ -19,10 +19,15 @@ import java.math.BigInteger;
 
 public class InitialSetup extends AppCompatActivity {
 
+    SharedPreferences sharedPrefs;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_initial_setup);
+
+        // Assign SharedPreferences when the Activity is created
+        sharedPrefs = getSharedPreferences(getResources().getString(R.string.shared_prefs), MODE_PRIVATE);
 
         //save SSID when 'wifi betaetigen' is pressed
         Button confirmWifi = (Button) findViewById(R.id.confirmWifi);
@@ -34,17 +39,11 @@ public class InitialSetup extends AppCompatActivity {
                 //retrieve SSID
                 String ssid = connection.getSSID();
                 //store SSID
-                SharedPreferences wifiName = getSharedPreferences("wifiName", MODE_PRIVATE);
-                SharedPreferences.Editor wifiNameEditor = wifiName.edit();
-                wifiNameEditor.putString("wifi_name", ssid);
-                wifiNameEditor.commit();
+                sharedPrefs.edit().putString("wifi_name", ssid).apply();
                 //retrieve BSSID
                 String bssid = connection.getBSSID();
                 //store BSSID
-                SharedPreferences wifiId = getSharedPreferences("wifiId", MODE_PRIVATE);
-                SharedPreferences.Editor wifiIdEditor = wifiId.edit();
-                wifiNameEditor.putString("wifi_id", bssid);
-                wifiIdEditor.commit();
+                sharedPrefs.edit().putString("wifi_id", bssid).apply();
 
                 String wifiConfirmation = getResources().getString(R.string.wifi_confirmation);
                 //Toast.makeText(getApplicationContext(), wifiConfirmation, Toast.LENGTH_LONG).show();
