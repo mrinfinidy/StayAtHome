@@ -3,31 +3,26 @@ package com.example.stayathome;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.DhcpInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.text.format.Formatter;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.math.BigInteger;
+import com.example.stayathome.helper.SharedPreferencesHelper;
 
 public class InitialSetup extends AppCompatActivity {
 
-    SharedPreferences sharedPrefs;
+    SharedPreferencesHelper prefHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_initial_setup);
 
-        // Assign SharedPreferences when the Activity is created
-        sharedPrefs = getSharedPreferences(getResources().getString(R.string.shared_prefs), MODE_PRIVATE);
+        // Assign SharedPreferencesHelper when the Activity is created
+        prefHelper = new SharedPreferencesHelper(this);
 
         //save SSID when 'wifi betaetigen' is pressed
         Button confirmWifi = (Button) findViewById(R.id.confirmWifi);
@@ -39,11 +34,11 @@ public class InitialSetup extends AppCompatActivity {
                 //retrieve SSID
                 String ssid = connection.getSSID();
                 //store SSID
-                sharedPrefs.edit().putString("wifi_name", ssid).apply();
+                prefHelper.storeString("wifi_name", ssid);
                 //retrieve BSSID
                 String bssid = connection.getBSSID();
                 //store BSSID
-                sharedPrefs.edit().putString("wifi_id", bssid).apply();
+                prefHelper.storeString("wifi_id", bssid);
 
                 String wifiConfirmation = getResources().getString(R.string.wifi_confirmation);
                 //Toast.makeText(getApplicationContext(), wifiConfirmation, Toast.LENGTH_LONG).show();

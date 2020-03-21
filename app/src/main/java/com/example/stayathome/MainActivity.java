@@ -3,10 +3,11 @@ package com.example.stayathome;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+
+import com.example.stayathome.helper.SharedPreferencesHelper;
 
 /*ALL SHARED PREFERENCES KEYS
 key: first_usage --> boolean to check if it is the first time that the app is launched
@@ -22,7 +23,7 @@ key: wifi_id --> BSSID (MAC address)
 
 public class MainActivity extends AppCompatActivity {
 
-    SharedPreferences sharedPrefs;
+    SharedPreferencesHelper prefHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,21 +31,21 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Assign SharedPreferences when the Activity is created
-        sharedPrefs = getSharedPreferences(getResources().getString(R.string.shared_prefs), MODE_PRIVATE);
+        prefHelper = new SharedPreferencesHelper(this);
 
         //check opened for first time
-        boolean isFirstUsage = sharedPrefs.getBoolean("first_usage", true);
+        boolean isFirstUsage = prefHelper.retrieveBoolean("first_usage");
 
         if (isFirstUsage) {
             //first usage
-            sharedPrefs.edit().putBoolean("first_usage", false).apply();
+            prefHelper.storeBoolean("first_usage", false);
 
             //initial setup screen
             Intent firstTime = new Intent(MainActivity.this, InitialSetup.class);
             startActivity(firstTime);
         }
         //regular execution
-        int virtualTreeState = sharedPrefs.getInt("current_growth", 0);
+        int virtualTreeState = prefHelper.retrieveInt("current_growth");
         TextView virtualTreeGrowth = findViewById(R.id.virtualTreeGrowth);
         virtualTreeGrowth.setText(virtualTreeState + "");
     }

@@ -2,33 +2,34 @@ package com.example.stayathome;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.stayathome.helper.SharedPreferencesHelper;
+
 public class GrownTrees extends AppCompatActivity {
 
     int numGrownTrees;
-    SharedPreferences sharedPrefs;
+    SharedPreferencesHelper prefHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grown_trees);
 
-        // Assign SharedPreferences when the Activity is created
-        sharedPrefs = getSharedPreferences(getResources().getString(R.string.shared_prefs), MODE_PRIVATE);
+        // Assign SharedPreferencesHelper when the Activity is created
+        prefHelper = new SharedPreferencesHelper(this);
 
-        numGrownTrees = sharedPrefs.getInt("grown_trees_virtual", 0);
+        numGrownTrees = prefHelper.retrieveInt("grown_trees_virtual");
         TextView currentVirtualTrees = findViewById(R.id.currentVirtualTrees);
         currentVirtualTrees.setText(numGrownTrees + "");
     }
 
     public void plantTree(View v) {
         //retrieve # of already grown virtual trees
-        numGrownTrees = sharedPrefs.getInt("grown_trees_virtual", 0);
+        numGrownTrees = prefHelper.retrieveInt("grown_trees_virtual");
 
         //max. # of virtual trees
         int virtualTreesLimit = 14;
@@ -37,15 +38,12 @@ public class GrownTrees extends AppCompatActivity {
         if (numGrownTrees == virtualTreesLimit) {
             Toast.makeText(getApplicationContext(), "Baum gepflanzt", Toast.LENGTH_LONG).show();
             //reset # of virtual trees
-            SharedPreferences.Editor resetTrees = sharedPrefs.edit();
-            resetTrees.putInt("grown_trees_virtual", 0);
-            resetTrees.apply();
+            prefHelper.storeInt("grown_trees_virtual", 0);
             finish();
         } else {
             int virtualTreesNeeded = virtualTreesLimit - numGrownTrees;
             Toast.makeText(getApplicationContext(), "Dir fehlen noch " + virtualTreesNeeded + " Bäumchen", Toast.LENGTH_LONG).show();
         }
-
     }
 
     @Override
