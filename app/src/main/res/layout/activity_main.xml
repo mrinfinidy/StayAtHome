@@ -27,4 +27,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/bStartChallenge"
+        android:layout_width="264dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="280dp"
+        android:layout_marginEnd="74dp"
+        android:text="@string/start_challenge"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/virtualTreeGrowth" />
 </androidx.constraintlayout.widget.ConstraintLayout>
