@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">StayAtHome</string>
     <string name="shared_prefs">AppPreferences</string>
+    <string name="wifi_confirmation">Wifi bestätigt</string>
 </resources>
