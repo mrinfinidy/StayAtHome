@@ -5,14 +5,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.IBinder;
 
 import androidx.annotation.Nullable;
 
-import com.jakewharton.threetenabp.AndroidThreeTen;
+import com.example.stayathome.helper.SharedPreferencesHelper;
 
 import org.threeten.bp.Instant;
 
@@ -52,11 +51,11 @@ public class BackgroundService extends Service {
 
 class WifiBroadcasts extends BroadcastReceiver {
     private Context mainContext;
-    SharedPreferences sharedPrefs;
+    private SharedPreferencesHelper prefHelper;
 
     public WifiBroadcasts(Context mainContext){
         this.mainContext = mainContext;
-        sharedPrefs = this.mainContext.getSharedPreferences(this.mainContext.getResources().getString(R.string.shared_prefs), Context.MODE_PRIVATE);
+        this.prefHelper = new SharedPreferencesHelper(this.mainContext);
     }
 
     @Override
@@ -70,15 +69,15 @@ class WifiBroadcasts extends BroadcastReceiver {
 
                 if(wifiInfo.getNetworkId() != -1){
                     // Connected to an access point
-                    String savedSSID = sharedPrefs.getString("wifi_name", "");
-                    String savedBSSID = sharedPrefs.getString("wifi_id", "");
+                    String savedSSID = prefHelper.retrieveString("wifi_name");
+                    String savedBSSID = prefHelper.retrieveString("wifi_id");
 
                     if(wifiInfo.getSSID().equals(savedSSID)){
                         // SSID is the same as the one that the user saved
                         updateWifiConnectedTime();
                     } else if(wifiInfo.getBSSID().equals(savedBSSID)) {
                         // SSID is not the same, but MAC-address did not change -> update SSID
-                        sharedPrefs.edit().putString("wifi_name", wifiInfo.getSSID()).apply();
+                        prefHelper.storeString("wifi_name", wifiInfo.getSSID());
                         updateWifiConnectedTime();
                     } else{
                         // Completely different network
