@@ -71,7 +71,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startNewChallenge(View v){
-        prefHelper.storeLong("challenge_duration", 10);
+        prefHelper.storeLong("challenge_duration", 30);
+        prefHelper.storeLong("allowed_time_disconnected", 20);
         startService(new Intent(this, BackgroundService.class));
     }
 } // End class MainActivity
