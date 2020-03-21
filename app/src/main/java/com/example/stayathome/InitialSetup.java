@@ -30,7 +30,7 @@ public class InitialSetup extends AppCompatActivity {
         prefHelper = new SharedPreferencesHelper(this);
 
         // Request permission for location in order to receive the name of the SSID and BSSID
-        while(!locationPermissionGranted()){
+        if(!locationPermissionGranted()){
             requestLocationPermission();
         }
 
