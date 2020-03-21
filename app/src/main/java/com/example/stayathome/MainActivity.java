@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.stayathome.helper.NotificationHelper;
 import com.example.stayathome.helper.SharedPreferencesHelper;
 
 /*ALL SHARED PREFERENCES KEYS
@@ -30,6 +31,7 @@ key: actual_time_in_challenge --> time that has already passed in the challenge 
 public class MainActivity extends AppCompatActivity {
 
     SharedPreferencesHelper prefHelper;
+    NotificationHelper notHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,10 @@ public class MainActivity extends AppCompatActivity {
 
         // Assign SharedPreferences when the Activity is created
         prefHelper = new SharedPreferencesHelper(this);
+
+        // Assign new NotificationHelper object
+        notHelper = new NotificationHelper(this);
+        notHelper.createGrowthProgressNotificationChannel();
 
         //check opened for first time
         boolean isFirstUsage = prefHelper.retrieveBoolean("first_usage");
