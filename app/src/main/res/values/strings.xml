@@ -5,4 +5,7 @@
     <string name="start_challenge">Neue Herausforderung starten</string>
     <string name="growth_progress_channel_name">Wachstumsfortschritt</string>
     <string name="growth_progress_channel_description">Dieser Kanal sendet Updates zum Wachstumsfortschritt eines Baumes</string>
+    <string name="tree_ready_headline">Baum ausgewachsen</string>
+    <string name="tree_ready_text_1">Dein Baum</string>
+    <string name="tree_ready_text_2">ist jetzt ausgewachsen. Schau ihn dir an!</string>
 </resources>
