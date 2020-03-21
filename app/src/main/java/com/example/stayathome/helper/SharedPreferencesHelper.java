@@ -44,4 +44,14 @@ public class SharedPreferencesHelper {
         // Returns a boolean value saved with the key passed in. Default value when non-existent: true
         return prefs.getBoolean(key, true);
     }
+
+    public void storeLong(String key, long value){
+        // Stores a long value with the key passed in
+        this.prefs.edit().putLong(key, value).apply();
+    }
+
+    public long retrieveLong(String key){
+        // Returns a long value saved with the key passed in. Default value when non-existent: 0
+        return prefs.getLong(key, 0);
+    }
 } // End class SharedPreferencesHelper
