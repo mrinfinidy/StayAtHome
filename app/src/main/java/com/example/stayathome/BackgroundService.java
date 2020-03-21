@@ -12,7 +12,9 @@ import android.os.IBinder;
 
 import androidx.annotation.Nullable;
 
-import java.time.Instant;
+import com.jakewharton.threetenabp.AndroidThreeTen;
+
+import org.threeten.bp.Instant;
 
 public class BackgroundService extends Service {
     private BroadcastReceiver rec;
@@ -50,11 +52,11 @@ public class BackgroundService extends Service {
 
 class WifiBroadcasts extends BroadcastReceiver {
     private Context mainContext;
-    SharedPreferences prefs;
+    SharedPreferences sharedPrefs;
 
     public WifiBroadcasts(Context mainContext){
         this.mainContext = mainContext;
-        prefs = this.mainContext.getSharedPreferences(this.mainContext.getResources().getString(R.string.shared_prefs), Context.MODE_PRIVATE);
+        sharedPrefs = this.mainContext.getSharedPreferences(this.mainContext.getResources().getString(R.string.shared_prefs), Context.MODE_PRIVATE);
     }
 
     @Override
@@ -68,15 +70,15 @@ class WifiBroadcasts extends BroadcastReceiver {
 
                 if(wifiInfo.getNetworkId() != -1){
                     // Connected to an access point
-                    String savedSSID = prefs.getString("wifi_name", "");
-                    String savedBSSID = prefs.getString("wifi_id", "");
+                    String savedSSID = sharedPrefs.getString("wifi_name", "");
+                    String savedBSSID = sharedPrefs.getString("wifi_id", "");
 
                     if(wifiInfo.getSSID().equals(savedSSID)){
                         // SSID is the same as the one that the user saved
                         updateWifiConnectedTime();
                     } else if(wifiInfo.getBSSID().equals(savedBSSID)) {
                         // SSID is not the same, but MAC-address did not change -> update SSID
-                        prefs.edit().putString("wifi_name", wifiInfo.getSSID()).apply();
+                        sharedPrefs.edit().putString("wifi_name", wifiInfo.getSSID()).apply();
                         updateWifiConnectedTime();
                     } else{
                         // Completely different network
@@ -92,6 +94,6 @@ class WifiBroadcasts extends BroadcastReceiver {
     }
 
     private void updateWifiConnectedTime(){
-        // Instant instant = Instant.now();
+        Instant instant = Instant.now();
     }
 } // End class WiFiBroadcasts
