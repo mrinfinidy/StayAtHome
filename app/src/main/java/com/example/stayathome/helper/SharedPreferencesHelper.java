@@ -54,4 +54,9 @@ public class SharedPreferencesHelper {
         // Returns a long value saved with the key passed in. Default value when non-existent: 0
         return prefs.getLong(key, 0);
     }
+
+    public void removeValueFromStorage(String key){
+        // Removes a key/value pair from the SharedPreferences
+        this.prefs.edit().remove(key).apply();
+    }
 } // End class SharedPreferencesHelper
