@@ -6,6 +6,8 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import java.util.List;
+
 @Dao
 public interface TreeDao {
 
@@ -18,4 +20,6 @@ public interface TreeDao {
     @Delete
     void delete(Tree tree);
 
+    @Query("SELECT * FROM tree_table")
+    List<Tree> getTrees();
 }
