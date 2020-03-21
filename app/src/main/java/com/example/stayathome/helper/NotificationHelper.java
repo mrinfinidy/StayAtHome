@@ -10,16 +10,15 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.example.stayathome.R;
 
+/**
+ * @author Daniel Scheible, created on 21.03.2020
+ */
+
 public class NotificationHelper {
 
     public static final String CHANNEL_ID_GROWTH_PROGRESS = "100";
-    Context mainContext;
 
-    public NotificationHelper(Context mainContext){
-        this.mainContext = mainContext;
-    }
-
-    public void createGrowthProgressNotificationChannel() {
+    public void createGrowthProgressNotificationChannel(Context mainContext) {
         // Create the NotificationChannel, but only on API 26+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = mainContext.getResources().getString(R.string.growth_progress_channel_name);
@@ -33,14 +32,15 @@ public class NotificationHelper {
         }
     }
 
-    public void sendNotification(String channelID, String title, String text){
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(mainContext, channelID);
+    public static void sendNotification(Context context, String channelID, String title, String text){
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelID);
         builder.setSmallIcon(R.drawable.ic_launcher_foreground);
         builder.setContentTitle(title);
         builder.setContentText(text);
+        builder.setStyle(new NotificationCompat.BigTextStyle().bigText(text));
         builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
         builder.setAutoCancel(true);
-        NotificationManagerCompat notManager = NotificationManagerCompat.from(mainContext);
+        NotificationManagerCompat notManager = NotificationManagerCompat.from(context);
         notManager.notify(100, builder.build());
     }
 } // End class NotificationHelper
