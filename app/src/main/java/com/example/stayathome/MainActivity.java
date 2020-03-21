@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.stayathome.background.BackgroundService;
 import com.example.stayathome.helper.NotificationHelper;
 import com.example.stayathome.helper.SharedPreferencesHelper;
 
@@ -30,22 +31,23 @@ key: actual_time_in_challenge --> time that has already passed in the challenge 
 
 public class MainActivity extends AppCompatActivity {
 
-    SharedPreferencesHelper prefHelper;
-    NotificationHelper notHelper;
+    private SharedPreferencesHelper prefHelper;
+    private NotificationHelper notHelper;
+    private BackgroundService backgroundService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Assign SharedPreferences when the Activity is created
-        prefHelper = new SharedPreferencesHelper(this);
+        // Assign SharedPreferences object
+        prefHelper = new SharedPreferencesHelper(getApplicationContext());
 
-        // Assign new NotificationHelper object
-        notHelper = new NotificationHelper(this);
-        notHelper.createGrowthProgressNotificationChannel();
+        // Create notification channels
+        notHelper = new NotificationHelper();
+        notHelper.createGrowthProgressNotificationChannel(getApplicationContext());
 
-        //check opened for first time
+        // Check if opened for first time
         boolean isFirstUsage = prefHelper.retrieveBoolean("first_usage");
 
         if (isFirstUsage) {
@@ -67,4 +69,9 @@ public class MainActivity extends AppCompatActivity {
         startActivity(showTrees);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
-}
+
+    public void startNewChallenge(View v){
+        prefHelper.storeLong("challenge_duration", 10);
+        startService(new Intent(this, BackgroundService.class));
+    }
+} // End class MainActivity
