@@ -2,7 +2,10 @@ package com.example.stayathome;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -31,6 +34,10 @@ public class MainActivity extends AppCompatActivity {
 
     SharedPreferencesHelper prefHelper;
 
+    private BroadcastReceiver minuteUpdateReceiver;
+    private int countMinutes;
+    private int virtualTreeState;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,14 +58,48 @@ public class MainActivity extends AppCompatActivity {
             startActivity(firstTime);
         }
         //regular execution
-        int virtualTreeState = prefHelper.retrieveInt("current_growth");
-        TextView virtualTreeGrowth = findViewById(R.id.virtualTreeGrowth);
-        virtualTreeGrowth.setText(virtualTreeState + "");
+        //show state of currently growing tree
+
     }
 
+    //all virtual trees already grown
     public void showGrownTrees(View v) {
         Intent showTrees = new Intent(MainActivity.this, GrownTrees.class);
         startActivity(showTrees);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    }
+
+    //while app is running update tree growth --> call updateTree()
+    public void startMinuteUpdater() {
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Intent.ACTION_TIME_TICK);
+        minuteUpdateReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                countMinutes++;
+                if (countMinutes >= 30) {
+                    updateTree();
+                }
+            }
+        };
+        registerReceiver(minuteUpdateReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        unregisterReceiver(minuteUpdateReceiver);
+    }
+
+    //update Tree currently on screen
+    public void updateTree() {
+        virtualTreeState = prefHelper.retrieveInt("current_growth");
+        TextView virtualTreeGrowth = findViewById(R.id.virtualTreeGrowth);
+        virtualTreeGrowth.setText(virtualTreeState + "");
     }
 }

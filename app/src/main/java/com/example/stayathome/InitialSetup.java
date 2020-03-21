@@ -34,7 +34,7 @@ public class InitialSetup extends AppCompatActivity {
             requestLocationPermission();
         }
 
-        // Save SSID when 'wifi betaetigen' is pressed
+        // Save SSID when 'wifi bestaetigen' is pressed
         Button confirmWifi = (Button) findViewById(R.id.confirmWifi);
         confirmWifi.setOnClickListener(new View.OnClickListener() {
             @Override
