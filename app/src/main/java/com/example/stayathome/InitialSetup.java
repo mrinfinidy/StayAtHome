@@ -41,10 +41,10 @@ public class InitialSetup extends AppCompatActivity {
                 //retrieve BSSID
                 String bssid = connection.getBSSID();
                 //store BSSID
-                SharedPreferences wifiMAC = getSharedPreferences("wifiMAC", MODE_PRIVATE);
-                SharedPreferences.Editor wifiMACEditor = wifiMAC.edit();
+                SharedPreferences wifiId = getSharedPreferences("wifiId", MODE_PRIVATE);
+                SharedPreferences.Editor wifiIdEditor = wifiId.edit();
                 wifiNameEditor.putString("wifi_id", bssid);
-                wifiMACEditor.commit();
+                wifiIdEditor.commit();
 
                 String wifiConfirmation = getResources().getString(R.string.wifi_confirmation);
                 //Toast.makeText(getApplicationContext(), wifiConfirmation, Toast.LENGTH_LONG).show();
@@ -54,5 +54,11 @@ public class InitialSetup extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 }
