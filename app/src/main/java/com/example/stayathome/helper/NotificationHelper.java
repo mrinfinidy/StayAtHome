@@ -1,0 +1,46 @@
+package com.example.stayathome.helper;
+
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.os.Build;
+
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+
+import com.example.stayathome.R;
+
+public class NotificationHelper {
+
+    public static final String CHANNEL_ID_GROWTH_PROGRESS = "100";
+    Context mainContext;
+
+    public NotificationHelper(Context mainContext){
+        this.mainContext = mainContext;
+    }
+
+    public void createGrowthProgressNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = mainContext.getResources().getString(R.string.growth_progress_channel_name);
+            String description = mainContext.getResources().getString(R.string.growth_progress_channel_description);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID_GROWTH_PROGRESS, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system
+            NotificationManager notManager = mainContext.getSystemService(NotificationManager.class);
+            notManager.createNotificationChannel(channel);
+        }
+    }
+
+    public void sendNotification(String channelID, String title, String text){
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(mainContext, channelID);
+        builder.setSmallIcon(R.drawable.ic_launcher_foreground);
+        builder.setContentTitle(title);
+        builder.setContentText(text);
+        builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        builder.setAutoCancel(true);
+        NotificationManagerCompat notManager = NotificationManagerCompat.from(mainContext);
+        notManager.notify(100, builder.build());
+    }
+} // End class NotificationHelper
