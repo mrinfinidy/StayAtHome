@@ -1,4 +1,4 @@
-package com.example.stayathome;
+package com.example.stayathome.background;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
