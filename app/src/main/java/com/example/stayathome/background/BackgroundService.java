@@ -10,11 +10,10 @@ import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.stayathome.MainActivity;
 import com.example.stayathome.R;
 import com.example.stayathome.helper.ChallengeHelper;
 import com.example.stayathome.helper.NotificationHelper;
@@ -28,12 +27,16 @@ import org.threeten.bp.Instant;
  */
 
 public class BackgroundService extends Service {
+    private static final String TAG = "BackgroundService";
     private BroadcastReceiver recWifi;
     private BroadcastReceiver recDisplay;
     private SharedPreferencesHelper prefHelper;
     private HandlerThread handlerThread;
     private Handler mHandler;
-    private Runnable runnable;
+    private Runnable runnableWakeup;
+    private Runnable runnableTreeUpdate;
+    private Runnable runnableTreeDown;
+    private boolean treeUpdatesActive;
 
     @Nullable
     @Override
@@ -58,8 +61,6 @@ public class BackgroundService extends Service {
         filterScreen.addAction(Intent.ACTION_SCREEN_OFF);
         this.registerReceiver(this.recDisplay, filterScreen);
 
-        scheduleWakeupCall(prefHelper.retrieveLong("challenge_duration"));
-
         long currentTime = Instant.now().getEpochSecond();
         this.prefHelper.storeLong("challenge_start_time", currentTime);
 
@@ -76,21 +77,64 @@ public class BackgroundService extends Service {
         stopSelf();
     }
 
-    public void scheduleWakeupCall(long wakeupInSeconds){
+/*    public void scheduleWakeupCall(long wakeupInSeconds){
         handlerThread = new HandlerThread("TreeFollower");
         handlerThread.start();
         mHandler = new Handler(handlerThread.getLooper());
-        runnable = new Runnable() {
+        runnableWakeup = new Runnable() {
             @Override
             public void run() {
                 treeReady();
             }
         };
-        mHandler.postDelayed(runnable, wakeupInSeconds * 1000);
+        mHandler.postDelayed(runnableWakeup, wakeupInSeconds * 1000);
+        Log.i(TAG, "Handler Runnable has been started");
+        wakeupCallActive = true;
+    }*/
+
+    public void scheduleTreeUpdate(final long nextUpdateInSeconds){
+        handlerThread = new HandlerThread("TreeFollower");
+        handlerThread.start();
+        mHandler = new Handler(handlerThread.getLooper());
+        runnableTreeUpdate = new Runnable() {
+            @Override
+            public void run() {
+                int next_growth = prefHelper.retrieveInt("current_growth") + 1;
+                prefHelper.storeInt("current_growth", next_growth);
+                Log.i(TAG, "Current size of tree: " + next_growth);
+                if(next_growth == 5){
+                    treeReady();
+                } else {
+                    mHandler.postDelayed(runnableTreeUpdate, nextUpdateInSeconds * 1000);
+                }
+            }
+        };
+        mHandler.postDelayed(runnableTreeUpdate, nextUpdateInSeconds * 1000);
+        treeUpdatesActive = true;
     }
 
-    public void cancelWakeupCall(){
-        mHandler.removeCallbacks(runnable);
+    public void cancelTreeUpdates(){
+        Log.i(TAG, "Tree updates have been stopped");
+        mHandler.removeCallbacks(runnableTreeUpdate);
+        treeUpdatesActive = false;
+    }
+
+    public void scheduleDownMessage(){
+        runnableTreeDown = new Runnable() {
+            @Override
+            public void run() {
+                treeDown();
+            }
+        };
+        mHandler.postDelayed(runnableTreeDown, prefHelper.retrieveLong("allowed_time_disconnected") * 1000);
+    }
+
+    public void cancelTreeDown(){
+        mHandler.removeCallbacks(runnableTreeDown);
+    }
+
+    public boolean isWakeupCallActive(){
+        return treeUpdatesActive;
     }
 
     public void treeReady(){
@@ -98,20 +142,29 @@ public class BackgroundService extends Service {
         NotificationHelper.sendNotification(getApplicationContext(), NotificationHelper.CHANNEL_ID_GROWTH_PROGRESS, getResources().getString(R.string.tree_ready_headline), tree_ready);
     }
 
+    public void treeDown(){
+        String tree_down = getResources().getString(R.string.tree_down_text_1) + " Walter " + getResources().getString(R.string.tree_down_text_2);
+        NotificationHelper.sendNotification(getApplicationContext(), NotificationHelper.CHANNEL_ID_GROWTH_PROGRESS, getResources().getString(R.string.tree_down_headline), tree_down);
+    }
+
 } // End class BackgroundService
 
 
 class WifiBroadcasts extends BroadcastReceiver {
+    private static final String TAG = "WifiBroadcasts";
     private Context mainContext;
     private SharedPreferencesHelper prefHelper;
     private ChallengeHelper challengeHelper;
     private BackgroundService backService;
+    private int seconds_between_updates;
 
     public WifiBroadcasts(Context mainContext, BackgroundService backService){
         this.mainContext = mainContext;
         this.prefHelper = new SharedPreferencesHelper(this.mainContext);
         this.challengeHelper = new ChallengeHelper(this.prefHelper);
         this.backService = backService;
+        int challengeDuration = (int) prefHelper.retrieveLong("challenge_duration");
+        seconds_between_updates = (int) Math.round(challengeDuration / 5.0);
     }
 
     @Override
@@ -125,19 +178,25 @@ class WifiBroadcasts extends BroadcastReceiver {
 
                 if(wifiInfo.getNetworkId() != -1){
                     // Connected to an access point
-                    String savedBSSID = prefHelper.retrieveString("wifi_id");
+                    Log.i(TAG, "Connected to wifi " + wifiInfo.getSSID());
+                    String savedSSID = prefHelper.retrieveString("wifi_name");
 
-                    if(wifiInfo.getBSSID().equals(savedBSSID)){
-                        // Same network the user has been connected to before
+                    if(wifiInfo.getSSID().equals(savedSSID)){
+                        // Phone has connected to the user selected wifi-network
                         if(prefHelper.retrieveLong("last_disconnected") == 0){
+                            // Phone has not disconnected before, first start of a challenge
                             prefHelper.storeLong("actual_time_in_challenge", 0);
-                            scheduleWakeupCall();
+                            backService.scheduleTreeUpdate(seconds_between_updates);
                         } else {
+                            // Phone has disconnected in an active challenge, check for wifi-downtime
                             long timeDisconnected = checkInterruptionTime();
-                            if (timeDisconnected < 120){
+                            if (timeDisconnected < prefHelper.retrieveLong("allowed_time_disconnected")){
                                 // Disconnect time has been okay
+                                long new_time_in_challenge = prefHelper.retrieveLong("last_disconnected") - prefHelper.retrieveLong("challenge_start_time");
+                                prefHelper.storeLong("actual_time_in_challenge", new_time_in_challenge);
                                 prefHelper.removeValueFromStorage("last_disconnected");
-                                scheduleWakeupCall();
+                                long new_wakeup_in_seconds = prefHelper.retrieveLong("challenge_duration") - new_time_in_challenge;
+                                backService.scheduleTreeUpdate(seconds_between_updates);
                             } else {
                                 // Disconnect has been too long
                                 prefHelper.removeValueFromStorage("actual_time_in_challenge");
@@ -151,12 +210,18 @@ class WifiBroadcasts extends BroadcastReceiver {
                     }
 
                 } else {
-                    // Not connected to an access point
-                    prefHelper.storeLong("actual_time_in_challenge", challengeHelper.getTimeInChallenge());
+                    // Disconnected from an access point
+                    Log.i(TAG, "Disconnected from WiFi " + prefHelper.retrieveString("wifi_name"));
+                    backService.cancelTreeUpdates();
                     updateWifiDisconnectedTime();
+                    backService.scheduleDownMessage();
                 }
             } else {
                 // Wi-Fi adapter is disabled (off)
+                Log.i(TAG, "WiFi adapter has been disabled");
+                backService.cancelTreeUpdates();
+                updateWifiDisconnectedTime();
+                backService.scheduleDownMessage();
             }
         }
     }
@@ -174,26 +239,12 @@ class WifiBroadcasts extends BroadcastReceiver {
     private long checkInterruptionTime(){
         long lastDisconnectedTime = prefHelper.retrieveLong("last_disconnected");
         Instant lastDisconnectedInstant = Instant.ofEpochSecond(lastDisconnectedTime);
-        Instant currentInstant = Instant.now();
-        return Duration.between(lastDisconnectedInstant, currentInstant).getSeconds();
+        return Duration.between(lastDisconnectedInstant, Instant.now()).getSeconds();
     }
-
-    private void scheduleWakeupCall(){
-        long challenge_duration = prefHelper.retrieveLong("challenge_duration");
-
-    }
-
-
-
-    public void wakeupCall(){
-
-    }
-
-
 } // End class WiFiBroadcasts
 
 class DisplayBroadcasts extends BroadcastReceiver{
-
+    private static final String TAG = "DisplayBroadcasts";
     private Context mainContext;
     private BackgroundService backService;
     private SharedPreferencesHelper prefHelper;
@@ -208,9 +259,10 @@ class DisplayBroadcasts extends BroadcastReceiver{
     @Override
     public void onReceive(Context context, Intent intent) {
         if(intent.getAction().equals(Intent.ACTION_SCREEN_ON)){
+            Log.i(TAG, "Screen has been turned on");
 
         } else if(intent.getAction().equals(Intent.ACTION_SCREEN_OFF)){
-
+            Log.i(TAG, "Screen has been turned off");
         }
     }
 } // End class DisplayBroadcasts
