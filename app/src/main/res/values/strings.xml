@@ -8,4 +8,7 @@
     <string name="tree_ready_headline">Baum ausgewachsen</string>
     <string name="tree_ready_text_1">Dein Baum</string>
     <string name="tree_ready_text_2">ist jetzt ausgewachsen. Schau ihn dir an!</string>
+    <string name="tree_down_headline">Baum vernachlässigt</string>
+    <string name="tree_down_text_1">Dein Baum</string>
+    <string name="tree_down_text_2">ist leider vertrocknet.</string>
 </resources>
