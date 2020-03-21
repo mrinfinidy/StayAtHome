@@ -19,6 +19,12 @@ key: grown_trees_virtual --> number of already grown virtual trees
 key: wifi_name --> SSID (network name)
 
 key: wifi_id --> BSSID (MAC address)
+
+key: challenge_duration --> planned duration of the current challenge in seconds (as long, in seconds)
+
+key: challenge_start_time --> time when the current challenge has been started (as long)
+
+key: actual_time_in_challenge --> time that has already passed in the challenge (as long, in seconds)
 */
 
 public class MainActivity extends AppCompatActivity {
