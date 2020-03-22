@@ -190,6 +190,8 @@ public class MainActivity extends AppCompatActivity {
     private void createVirtualTree(TreeManager treeManager, Tree newVTree) {
         prefHelper.storeInt("grown_trees_virtual", 1);
         prefHelper.storeInt("current_growth", 1);
+        TextView virtualTreeGrowth = findViewById(R.id.virtualTreeGrowth);
+        virtualTreeGrowth.setText(newVTree.getName());
         treeManager.insertTree(newVTree);
     }
 
