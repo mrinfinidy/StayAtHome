@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.stayathome.treedatabase.Tree;
 
@@ -47,6 +48,7 @@ public class ChooseProject extends AppCompatActivity {
                 newVTree.setProject(selectedLocation);
                 Intent confirmWifi = new Intent(ChooseProject.this, ConfirmWiFi.class);
                 confirmWifi.putExtra("Tree", newVTree);
+                Toast.makeText(getApplicationContext(), selectedLocation, Toast.LENGTH_LONG).show();
                 startActivity(confirmWifi);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
