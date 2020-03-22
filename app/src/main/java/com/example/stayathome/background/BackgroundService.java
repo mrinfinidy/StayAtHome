@@ -71,22 +71,23 @@ public class BackgroundService extends Service {
         stopSelf();
     }
 
-    public void scheduleTreeUpdate(final long nextUpdateInSeconds){
-        Log.i(TAG, "Tree updates have been requested");
+    public void scheduleTreeUpdate(long nextUpdateInSeconds){
+        Log.i(TAG, "Next tree status update has been posted in " + nextUpdateInSeconds + " seconds");
         handlerThread = new HandlerThread("TreeFollower");
         handlerThread.start();
         mHandler = new Handler(handlerThread.getLooper());
+
         runnableTreeUpdate = new Runnable() {
             @Override
             public void run() {
-                int next_growth = prefHelper.retrieveInt("current_growth") + 1;
-                prefHelper.storeInt("current_growth", next_growth);
-                Log.i(TAG, "Current size of tree: " + next_growth);
-                if(next_growth == 5){
-                    treeReady();
+                int growth = prefHelper.retrieveInt("current_growth") + 1;
+                Log.i(TAG, "Current size of tree: " + growth);
+                if(growth < 6){
+                    treeDry();
                 } else {
-                    mHandler.postDelayed(runnableTreeUpdate, nextUpdateInSeconds * 1000);
+                    treeReady();
                 }
+                prefHelper.storeInt("current_growth", growth);
             }
         };
         mHandler.postDelayed(runnableTreeUpdate, nextUpdateInSeconds * 1000);
@@ -120,13 +121,18 @@ public class BackgroundService extends Service {
     }
 
     public void treeReady(){
-        String tree_ready = getResources().getString(R.string.tree_ready_text_1) + prefHelper.retrieveString("tree_name") + getResources().getString(R.string.tree_ready_text_2);
-        NotificationHelper.sendNotification(getApplicationContext(), NotificationHelper.CHANNEL_ID_GROWTH_PROGRESS, getResources().getString(R.string.tree_ready_headline), tree_ready);
+        String treeReady = getResources().getString(R.string.your_tree) + " " + prefHelper.retrieveString("tree_name") + " " + getResources().getString(R.string.tree_ready_text);
+        NotificationHelper.sendNotification(getApplicationContext(), NotificationHelper.CHANNEL_ID_GROWTH_PROGRESS, getResources().getString(R.string.tree_ready_headline), treeReady);
+    }
+
+    public void treeDry(){
+        String treeDry = getResources().getString(R.string.your_tree) + " " + prefHelper.retrieveString("tree_name") + " " + getResources().getString(R.string.tree_dry_text);
+        NotificationHelper.sendNotification(getApplicationContext(), NotificationHelper.CHANNEL_ID_GROWTH_PROGRESS, getResources().getString(R.string.tree_dry_headline), treeDry);
     }
 
     public void treeDown(){
-        String tree_down = getResources().getString(R.string.tree_down_text_1) + prefHelper.retrieveString("tree_name") + getResources().getString(R.string.tree_down_text_2);
-        NotificationHelper.sendNotification(getApplicationContext(), NotificationHelper.CHANNEL_ID_GROWTH_PROGRESS, getResources().getString(R.string.tree_down_headline), tree_down);
+        String treeDown = getResources().getString(R.string.your_tree) + " " + prefHelper.retrieveString("tree_name") + " " + getResources().getString(R.string.tree_down_text);
+        NotificationHelper.sendNotification(getApplicationContext(), NotificationHelper.CHANNEL_ID_GROWTH_PROGRESS, getResources().getString(R.string.tree_down_headline), treeDown);
     }
 
 } // End class BackgroundService
@@ -137,14 +143,11 @@ class WifiBroadcasts extends BroadcastReceiver {
     private Context mainContext;
     private SharedPreferencesHelper prefHelper;
     private BackgroundService backService;
-    private int seconds_between_updates;
 
     public WifiBroadcasts(Context mainContext, BackgroundService backService){
         this.mainContext = mainContext;
         this.prefHelper = new SharedPreferencesHelper(this.mainContext);
         this.backService = backService;
-        int challengeDuration = (int) prefHelper.retrieveLong("challenge_duration");
-        seconds_between_updates = (int) Math.round(challengeDuration / 5.0);
     }
 
     @Override
@@ -166,9 +169,7 @@ class WifiBroadcasts extends BroadcastReceiver {
                         // Phone has connected to the user selected wifi-network
                         if(prefHelper.retrieveLong("last_disconnected") == 0){
                             // Phone has not disconnected before, first start of a challenge
-                            prefHelper.storeLong("actual_time_in_challenge", 0);
-                            backService.cancelTreeDown();
-                            backService.scheduleTreeUpdate(seconds_between_updates);
+                            backService.scheduleTreeUpdate(prefHelper.retrieveLong("challenge_duration"));
                         } else {
                             // Phone has disconnected in an active challenge, check for wifi-downtime
                             long timeDisconnected = checkInterruptionTime();
@@ -179,7 +180,7 @@ class WifiBroadcasts extends BroadcastReceiver {
                                 prefHelper.storeLong("actual_time_in_challenge", new_time_in_challenge);
                                 prefHelper.removeValueFromStorage("last_disconnected");
                                 long new_wakeup_in_seconds = prefHelper.retrieveLong("challenge_duration") - new_time_in_challenge;
-                                backService.scheduleTreeUpdate(seconds_between_updates);
+                                backService.scheduleTreeUpdate(prefHelper.retrieveLong("challenge_duration"));
                             } else {
                                 // Disconnect has been too long
                                 prefHelper.removeValueFromStorage("actual_time_in_challenge");
