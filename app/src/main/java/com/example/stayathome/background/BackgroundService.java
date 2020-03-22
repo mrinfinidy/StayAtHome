@@ -72,7 +72,7 @@ public class BackgroundService extends Service {
     }
 
     public void scheduleTreeUpdate(long nextUpdateInSeconds){
-        Log.i(TAG, "Next tree status update has been posted in " + nextUpdateInSeconds + " seconds");
+        Log.i(TAG, "Next tree status update has been posted (due in " + nextUpdateInSeconds + " seconds)");
         handlerThread = new HandlerThread("TreeFollower");
         handlerThread.start();
         mHandler = new Handler(handlerThread.getLooper());
