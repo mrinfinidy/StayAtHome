@@ -14,6 +14,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service android:name="com.example.stayathome.background.BackgroundService" />
+        <activity android:name=".ChooseProject"></activity>
+
         <activity android:name=".GrownTrees" />
         <activity android:name=".InitialSetup" />
         <activity android:name=".MainActivity">
@@ -23,6 +25,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>
