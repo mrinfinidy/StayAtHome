@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -144,12 +145,18 @@ public class MainActivity extends AppCompatActivity {
 
         handlerThread = new HandlerThread("ScreenUpdater");
         handlerThread.start();
-        mHandler = new Handler(handlerThread.getLooper());
+        mHandler = new Handler(handlerThread.getLooper()){
+            @Override
+            public void handleMessage(Message inputMessage){
+                super.handleMessage(inputMessage);
+                updateTree();
+            }
+        };
 
         runnableScreenUpdate = new Runnable() {
             @Override
             public void run() {
-                updateTree();
+                mHandler.sendMessage(new Message());
                 mHandler.postDelayed(runnableScreenUpdate, 5 * 1000);
             }
         };
@@ -190,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
             String treeName = "Walter";
 
             prefHelper.storeInt("growth_on_screen", 0);
-            prefHelper.storeLong("challenge_duration", 60);
+            prefHelper.storeLong("challenge_duration", 20);
             prefHelper.storeLong("allowed_time_disconnected", 20);
             prefHelper.storeString("tree_name", treeName);
 
