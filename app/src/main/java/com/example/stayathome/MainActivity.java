@@ -1,7 +1,6 @@
 package com.example.stayathome;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -10,7 +9,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.example.stayathome.helper.SharedPreferencesHelper;
+import com.example.stayathome.treedatabase.Tree;
+import com.example.stayathome.treedatabase.TreeRepository;
+import com.example.stayathome.treedatabase.TreeViewModel;
 
 /*ALL SHARED PREFERENCES KEYS
 key: first_usage --> boolean to check if it is the first time that the app is launched
@@ -59,7 +64,14 @@ public class MainActivity extends AppCompatActivity {
         }
         //regular execution
         //show state of currently growing tree
+        TreeRepository treeRepository = new TreeRepository((Application) getApplicationContext());
+        Tree tree = new Tree("1", "2", "3", 4);
+        treeRepository.insert(tree);
 
+        virtualTreeState = prefHelper.retrieveInt("current_growth");
+        TextView virtualTreeGrowth = findViewById(R.id.virtualTreeGrowth);
+
+        virtualTreeGrowth.setText(treeRepository.getTrees().toString());
     }
 
     //all virtual trees already grown
@@ -76,10 +88,7 @@ public class MainActivity extends AppCompatActivity {
         minuteUpdateReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                countMinutes++;
-                if (countMinutes >= 30) {
-                    updateTree();
-                }
+                    //updateTree();
             }
         };
         registerReceiver(minuteUpdateReceiver, intentFilter);
@@ -88,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        startMinuteUpdater();
     }
 
     @Override

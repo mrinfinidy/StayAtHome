@@ -1,5 +1,6 @@
 package com.example.stayathome.treedatabase;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -21,5 +22,5 @@ public interface TreeDao {
     void delete(Tree tree);
 
     @Query("SELECT * FROM tree_table")
-    List<Tree> getTrees();
+    LiveData<List<Tree>> getTrees();
 }

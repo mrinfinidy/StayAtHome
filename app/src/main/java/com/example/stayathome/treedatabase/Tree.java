@@ -15,18 +15,26 @@ public class Tree {
 
     private String name;
 
-    private String growthState;
+    private int growthState;
 
-    public Tree(String project, String wifi, String name, String growthState) {
+    public Tree(String project, String wifi, String name, int growthState) {
         this.project = project;
         this.wifi = wifi;
         this.name = name;
         this.growthState = growthState;
     }
 
-    public int setId() {
-        return id;
-    }
+    public void setId(int id) { this.id = id; }
+
+    public void setProject(String project) { this.project = project; }
+
+    public void setWifi(String wifi) { this.wifi = wifi; }
+
+    public void setName(String name) { this.name = name; }
+
+    public void setGrowthState(int growthState) { this.growthState = growthState; }
+
+    public int getId() { return id; }
 
     public String getProject() {
         return project;
@@ -40,7 +48,7 @@ public class Tree {
         return name;
     }
 
-    public String getGrowthState() {
+    public int getGrowthState() {
         return growthState;
     }
 }
