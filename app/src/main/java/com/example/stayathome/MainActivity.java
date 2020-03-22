@@ -116,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
         prefHelper.storeString("tree_name", "Walter");
         startService(new Intent(this, BackgroundService.class));
     }
-} // End class MainActivity
 
     //while app is running update tree growth --> call updateTree()
     public void startMinuteUpdater() {
@@ -178,4 +177,4 @@ public class MainActivity extends AppCompatActivity {
     public void updateTree() {
 
     }
-}
+} // End class MainActivity
