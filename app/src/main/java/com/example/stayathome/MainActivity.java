@@ -87,6 +87,8 @@ public class MainActivity extends AppCompatActivity {
         // Prepare drawables
         prepareTreeDrawables();
 
+        findViewById(R.id.potImageView).setEnabled(false);
+
         // Check if opened for first time
         boolean isFirstUsage = prefHelper.retrieveBoolean("first_usage");
 
@@ -212,22 +214,25 @@ public class MainActivity extends AppCompatActivity {
 
     // Plant a new tree or renew an existing tree
     public void plantVTree2(View v) {
-        // Plant a new tree or renew an existing tree
-        public void plantVTree(View v) {
-            if(prefHelper.retrieveInt("current_growth") == 0){
-                String treeName = "Walter";
+        if(prefHelper.retrieveInt("current_growth") == 0){
+            String treeName = "Walter";
 
-                prefHelper.storeInt("growth_on_screen", 0);
-                prefHelper.storeLong("challenge_duration", 20);
-                prefHelper.storeLong("allowed_time_disconnected", 20);
-                prefHelper.storeString("tree_name", treeName);
-
-                TextView tvTreeName = findViewById(R.id.tvTreeName);
-                tvTreeName.setText(treeName);
-            }
-            findViewById(R.id.potImageView).setEnabled(false);
-            startService(new Intent(this, BackgroundService.class));
+            int grown_trees = prefHelper.retrieveInt("grown_trees_virtual") + 1;
+            prefHelper.storeInt("grown_trees_virtual", grown_trees);
+            prefHelper.storeInt("growth_on_screen", 0);
+            prefHelper.storeLong("challenge_duration", 20);
+            prefHelper.storeLong("allowed_time_disconnected", 20);
+            prefHelper.storeString("tree_name", treeName);
         }
+        findViewById(R.id.potImageView).setEnabled(false);
+        startService(new Intent(this, BackgroundService.class));
+    }
+
+    private void createVirtualTree(TreeManager treeManager, Tree newVTree) {
+        TextView virtualTreeGrowth = findViewById(R.id.virtualTreeGrowth);
+        virtualTreeGrowth.setText(newVTree.getName());
+        treeManager.insertTree(newVTree);
+        findViewById(R.id.potImageView).setEnabled(true);
     }
 
     private void showCurrentTree(TreeInfo treeInfo) throws ExecutionException, InterruptedException {
@@ -256,14 +261,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         Log.i(TAG, "Tree status on screen has been updated");
-    }
-
-    private void createVirtualTree(TreeManager treeManager, Tree newVTree) {
-        prefHelper.storeInt("grown_trees_virtual", 1);
-        prefHelper.storeInt("current_growth", 0);
-        TextView virtualTreeGrowth = findViewById(R.id.virtualTreeGrowth);
-        virtualTreeGrowth.setText(newVTree.getName());
-        treeManager.insertTree(newVTree);
     }
 
     @Override
