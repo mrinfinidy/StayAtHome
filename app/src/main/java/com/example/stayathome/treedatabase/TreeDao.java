@@ -25,5 +25,5 @@ public interface TreeDao {
     LiveData<Tree> getTree(int treeId);
 
     @Query("SELECT * FROM tree_table")
-    LiveData<List<Tree>> getTrees();
+    List<Tree> getTrees();
 }

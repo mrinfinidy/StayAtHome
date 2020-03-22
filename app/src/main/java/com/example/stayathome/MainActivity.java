@@ -1,6 +1,5 @@
 package com.example.stayathome;
 
-import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -10,12 +9,17 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
 
 import com.example.stayathome.helper.SharedPreferencesHelper;
 import com.example.stayathome.treedatabase.Tree;
-import com.example.stayathome.treedatabase.TreeRepository;
-import com.example.stayathome.treedatabase.TreeViewModel;
+import com.example.stayathome.treedatabase.TreeDBActions;
+import com.example.stayathome.treedatabase.TreeDatabase;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /*ALL SHARED PREFERENCES KEYS
 key: first_usage --> boolean to check if it is the first time that the app is launched
@@ -64,14 +68,9 @@ public class MainActivity extends AppCompatActivity {
         }
         //regular execution
         //show state of currently growing tree
-        TreeRepository treeRepository = new TreeRepository((Application) getApplicationContext());
-        Tree tree = new Tree("1", "2", "3", 4);
-        treeRepository.insert(tree);
-
         virtualTreeState = prefHelper.retrieveInt("current_growth");
         TextView virtualTreeGrowth = findViewById(R.id.virtualTreeGrowth);
-
-        virtualTreeGrowth.setText(treeRepository.getTree(1) + "");
+        virtualTreeGrowth.setText("test");
     }
 
     //all virtual trees already grown
