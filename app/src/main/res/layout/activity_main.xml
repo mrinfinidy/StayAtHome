@@ -52,23 +52,14 @@
         android:id="@+id/virtualTreeGrowth"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="550sp"
         android:fontFamily="@font/coustard_black"
         android:text="BAUMI"
         android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/bgImageView"
         app:layout_constraintStart_toStartOf="@+id/bgImageView"
-        app:layout_constraintTop_toTopOf="@+id/bgImageView" />
-
-    <Button
-        android:id="@+id/bStartChallenge"
-        android:layout_width="264dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="72dp"
-        android:onClick="startNewChallenge"
-        android:text="@string/start_challenge"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/virtualTreeGrowth" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.8" />
 
     <Button
         android:id="@+id/plantVTreeBtn"

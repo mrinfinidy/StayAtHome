@@ -24,6 +24,15 @@ public class TreeManager {
         treeDBActions.update(tree);
     }
 
+    public void deleteById(int id) throws ExecutionException, InterruptedException {
+        allTrees = treeDBActions.getTrees();
+        for (int i = 0; i < allTrees.size(); i++) {
+            if (allTrees.get(i).getId() == id) {
+                treeDBActions.delete(allTrees.get(i));
+            }
+        }
+    }
+
     public void deleteByName(String name) throws ExecutionException, InterruptedException {
         allTrees = treeDBActions.getTrees();
         for (int i = 0; i < allTrees.size(); i++) {
