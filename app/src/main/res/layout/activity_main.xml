@@ -30,19 +30,18 @@
 
     <ImageView
         android:id="@+id/plantImageView"
-        android:layout_width="230dp"
-        android:layout_height="230dp"
-        android:layout_marginTop="190dp"
+        android:layout_width="230sp"
+        android:layout_height="230sp"
+        android:layout_marginTop="190sp"
         app:layout_constraintEnd_toEndOf="@+id/bgImageView"
         app:layout_constraintStart_toStartOf="@+id/bgImageView"
         app:layout_constraintTop_toTopOf="@+id/bgImageView"
-        app:srcCompat="@drawable/ic_pappel5"
-        />
+        app:srcCompat="@drawable/ic_pappel5" />
 
     <ImageView
         android:id="@+id/potImageView"
-        android:layout_width="87dp"
-        android:layout_height="65dp"
+        android:layout_width="87sp"
+        android:layout_height="65sp"
         android:layout_marginTop="405dp"
         app:layout_constraintEnd_toEndOf="@+id/bgImageView"
         app:layout_constraintStart_toStartOf="@+id/bgImageView"
@@ -53,13 +52,13 @@
         android:id="@+id/virtualTreeGrowth"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="550sp"
         android:fontFamily="@font/coustard_black"
         android:text="BAUMI"
         android:textSize="30sp"
-        android:layout_marginTop="550dp"
         app:layout_constraintEnd_toEndOf="@+id/bgImageView"
         app:layout_constraintStart_toStartOf="@+id/bgImageView"
-        app:layout_constraintTop_toTopOf="@+id/bgImageView"/>
+        app:layout_constraintTop_toTopOf="@+id/bgImageView" />
 
     <Button
         android:id="@+id/bStartChallenge"
