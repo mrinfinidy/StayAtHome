@@ -63,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
         //regular execution
         //show state of currently growing tree
 
-        positionEntities();
     }
 
     // Moves the pot and labels etc. according to the background image position
@@ -75,20 +74,31 @@ public class MainActivity extends AppCompatActivity {
 
         float[] f = new float[9];
         background.getImageMatrix().getValues(f);
+        final float scaleX = f[Matrix.MSCALE_X];
         final float scaleY = f[Matrix.MSCALE_Y];
 
         Drawable bgDrawable = background.getDrawable();
+        final float bgWidth = bgDrawable.getIntrinsicWidth();
         final float bgHeight = bgDrawable.getIntrinsicHeight();
+        final float actualWidth = scaleX * bgWidth;
         final float actualHeight = scaleY * bgHeight;
 
-        final float top = (bgHeight - actualHeight) / 2;
-        final float newY = 950f*scaleY + top;
-        pot.setY(newY);
+        Drawable potDrawable = pot.getDrawable();
+        final float topBgImage = (bgHeight - actualHeight) / 2;
+        final float newXPot = (actualWidth - potDrawable.getIntrinsicWidth()*scaleX) / 2;
+        final float newYPot = 950f*scaleY + topBgImage;
+        pot.setScaleX(scaleX);
+        pot.setScaleY(scaleY);
+        pot.setY(newYPot);
+        pot.setX(newXPot);
 
         TextView virtualTreeGrowth = findViewById(R.id.virtualTreeGrowth);
-        final float newYLabel = 1460f*scaleY + top;
+        final float newXLabel = (actualWidth - virtualTreeGrowth.getWidth()) / 2;
+        final float newYLabel = 1460f*scaleY + topBgImage;
+        virtualTreeGrowth.setX(newXLabel);
         virtualTreeGrowth.setY(newYLabel);
     }
+
 
     //all virtual trees already grown
     public void showGrownTrees(View v) {
