@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
@@ -60,9 +61,6 @@ public class MainActivity extends AppCompatActivity {
     private Handler mHandler;
     private Runnable runnableScreenUpdate;
 
-    private int countMinutes;
-    private int virtualTreeState;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,25 +91,6 @@ public class MainActivity extends AppCompatActivity {
         TreeDBActions treeDBActions = new TreeDBActions(getApplicationContext());
         TreeInfo treeInfo = new TreeInfo(treeDBActions);
         TreeManager treeManager = new TreeManager(treeDBActions);
-
-        //perform action based on if new tree needs to be planted
-        try {
-            if (needNewVTree(treeInfo)) {
-                //show button to plant new virtual tree
-                Button plantVTreeBtn = findViewById(R.id.plantVTreeBtn);
-                plantVTreeBtn.setVisibility(View.VISIBLE);
-                //plantVTree(treeManager);
-            } else {
-                showCurrentTree(treeInfo);
-            }
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        //virtualTreeState = prefHelper.retrieveInt("current_growth");
-        //TextView virtualTreeGrowth = findViewById(R.id.virtualTreeGrowth);
 
     }
 
@@ -145,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
 
         handlerThread = new HandlerThread("ScreenUpdater");
         handlerThread.start();
-        mHandler = new Handler(handlerThread.getLooper()){
+        mHandler = new Handler(Looper.getMainLooper()){
             @Override
             public void handleMessage(Message inputMessage){
                 super.handleMessage(inputMessage);
@@ -188,12 +167,9 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-    //start new activities to get info what tree should be planted
+    // Plant a new tree or renew an existing tree
     public void plantVTree(View v) {
-        Button bPlantVTree = findViewById(R.id.plantVTreeBtn);
         if(prefHelper.retrieveInt("current_growth") == 0){
-            bPlantVTree.setText(R.string.wet_v_tree);
-
             String treeName = "Walter";
 
             prefHelper.storeInt("growth_on_screen", 0);
@@ -204,10 +180,8 @@ public class MainActivity extends AppCompatActivity {
             TextView tvTreeName = findViewById(R.id.tvTreeName);
             tvTreeName.setText(treeName);
         }
-        bPlantVTree.setVisibility(View.INVISIBLE);
+        findViewById(R.id.potImageView).setEnabled(false);
         startService(new Intent(this, BackgroundService.class));
-
-
     }
 
     private void showCurrentTree(TreeInfo treeInfo) throws ExecutionException, InterruptedException {
@@ -218,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Update tree currently on screen
     public void updateTree() {
-        Button bPlantVTree = findViewById(R.id.plantVTreeBtn);
+        ImageView ivTop = findViewById(R.id.potImageView);
         ImageView ivPlant = findViewById(R.id.plantImageView);
 
         int new_tree_status = prefHelper.retrieveInt("current_growth");
@@ -226,11 +200,11 @@ public class MainActivity extends AppCompatActivity {
         if(new_tree_status != old_tree_status){
             ivPlant.setBackground(getResources().getDrawable(this.treeDrawables[new_tree_status - 1]));
             ivPlant.setVisibility(View.VISIBLE);
-            bPlantVTree.setVisibility(View.VISIBLE);
-        } else if(new_tree_status == 6){
+            prefHelper.storeInt("growth_on_screen", new_tree_status);
+            ivTop.setEnabled(true);
+        } else if(new_tree_status == 5){
             ivPlant.setBackground(getResources().getDrawable(this.treeDrawables[4]));
-            bPlantVTree.setText(R.string.plant_v_tree);
-            bPlantVTree.setVisibility(View.VISIBLE);
+            ivTop.setEnabled(true);
             prefHelper.storeInt("current_growth", 0);
             prefHelper.storeInt("growth_on_screen", 0);
         }
