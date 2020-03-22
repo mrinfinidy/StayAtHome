@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
     public void startNewChallenge(View v){
         prefHelper.storeLong("challenge_duration", 30);
         prefHelper.storeLong("allowed_time_disconnected", 20);
+        prefHelper.storeString("tree_name", "Walter");
         startService(new Intent(this, BackgroundService.class));
     }
 } // End class MainActivity
