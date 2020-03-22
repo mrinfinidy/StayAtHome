@@ -83,8 +83,11 @@ public class MainActivity extends AppCompatActivity {
 
         final float top = (bgHeight - actualHeight) / 2;
         final float newY = 950f*scaleY + top;
-
         pot.setY(newY);
+
+        TextView virtualTreeGrowth = findViewById(R.id.virtualTreeGrowth);
+        final float newYLabel = 1460f*scaleY + top;
+        virtualTreeGrowth.setY(newYLabel);
     }
 
     //all virtual trees already grown

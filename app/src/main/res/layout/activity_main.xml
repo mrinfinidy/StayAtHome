@@ -14,8 +14,10 @@
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.824"
         app:srcCompat="@drawable/ic_hintergrund" />
 
     <ImageButton
@@ -33,15 +35,15 @@
         android:id="@+id/virtualTreeGrowth"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="100dp"
+        android:layout_marginEnd="100dp"
         android:fontFamily="@font/coustard_black"
         android:text="BAUMI"
         android:textSize="30sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.876" />
+        app:layout_constraintEnd_toEndOf="@+id/bgImageView"
+        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintStart_toStartOf="@+id/bgImageView"
+        app:layout_constraintTop_toTopOf="@+id/bgImageView" />
 
     <Button
         android:id="@+id/bStartChallenge"
@@ -60,8 +62,9 @@
         android:layout_marginStart="160dp"
         android:layout_marginEnd="159dp"
         app:layout_constraintEnd_toEndOf="@+id/bgImageView"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/bgImageView"
         app:srcCompat="@drawable/ic_topf"
-        tools:layout_editor_absoluteY="413dp" />
+        tools:layout_editor_absoluteY="414dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
