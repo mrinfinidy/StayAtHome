@@ -1,14 +1,17 @@
 package com.example.stayathome;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Matrix;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.stayathome.helper.SharedPreferencesHelper;
 
@@ -60,6 +63,28 @@ public class MainActivity extends AppCompatActivity {
         //regular execution
         //show state of currently growing tree
 
+        positionEntities();
+    }
+
+    // Moves the pot and labels etc. according to the background image position
+    private void positionEntities() {
+        // It is only necessary to adjust the height, since with is always adjusted
+        // according to ImageView width
+        ImageView background = findViewById(R.id.bgImageView);
+        ImageView pot = findViewById(R.id.potImageView);
+
+        float[] f = new float[9];
+        background.getImageMatrix().getValues(f);
+        final float scaleY = f[Matrix.MSCALE_Y];
+
+        Drawable bgDrawable = background.getDrawable();
+        final float bgHeight = bgDrawable.getIntrinsicHeight();
+        final float actualHeight = scaleY * bgHeight;
+
+        final float top = (bgHeight - actualHeight) / 2;
+        final float newY = 950f*scaleY + top;
+
+        pot.setY(newY);
     }
 
     //all virtual trees already grown
@@ -88,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        startMinuteUpdater();
     }
 
     @Override
