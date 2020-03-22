@@ -6,9 +6,12 @@
     <string name="growth_progress_channel_name">Wachstumsfortschritt</string>
     <string name="growth_progress_channel_description">Dieser Kanal sendet Updates zum Wachstumsfortschritt eines Baumes</string>
     <string name="tree_ready_headline">Baum ausgewachsen</string>
-    <string name="tree_ready_text_1">Dein Baum</string>
-    <string name="tree_ready_text_2">ist jetzt ausgewachsen. Schau ihn dir an!</string>
     <string name="tree_down_headline">Baum vernachlässigt</string>
-    <string name="tree_down_text_1">Dein Baum</string>
-    <string name="tree_down_text_2">ist leider vertrocknet.</string>
+    <string name="tree_dry_headline">Baum gewachsen</string>
+    <string name="your_tree">Dein Baum</string>
+    <string name="tree_ready_text">ist jetzt ausgewachsen. Schau ihn dir an!</string>
+    <string name="tree_dry_text">hat die nächste Entwicklungsstufe erreicht. Gieße ihn!</string>
+    <string name="tree_down_text">ist leider vertrocknet.</string>
+    <string name="plant_v_tree">Neuen Baum pflanzen</string>
+    <string name="wet_v_tree">Baum gießen</string>
 </resources>
