@@ -4,11 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Matrix;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -64,41 +61,6 @@ public class MainActivity extends AppCompatActivity {
         //show state of currently growing tree
 
     }
-
-    // Moves the pot and labels etc. according to the background image position
-    private void positionEntities() {
-        // It is only necessary to adjust the height, since with is always adjusted
-        // according to ImageView width
-        ImageView background = findViewById(R.id.bgImageView);
-        ImageView pot = findViewById(R.id.potImageView);
-
-        float[] f = new float[9];
-        background.getImageMatrix().getValues(f);
-        final float scaleX = f[Matrix.MSCALE_X];
-        final float scaleY = f[Matrix.MSCALE_Y];
-
-        Drawable bgDrawable = background.getDrawable();
-        final float bgWidth = bgDrawable.getIntrinsicWidth();
-        final float bgHeight = bgDrawable.getIntrinsicHeight();
-        final float actualWidth = scaleX * bgWidth;
-        final float actualHeight = scaleY * bgHeight;
-
-        Drawable potDrawable = pot.getDrawable();
-        final float topBgImage = (bgHeight - actualHeight) / 2;
-        final float newXPot = (actualWidth - potDrawable.getIntrinsicWidth()*scaleX) / 2;
-        final float newYPot = 950f*scaleY + topBgImage;
-        pot.setScaleX(scaleX);
-        pot.setScaleY(scaleY);
-        pot.setY(newYPot);
-        pot.setX(newXPot);
-
-        TextView virtualTreeGrowth = findViewById(R.id.virtualTreeGrowth);
-        final float newXLabel = (actualWidth - virtualTreeGrowth.getWidth()) / 2;
-        final float newYLabel = 1460f*scaleY + topBgImage;
-        virtualTreeGrowth.setX(newXLabel);
-        virtualTreeGrowth.setY(newYLabel);
-    }
-
 
     //all virtual trees already grown
     public void showGrownTrees(View v) {
