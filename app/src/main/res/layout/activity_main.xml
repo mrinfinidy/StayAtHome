@@ -44,6 +44,7 @@
         android:layout_width="87sp"
         android:layout_height="65sp"
         android:layout_marginTop="405dp"
+        android:onClick="plantVTree"
         app:layout_constraintEnd_toEndOf="@+id/bgImageView"
         app:layout_constraintStart_toStartOf="@+id/bgImageView"
         app:layout_constraintTop_toTopOf="@+id/bgImageView"
@@ -59,20 +60,6 @@
         app:layout_constraintEnd_toEndOf="@+id/bgImageView"
         app:layout_constraintStart_toStartOf="@+id/bgImageView"
         app:layout_constraintTop_toTopOf="@+id/bgImageView" />
-
-    <Button
-        android:id="@+id/plantVTreeBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="plantVTree"
-        android:text="@string/plant_v_tree"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.481"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.171" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
