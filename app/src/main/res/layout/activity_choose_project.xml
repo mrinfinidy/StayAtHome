@@ -10,9 +10,19 @@
         android:id="@+id/confirmProjectBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button"
+        android:text="bestätigen"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.85"
-        tools:layout_editor_absoluteX="163dp" />
+        app:layout_constraintVertical_bias="0.85" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/locationsRecView"
+        android:layout_width="305sp"
+        android:layout_height="135sp"
+        android:layout_marginBottom="32sp"
+        app:layout_constraintBottom_toTopOf="@+id/confirmProjectBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
