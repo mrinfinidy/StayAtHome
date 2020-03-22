@@ -82,7 +82,7 @@ public class BackgroundService extends Service {
             public void run() {
                 int growth = prefHelper.retrieveInt("current_growth") + 1;
                 Log.i(TAG, "Current size of tree: " + growth);
-                if(growth < 6){
+                if(growth < 5){
                     treeDry();
                 } else {
                     treeReady();
