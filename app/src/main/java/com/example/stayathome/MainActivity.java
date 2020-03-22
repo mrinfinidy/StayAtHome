@@ -159,8 +159,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         //if current tree is fully grown
-        int growthState =  treeInfo.growthState(allTreesInWifi.get(allTreesInWifi.size() - 1));
-        if (growthState == 5) {
+        if (prefHelper.retrieveInt("current_growth") == 5) {
             return true;
         }
 
