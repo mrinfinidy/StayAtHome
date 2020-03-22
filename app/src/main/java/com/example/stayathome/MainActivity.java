@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +14,8 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 
 import com.example.stayathome.helper.SharedPreferencesHelper;
+import com.example.stayathome.interfacelogic.TreeInfo;
+import com.example.stayathome.interfacelogic.TreeManager;
 import com.example.stayathome.treedatabase.Tree;
 import com.example.stayathome.treedatabase.TreeDBActions;
 import com.example.stayathome.treedatabase.TreeDatabase;
@@ -67,10 +70,29 @@ public class MainActivity extends AppCompatActivity {
             startActivity(firstTime);
         }
         //regular execution
-        //show state of currently growing tree
-        virtualTreeState = prefHelper.retrieveInt("current_growth");
-        TextView virtualTreeGrowth = findViewById(R.id.virtualTreeGrowth);
-        virtualTreeGrowth.setText("test");
+        TreeDBActions treeDBActions = new TreeDBActions(getApplicationContext());
+        TreeInfo treeInfo = new TreeInfo(treeDBActions);
+        TreeManager treeManager = new TreeManager(treeDBActions);
+
+        //perform action based on if new tree needs to be planted
+        try {
+            if (needNewVTree(treeInfo)) {
+                //show button to plant new virtual tree
+                Button plantVTreeBtn = findViewById(R.id.plantVTreeBtn);
+                plantVTreeBtn.setVisibility(View.VISIBLE);
+                //plantVTree(treeManager);
+            } else {
+                showCurrentTree(treeInfo);
+            }
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        //virtualTreeState = prefHelper.retrieveInt("current_growth");
+        //TextView virtualTreeGrowth = findViewById(R.id.virtualTreeGrowth);
+
     }
 
     //all virtual trees already grown
@@ -87,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
         minuteUpdateReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                    //updateTree();
+                    updateTree();
             }
         };
         registerReceiver(minuteUpdateReceiver, intentFilter);
@@ -105,10 +127,31 @@ public class MainActivity extends AppCompatActivity {
         unregisterReceiver(minuteUpdateReceiver);
     }
 
+    //check if new virtual tree needs to be planted
+    private boolean needNewVTree(TreeInfo treeInfo) throws ExecutionException, InterruptedException {
+        String ssid = prefHelper.retrieveString("wifi_name");
+        List<Tree> allTreesInWifi = treeInfo.treesInWifi(ssid);
+        if (allTreesInWifi == null || allTreesInWifi.size() == 0) {
+            return true;
+        }
+        return false;
+    }
+
+    //start new activities to get info what tree should be planted
+    public void plantVTree(View v) {
+        Intent chooseProject = new Intent(MainActivity.this, ChooseProject.class);
+        startActivity(chooseProject);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    }
+
+    private void showCurrentTree(TreeInfo treeInfo) throws ExecutionException, InterruptedException {
+        String ssid = prefHelper.retrieveString("wifi_name");
+        List<Tree> currentTrees = treeInfo.treesInWifi(ssid);
+        //display last tree in list
+    }
+
     //update Tree currently on screen
     public void updateTree() {
-        virtualTreeState = prefHelper.retrieveInt("current_growth");
-        TextView virtualTreeGrowth = findViewById(R.id.virtualTreeGrowth);
-        virtualTreeGrowth.setText(virtualTreeState + "");
+
     }
 }
