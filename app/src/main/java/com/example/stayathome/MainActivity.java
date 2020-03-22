@@ -4,9 +4,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.stayathome.background.BackgroundService;
@@ -46,11 +51,14 @@ key: actual_time_in_challenge --> time that has already passed in the challenge 
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
     private SharedPreferencesHelper prefHelper;
     private NotificationHelper notHelper;
-    private BackgroundService backgroundService;
+    private int[] treeDrawables;
+    private HandlerThread handlerThread;
+    private Handler mHandler;
+    private Runnable runnableScreenUpdate;
 
-    private BroadcastReceiver minuteUpdateReceiver;
     private int countMinutes;
     private int virtualTreeState;
 
@@ -65,6 +73,9 @@ public class MainActivity extends AppCompatActivity {
         // Create notification channels
         notHelper = new NotificationHelper();
         notHelper.createGrowthProgressNotificationChannel(getApplicationContext());
+
+        // Prepare drawables
+        prepareTreeDrawables();
 
         // Check if opened for first time
         boolean isFirstUsage = prefHelper.retrieveBoolean("first_usage");
@@ -103,6 +114,48 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startScreenUpdater();
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        mHandler.removeCallbacks(runnableScreenUpdate);
+        Log.i(TAG, "ScreenUpdater stopped");
+    }
+
+    private void prepareTreeDrawables(){
+        int pappel1 = R.drawable.ic_pappel1;
+        int pappel2 = R.drawable.ic_pappel2;
+        int pappel3 = R.drawable.ic_pappel3;
+        int pappel4 = R.drawable.ic_pappel4;
+        int pappel5 = R.drawable.ic_pappel5;
+        treeDrawables = new int[]{pappel1, pappel2, pappel3, pappel4, pappel5};
+    }
+
+    // While activity is in running in foreground --> call updateTree()
+    public void startScreenUpdater() {
+        // Update tree status every 5 seconds
+        Log.i(TAG, "ScreenUpdater started");
+        updateTree();
+
+        handlerThread = new HandlerThread("ScreenUpdater");
+        handlerThread.start();
+        mHandler = new Handler(handlerThread.getLooper());
+
+        runnableScreenUpdate = new Runnable() {
+            @Override
+            public void run() {
+                updateTree();
+                mHandler.postDelayed(runnableScreenUpdate, 5 * 1000);
+            }
+        };
+        mHandler.postDelayed(runnableScreenUpdate, 5 * 1000);
+    }
+
     //all virtual trees already grown
     public void showGrownTrees(View v) {
         Intent showTrees = new Intent(MainActivity.this, GrownTrees.class);
@@ -110,37 +163,6 @@ public class MainActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
-    public void startNewChallenge(View v){
-        prefHelper.storeLong("challenge_duration", 30);
-        prefHelper.storeLong("allowed_time_disconnected", 20);
-        prefHelper.storeString("tree_name", "Walter");
-        startService(new Intent(this, BackgroundService.class));
-    }
-
-    //while app is running update tree growth --> call updateTree()
-    public void startMinuteUpdater() {
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(Intent.ACTION_TIME_TICK);
-        minuteUpdateReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                    updateTree();
-            }
-        };
-        registerReceiver(minuteUpdateReceiver, intentFilter);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        startMinuteUpdater();
-    }
-
-    @Override
-    protected void onPause(){
-        super.onPause();
-        unregisterReceiver(minuteUpdateReceiver);
-    }
 
     //check if new virtual tree needs to be planted
     private boolean needNewVTree(TreeInfo treeInfo) throws ExecutionException, InterruptedException {
@@ -161,10 +183,24 @@ public class MainActivity extends AppCompatActivity {
 
     //start new activities to get info what tree should be planted
     public void plantVTree(View v) {
+        Button bPlantVTree = findViewById(R.id.plantVTreeBtn);
+        if(prefHelper.retrieveInt("current_growth") == 0){
+            bPlantVTree.setText(R.string.wet_v_tree);
 
-        Intent chooseProject = new Intent(MainActivity.this, ChooseProject.class);
-        startActivity(chooseProject);
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            String treeName = "Walter";
+
+            prefHelper.storeInt("growth_on_screen", 0);
+            prefHelper.storeLong("challenge_duration", 60);
+            prefHelper.storeLong("allowed_time_disconnected", 20);
+            prefHelper.storeString("tree_name", treeName);
+
+            TextView tvTreeName = findViewById(R.id.tvTreeName);
+            tvTreeName.setText(treeName);
+        }
+        bPlantVTree.setVisibility(View.INVISIBLE);
+        startService(new Intent(this, BackgroundService.class));
+
+
     }
 
     private void showCurrentTree(TreeInfo treeInfo) throws ExecutionException, InterruptedException {
@@ -173,8 +209,25 @@ public class MainActivity extends AppCompatActivity {
         //display last tree in list
     }
 
-    //update Tree currently on screen
+    // Update tree currently on screen
     public void updateTree() {
+        Button bPlantVTree = findViewById(R.id.plantVTreeBtn);
+        ImageView ivPlant = findViewById(R.id.plantImageView);
 
+        int new_tree_status = prefHelper.retrieveInt("current_growth");
+        int old_tree_status = prefHelper.retrieveInt("growth_on_screen");
+        if(new_tree_status != old_tree_status){
+            ivPlant.setBackground(getResources().getDrawable(this.treeDrawables[new_tree_status - 1]));
+            ivPlant.setVisibility(View.VISIBLE);
+            bPlantVTree.setVisibility(View.VISIBLE);
+        } else if(new_tree_status == 6){
+            ivPlant.setBackground(getResources().getDrawable(this.treeDrawables[4]));
+            bPlantVTree.setText(R.string.plant_v_tree);
+            bPlantVTree.setVisibility(View.VISIBLE);
+            prefHelper.storeInt("current_growth", 0);
+            prefHelper.storeInt("growth_on_screen", 0);
+        }
+
+        Log.i(TAG, "Tree status on screen has been updated");
     }
 } // End class MainActivity
