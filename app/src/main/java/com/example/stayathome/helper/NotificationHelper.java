@@ -2,12 +2,16 @@ package com.example.stayathome.helper;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.example.stayathome.MainActivity;
 import com.example.stayathome.R;
 
 public class NotificationHelper {
@@ -37,7 +41,11 @@ public class NotificationHelper {
         builder.setContentText(text);
         builder.setStyle(new NotificationCompat.BigTextStyle().bigText(text));
         builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
-        //builder.setContentIntent();
+        Intent mainActivityIntent = new Intent(context, MainActivity.class);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+        stackBuilder.addNextIntentWithParentStack(mainActivityIntent);
+        PendingIntent mainActivityPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(mainActivityPendingIntent);
         builder.setAutoCancel(true);
 
         // Show the notification
