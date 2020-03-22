@@ -129,16 +129,24 @@ public class MainActivity extends AppCompatActivity {
 
     //check if new virtual tree needs to be planted
     private boolean needNewVTree(TreeInfo treeInfo) throws ExecutionException, InterruptedException {
+        //if there are no trees in this wifi
         String ssid = prefHelper.retrieveString("wifi_name");
         List<Tree> allTreesInWifi = treeInfo.treesInWifi(ssid);
         if (allTreesInWifi == null || allTreesInWifi.size() == 0) {
             return true;
         }
+        //if current tree is fully grown
+        int growthState =  treeInfo.growthState(allTreesInWifi.get(allTreesInWifi.size() - 1));
+        if (growthState == 5) {
+            return true;
+        }
+
         return false;
     }
 
     //start new activities to get info what tree should be planted
     public void plantVTree(View v) {
+
         Intent chooseProject = new Intent(MainActivity.this, ChooseProject.class);
         startActivity(chooseProject);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);

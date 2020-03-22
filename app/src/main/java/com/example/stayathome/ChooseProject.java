@@ -20,8 +20,6 @@ public class ChooseProject extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_project);
 
-        locationsRecView = (RecyclerView) findViewById(R.id.locationsRecView);
-
         locations = new ArrayList<>();
         locations.add("Karlsruhe");
         locations.add("Jena");
@@ -29,8 +27,15 @@ public class ChooseProject extends AppCompatActivity {
         locations.add("Frankfurt");
         locations.add("Berlin");
 
+        buildRecyclerView();
+    }
+
+    public void buildRecyclerView() {
+        locationsRecView = (RecyclerView) findViewById(R.id.locationsRecView);
+        locationsRecView.setHasFixedSize(true);
         locationsLayout = new LinearLayoutManager(this);
         locationsAdapter = new MainAdapter(locations);
+
         locationsRecView.setLayoutManager(locationsLayout);
         locationsRecView.setAdapter(locationsAdapter);
     }

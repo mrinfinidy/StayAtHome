@@ -1,5 +1,6 @@
 package com.example.stayathome;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
     ArrayList<String> locations;
+    private TextView previousSelection;
 
     public MainAdapter(ArrayList<String> locations) {
         this.locations = locations;
@@ -44,6 +46,23 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             locationName = itemView.findViewById(R.id.location_name);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    selectItem(locationName);
+                }
+            });
+        }
+        private void selectItem(TextView locationName) {
+            if (previousSelection != null) {
+                previousSelection.setBackgroundColor(Color.WHITE);
+            }
+            locationName.setBackgroundColor(Color.LTGRAY);
+            previousSelection = locationName;
+
+            String location = locationName.getText().toString();
+
         }
     }
 }

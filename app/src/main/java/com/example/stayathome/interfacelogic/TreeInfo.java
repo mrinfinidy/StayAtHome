@@ -52,10 +52,10 @@ public class TreeInfo {
         return null;
     }
 
-    public int growthState(String name) throws ExecutionException, InterruptedException {
+    public int growthState(Tree tree) throws ExecutionException, InterruptedException {
         allTrees = treeDBActions.getTrees();
         for (int i = 0; i < allTrees.size(); i++) {
-            if (allTrees.get(i).getName().equals(name)){
+            if (allTrees.get(i) == tree){
                 return allTrees.get(i).getGrowthState();
             }
         }
