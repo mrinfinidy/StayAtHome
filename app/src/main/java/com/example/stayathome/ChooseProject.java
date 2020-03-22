@@ -19,6 +19,7 @@ public class ChooseProject extends AppCompatActivity {
     RecyclerView.LayoutManager locationsLayout;
     RecyclerView.Adapter locationsAdapter;
     ArrayList<String> locations;
+    public static String selectedLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +44,6 @@ public class ChooseProject extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //NEED TO RETRIEVE USER SELECTION
-                String selectedLocation = "test location";
                 newVTree.setProject(selectedLocation);
                 Intent confirmWifi = new Intent(ChooseProject.this, ConfirmWiFi.class);
                 confirmWifi.putExtra("Tree", newVTree);
