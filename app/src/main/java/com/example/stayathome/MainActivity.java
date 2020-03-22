@@ -88,7 +88,6 @@ public class MainActivity extends AppCompatActivity {
                 //show button to plant new virtual tree
                 Button plantVTreeBtn = findViewById(R.id.plantVTreeBtn);
                 plantVTreeBtn.setVisibility(View.VISIBLE);
-                //plantVTree(treeManager);
             } else {
                 showCurrentTree(treeInfo);
             }
@@ -161,8 +160,10 @@ public class MainActivity extends AppCompatActivity {
 
     //start new activities to get info what tree should be planted
     public void plantVTree(View v) {
+        Tree newVTree = new Tree("project", "wifi", "name", -1);
 
         Intent chooseProject = new Intent(MainActivity.this, ChooseProject.class);
+        chooseProject.putExtra("Tree", newVTree);
         startActivity(chooseProject);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
