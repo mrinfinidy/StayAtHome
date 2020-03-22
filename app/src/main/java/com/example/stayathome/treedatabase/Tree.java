@@ -1,10 +1,13 @@
 package com.example.stayathome.treedatabase;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "tree_table")
-public class Tree {
+public class Tree implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -23,6 +26,26 @@ public class Tree {
         this.name = name;
         this.growthState = growthState;
     }
+
+    protected Tree(Parcel in) {
+        id = in.readInt();
+        project = in.readString();
+        wifi = in.readString();
+        name = in.readString();
+        growthState = in.readInt();
+    }
+
+    public static final Creator<Tree> CREATOR = new Creator<Tree>() {
+        @Override
+        public Tree createFromParcel(Parcel in) {
+            return new Tree(in);
+        }
+
+        @Override
+        public Tree[] newArray(int size) {
+            return new Tree[size];
+        }
+    };
 
     public void setId(int id) { this.id = id; }
 
@@ -50,5 +73,19 @@ public class Tree {
 
     public int getGrowthState() {
         return growthState;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(project);
+        dest.writeString(wifi);
+        dest.writeString(name);
+        dest.writeInt(growthState);
     }
 }

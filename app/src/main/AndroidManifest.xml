@@ -13,9 +13,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service android:name="com.example.stayathome.background.BackgroundService" />
-        <activity android:name=".ChooseProject"></activity>
+        <activity android:name=".ChooseName"></activity>
+        <activity android:name=".ChooseVTree" />
+        <activity android:name=".ConfirmWiFi" />
 
+        <service android:name=".background.BackgroundService" />
+
+        <activity android:name=".ChooseProject" />
         <activity android:name=".GrownTrees" />
         <activity android:name=".InitialSetup" />
         <activity android:name=".MainActivity">

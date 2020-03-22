@@ -1,5 +1,6 @@
 package com.example.stayathome;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.stayathome.helper.SharedPreferencesHelper;
 
 import org.w3c.dom.Text;
 
@@ -55,6 +58,7 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
             });
         }
         private void selectItem(TextView locationName) {
+
             if (previousSelection != null) {
                 previousSelection.setBackgroundColor(Color.WHITE);
             }

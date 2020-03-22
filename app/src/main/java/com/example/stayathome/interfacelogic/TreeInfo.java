@@ -3,6 +3,7 @@ package com.example.stayathome.interfacelogic;
 import com.example.stayathome.treedatabase.Tree;
 import com.example.stayathome.treedatabase.TreeDBActions;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -33,7 +34,7 @@ public class TreeInfo {
 
     public List<Tree> treesInWifi(String ssid) throws ExecutionException, InterruptedException {
         allTrees = treeDBActions.getTrees();
-        List<Tree> inWifi = null;
+        List<Tree> inWifi = new ArrayList<>();
         for (int i = 0; i < allTrees.size(); i++) {
             if(allTrees.get(i).getWifi().equals(ssid)) {
                 inWifi.add(allTrees.get(i));

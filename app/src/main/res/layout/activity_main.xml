@@ -44,22 +44,36 @@
         android:layout_width="87sp"
         android:layout_height="65sp"
         android:layout_marginTop="405dp"
-        android:onClick="plantVTree"
+        android:onClick="plantVTree2"
         app:layout_constraintEnd_toEndOf="@+id/bgImageView"
         app:layout_constraintStart_toStartOf="@+id/bgImageView"
         app:layout_constraintTop_toTopOf="@+id/bgImageView"
         app:srcCompat="@drawable/ic_topf" />
 
     <TextView
-        android:id="@+id/tvTreeName"
+        android:id="@+id/virtualTreeGrowth"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="550sp"
         android:fontFamily="@font/coustard_black"
         android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/bgImageView"
         app:layout_constraintStart_toStartOf="@+id/bgImageView"
-        app:layout_constraintTop_toTopOf="@+id/bgImageView" />
+        app:layout_constraintTop_toTopOf="@+id/bgImageView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.8" />
+
+    <Button
+        android:id="@+id/plantVTreeBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="plantVTree"
+        android:text="virtuellen baum pflanzen"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

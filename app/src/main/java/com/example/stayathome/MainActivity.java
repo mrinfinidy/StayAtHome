@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.stayathome.background.BackgroundService;
 import com.example.stayathome.helper.NotificationHelper;
@@ -28,6 +29,8 @@ import com.example.stayathome.interfacelogic.TreeManager;
 import com.example.stayathome.treedatabase.Tree;
 import com.example.stayathome.treedatabase.TreeDBActions;
 import com.example.stayathome.treedatabase.TreeDatabase;
+
+import org.w3c.dom.Text;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -63,6 +66,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Intent createTree = getIntent();
+        boolean creationPending = false;
+        Tree newVTree= null;
+        if (createTree.getParcelableExtra("Tree") != null) {
+            newVTree = createTree.getParcelableExtra("Tree");
+            creationPending = true;
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -89,8 +100,31 @@ public class MainActivity extends AppCompatActivity {
         }
         //regular execution
         TreeDBActions treeDBActions = new TreeDBActions(getApplicationContext());
-        TreeInfo treeInfo = new TreeInfo(treeDBActions);
-        TreeManager treeManager = new TreeManager(treeDBActions);
+        final TreeInfo treeInfo = new TreeInfo(treeDBActions);
+        final TreeManager treeManager = new TreeManager(treeDBActions);
+
+        //perform action based on if new tree needs to be planted
+        try {
+            if (creationPending) {
+                if (newVTree != null) {
+                    createVirtualTree(treeManager, newVTree);
+                }
+                creationPending = false;
+            } else if (needNewVTree(treeInfo)) {
+                //show button to plant new virtual tree
+                Button plantVTreeBtn = findViewById(R.id.plantVTreeBtn);
+                plantVTreeBtn.setVisibility(View.VISIBLE);
+            } else {
+                //showCurrentTree(treeInfo);
+            }
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        //virtualTreeState = prefHelper.retrieveInt("current_growth");
+        //TextView virtualTreeGrowth = findViewById(R.id.virtualTreeGrowth);
 
     }
 
@@ -159,29 +193,41 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         //if current tree is fully grown
-        int growthState =  treeInfo.growthState(allTreesInWifi.get(allTreesInWifi.size() - 1));
-        if (growthState == 5) {
+        if (prefHelper.retrieveInt("current_growth") == 5) {
             return true;
         }
 
         return false;
     }
 
-    // Plant a new tree or renew an existing tree
+    //start new activities to get info what tree should be planted
     public void plantVTree(View v) {
-        if(prefHelper.retrieveInt("current_growth") == 0){
-            String treeName = "Walter";
+        Tree newVTree = new Tree("project", "wifi", "name", -1);
 
-            prefHelper.storeInt("growth_on_screen", 0);
-            prefHelper.storeLong("challenge_duration", 20);
-            prefHelper.storeLong("allowed_time_disconnected", 20);
-            prefHelper.storeString("tree_name", treeName);
+        Intent chooseProject = new Intent(MainActivity.this, ChooseProject.class);
+        chooseProject.putExtra("Tree", newVTree);
+        startActivity(chooseProject);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    }
 
-            TextView tvTreeName = findViewById(R.id.tvTreeName);
-            tvTreeName.setText(treeName);
+    // Plant a new tree or renew an existing tree
+    public void plantVTree2(View v) {
+        // Plant a new tree or renew an existing tree
+        public void plantVTree(View v) {
+            if(prefHelper.retrieveInt("current_growth") == 0){
+                String treeName = "Walter";
+
+                prefHelper.storeInt("growth_on_screen", 0);
+                prefHelper.storeLong("challenge_duration", 20);
+                prefHelper.storeLong("allowed_time_disconnected", 20);
+                prefHelper.storeString("tree_name", treeName);
+
+                TextView tvTreeName = findViewById(R.id.tvTreeName);
+                tvTreeName.setText(treeName);
+            }
+            findViewById(R.id.potImageView).setEnabled(false);
+            startService(new Intent(this, BackgroundService.class));
         }
-        findViewById(R.id.potImageView).setEnabled(false);
-        startService(new Intent(this, BackgroundService.class));
     }
 
     private void showCurrentTree(TreeInfo treeInfo) throws ExecutionException, InterruptedException {
@@ -197,12 +243,12 @@ public class MainActivity extends AppCompatActivity {
 
         int new_tree_status = prefHelper.retrieveInt("current_growth");
         int old_tree_status = prefHelper.retrieveInt("growth_on_screen");
-        if(new_tree_status != old_tree_status){
+        if (new_tree_status != old_tree_status) {
             ivPlant.setBackground(getResources().getDrawable(this.treeDrawables[new_tree_status - 1]));
             ivPlant.setVisibility(View.VISIBLE);
             prefHelper.storeInt("growth_on_screen", new_tree_status);
             ivTop.setEnabled(true);
-        } else if(new_tree_status == 5){
+        } else if (new_tree_status == 5) {
             ivPlant.setBackground(getResources().getDrawable(this.treeDrawables[4]));
             ivTop.setEnabled(true);
             prefHelper.storeInt("current_growth", 0);
@@ -210,5 +256,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
         Log.i(TAG, "Tree status on screen has been updated");
+    }
+
+    private void createVirtualTree(TreeManager treeManager, Tree newVTree) {
+        prefHelper.storeInt("grown_trees_virtual", 1);
+        prefHelper.storeInt("current_growth", 0);
+        TextView virtualTreeGrowth = findViewById(R.id.virtualTreeGrowth);
+        virtualTreeGrowth.setText(newVTree.getName());
+        treeManager.insertTree(newVTree);
+    }
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
     }
 } // End class MainActivity
