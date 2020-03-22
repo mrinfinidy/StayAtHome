@@ -67,6 +67,7 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
             String location = locationName.getText().toString();
 
+            ChooseProject.selectedLocation = location;
         }
     }
 }
