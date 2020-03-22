@@ -10,11 +10,12 @@ import java.util.List;
 
 public class TreeRepository {
 
+    private TreeDatabase treeDatabase;
     private TreeDao treeDao;
     private LiveData<List<Tree>> allTrees;
 
     public TreeRepository(Application application) {
-        TreeDatabase treeDatabase = TreeDatabase.getInstance(application);
+        treeDatabase = TreeDatabase.getInstance(application);
         treeDao = treeDatabase.treeDao();
         allTrees = treeDao.getTrees();
     }
@@ -29,6 +30,10 @@ public class TreeRepository {
 
     public void delete(Tree tree) {
         new DeleteTreeAsyncTask(treeDao).execute(tree);
+    }
+
+    public LiveData<Tree> getTree(int id) {
+        return treeDatabase.treeDao().getTree(id);
     }
 
     public LiveData<List<Tree>> getTrees() {

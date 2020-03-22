@@ -21,6 +21,9 @@ public interface TreeDao {
     @Delete
     void delete(Tree tree);
 
+    @Query("SELECT * FROM tree_table WHERE id =:treeId")
+    LiveData<Tree> getTree(int treeId);
+
     @Query("SELECT * FROM tree_table")
     LiveData<List<Tree>> getTrees();
 }

@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         virtualTreeState = prefHelper.retrieveInt("current_growth");
         TextView virtualTreeGrowth = findViewById(R.id.virtualTreeGrowth);
 
-        virtualTreeGrowth.setText(treeRepository.getTrees().toString());
+        virtualTreeGrowth.setText(treeRepository.getTree(1) + "");
     }
 
     //all virtual trees already grown
