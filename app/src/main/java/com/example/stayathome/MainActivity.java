@@ -56,6 +56,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Intent createTree = getIntent();
+        boolean creationPending = false;
+        if (createTree.getParcelableExtra("Tree") != null) {
+            Tree newVTree = createTree.getParcelableExtra("Tree");
+            creationPending = true;
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -84,7 +91,9 @@ public class MainActivity extends AppCompatActivity {
 
         //perform action based on if new tree needs to be planted
         try {
-            if (needNewVTree(treeInfo)) {
+            if (creationPending) {
+                creationPending = false;
+            } else if (needNewVTree(treeInfo)) {
                 //show button to plant new virtual tree
                 Button plantVTreeBtn = findViewById(R.id.plantVTreeBtn);
                 plantVTreeBtn.setVisibility(View.VISIBLE);
@@ -177,5 +186,10 @@ public class MainActivity extends AppCompatActivity {
     //update Tree currently on screen
     public void updateTree() {
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
     }
 } // End class MainActivity
