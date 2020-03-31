@@ -1,4 +1,4 @@
-package com.example.stayathome;
+package com.example.stayathome.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.stayathome.R;
 import com.example.stayathome.treedatabase.Tree;
 
 public class ChooseVTree extends AppCompatActivity {

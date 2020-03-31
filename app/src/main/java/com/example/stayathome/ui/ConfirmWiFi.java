@@ -1,4 +1,4 @@
-package com.example.stayathome;
+package com.example.stayathome.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.stayathome.R;
 import com.example.stayathome.helper.SharedPreferencesHelper;
 import com.example.stayathome.treedatabase.Tree;
 

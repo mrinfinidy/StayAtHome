@@ -13,16 +13,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ChooseName"></activity>
-        <activity android:name=".ChooseVTree" />
-        <activity android:name=".ConfirmWiFi" />
+        <activity android:name=".ui.ChooseName"></activity>
+        <activity android:name=".ui.ChooseVTree" />
+        <activity android:name=".ui.ConfirmWiFi" />
 
         <service android:name=".background.BackgroundService" />
 
-        <activity android:name=".ChooseProject" />
-        <activity android:name=".GrownTrees" />
-        <activity android:name=".InitialSetup" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".ui.ChooseProject" />
+        <activity android:name=".ui.GrownTrees" />
+        <activity android:name=".ui.InitialSetup" />
+        <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

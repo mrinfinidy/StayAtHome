@@ -1,10 +1,6 @@
-package com.example.stayathome;
+package com.example.stayathome.ui;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -15,24 +11,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.example.stayathome.R;
 import com.example.stayathome.background.BackgroundService;
 import com.example.stayathome.helper.NotificationHelper;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.Observer;
 
 import com.example.stayathome.helper.SharedPreferencesHelper;
 import com.example.stayathome.interfacelogic.TreeInfo;
 import com.example.stayathome.interfacelogic.TreeManager;
 import com.example.stayathome.treedatabase.Tree;
 import com.example.stayathome.treedatabase.TreeDBActions;
-import com.example.stayathome.treedatabase.TreeDatabase;
 
-import org.w3c.dom.Text;
-
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 

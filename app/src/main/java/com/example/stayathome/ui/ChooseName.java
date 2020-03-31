@@ -1,4 +1,4 @@
-package com.example.stayathome;
+package com.example.stayathome.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.stayathome.interfacelogic.TreeManager;
+import com.example.stayathome.R;
 import com.example.stayathome.treedatabase.Tree;
 
 public class ChooseName extends AppCompatActivity {

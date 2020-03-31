@@ -1,4 +1,4 @@
-package com.example.stayathome;
+package com.example.stayathome.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.stayathome.R;
 import com.example.stayathome.helper.SharedPreferencesHelper;
 
 public class InitialSetup extends AppCompatActivity {

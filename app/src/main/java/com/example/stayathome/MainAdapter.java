@@ -1,6 +1,5 @@
 package com.example.stayathome;
 
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,13 +9,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.stayathome.helper.SharedPreferencesHelper;
-
-import org.w3c.dom.Text;
+import com.example.stayathome.ui.ChooseProject;
 
 import java.util.ArrayList;
 
-class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
+public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
     ArrayList<String> locations;
     private TextView previousSelection;

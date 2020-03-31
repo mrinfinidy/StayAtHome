@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ChooseProject">
+    tools:context=".ui.ChooseProject">
 
     <Button
         android:id="@+id/confirmProjectBtn"
