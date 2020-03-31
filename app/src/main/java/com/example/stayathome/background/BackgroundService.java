@@ -81,11 +81,11 @@ public class BackgroundService extends Service {
             @Override
             public void run() {
                 int growth = prefHelper.retrieveInt("current_growth") + 1;
-                Log.i(TAG, "Current size of tree: " + growth);
+                Log.i(TAG, "Current tree size: " + growth);
                 if(growth < 5){
-                    treeDry();
+                    //treeDry(); this causes crash
                 } else {
-                    treeReady();
+                    //treeReady(); this causes crash
                 }
                 prefHelper.storeInt("current_growth", growth);
             }

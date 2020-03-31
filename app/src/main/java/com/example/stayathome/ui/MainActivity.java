@@ -207,24 +207,6 @@ public class MainActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
-    // Plant a new tree or renew an existing tree. Executed when growing is possible and user taps pot
-    public void plantVTree2(View v) {
-        if(prefHelper.retrieveInt("current_growth") == 0){
-            String treeName = "Walter";
-
-            int grown_trees = prefHelper.retrieveInt("grown_trees_virtual") + 1;
-            prefHelper.storeInt("grown_trees_virtual", grown_trees);
-            prefHelper.storeInt("growth_on_screen", 0);
-            prefHelper.storeLong("challenge_duration", 20);
-            prefHelper.storeLong("allowed_time_disconnected", 20);
-            prefHelper.storeString("tree_name", treeName);
-        }
-        findViewById(R.id.potImageView).setEnabled(false);
-        startService(new Intent(this, BackgroundService.class));
-
-        findViewById(R.id.informUser).setVisibility(View.INVISIBLE);
-    }
-
     private void createVirtualTree(TreeManager treeManager, Tree newVTree) {
         TextView vTreeNameDisplay = findViewById(R.id.vTreeNameDisplay);
         vTreeNameDisplay.setText(newVTree.getName());
@@ -242,6 +224,8 @@ public class MainActivity extends AppCompatActivity {
         //display last tree in list
     }
 
+    //CHANGE: after a specified time's passed pot should be tappable. As soon as tapped plant is displayed in next growth state
+
     // Update tree currently on screen
     public void updateTree() {
         ImageView ivTop = findViewById(R.id.potImageView);
@@ -255,9 +239,9 @@ public class MainActivity extends AppCompatActivity {
             prefHelper.storeInt("growth_on_screen", new_tree_status);
             treeManager.editGrowthState(currentTree, new_tree_status);
             ivTop.setEnabled(true);
-            //TextView informUsaer = findViewById(R.id.informUser);
-            //informUsaer.setText("TAP HERE TO GROW");
-            //informUsaer.setVisibility(View.VISIBLE);
+            TextView informUsaer = findViewById(R.id.informUser);
+            informUsaer.setText("TAP HERE TO GROW");
+            informUsaer.setVisibility(View.VISIBLE);
         } else if (new_tree_status == 5) {
             ivPlant.setBackground(getResources().getDrawable(this.treeDrawables[4]));
             ivTop.setEnabled(true);
@@ -266,6 +250,24 @@ public class MainActivity extends AppCompatActivity {
         }
 
         Log.i(TAG, "Tree status on screen has been updated");
+    }
+
+    // Plant a new tree or renew an existing tree. Executed when growing is possible and user taps pot
+    public void plantVTree2(View v) {
+        if(prefHelper.retrieveInt("current_growth") == 0){
+            String treeName = "Walter";
+
+            int grown_trees = prefHelper.retrieveInt("grown_trees_virtual") + 1;
+            prefHelper.storeInt("grown_trees_virtual", grown_trees);
+            prefHelper.storeInt("growth_on_screen", 0);
+            prefHelper.storeLong("challenge_duration", 20);
+            prefHelper.storeLong("allowed_time_disconnected", 20);
+            prefHelper.storeString("tree_name", treeName);
+        }
+        findViewById(R.id.potImageView).setEnabled(false);
+        startService(new Intent(this, BackgroundService.class));
+
+        findViewById(R.id.informUser).setVisibility(View.INVISIBLE);
     }
 
     @Override
