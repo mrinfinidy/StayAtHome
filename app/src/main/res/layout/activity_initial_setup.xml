@@ -10,7 +10,7 @@
         android:id="@+id/confirmWifi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="wifi bestätigen"
+        android:text="@string/wifi_best_tigen"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

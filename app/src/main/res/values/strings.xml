@@ -14,4 +14,9 @@
     <string name="tree_down_text">ist leider vertrocknet.</string>
     <string name="plant_v_tree">Neuen Baum pflanzen</string>
     <string name="wet_v_tree">Baum gießen</string>
+    <string name="tap_pot_to_strat_growing">TAP pot TO STRAT GROWING</string>
+    <string name="virtuellen_baum_pflanzen">virtuellen baum pflanzen</string>
+    <string name="best_tigen">bestätigen</string>
+    <string name="textview">TextView</string>
+    <string name="wifi_best_tigen">wifi bestätigen</string>
 </resources>

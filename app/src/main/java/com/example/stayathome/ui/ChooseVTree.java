@@ -14,9 +14,6 @@ public class ChooseVTree extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Intent chooseVTree = getIntent();
-        final Tree newVTree = chooseVTree.getParcelableExtra("Tree");
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_v_tree);
 
@@ -25,11 +22,11 @@ public class ChooseVTree extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //NEED TO RETRIEVE USER SELECTION
+                HoldSelection.setTreeType("default");
+
                 Intent chooseName = new Intent(ChooseVTree.this, ChooseName.class);
-                chooseName.putExtra("Tree", newVTree);
                 startActivity(chooseName);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
             }
         });
     }

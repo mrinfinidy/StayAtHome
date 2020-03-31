@@ -18,9 +18,6 @@ public class ConfirmWiFi extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Intent confirmWifi = getIntent();
-        final Tree newVTree = confirmWifi.getParcelableExtra("Tree");
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm_wi_fi);
 
@@ -34,9 +31,8 @@ public class ConfirmWiFi extends AppCompatActivity {
         confirmWiFiBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                newVTree.setWifi(ssid);
+                HoldSelection.setWifiName(ssid);
                 Intent chooseVTree = new Intent(ConfirmWiFi.this, ChooseVTree.class);
-                chooseVTree.putExtra("Tree", newVTree);
                 startActivity(chooseVTree);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }

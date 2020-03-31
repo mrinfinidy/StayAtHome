@@ -13,6 +13,7 @@ import com.example.stayathome.ui.ChooseProject;
 
 import java.util.ArrayList;
 
+//this class connects the ViewHolder and ArrayList to display strings stored in locations
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
     ArrayList<String> locations;
@@ -54,6 +55,8 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
                 }
             });
         }
+
+        //highlight and remember location selected by user (so it can be used when user presses confirm)
         private void selectItem(TextView locationName) {
 
             if (previousSelection != null) {

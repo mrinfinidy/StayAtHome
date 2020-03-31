@@ -22,17 +22,16 @@ public class ChooseProject extends AppCompatActivity {
     RecyclerView.LayoutManager locationsLayout;
     RecyclerView.Adapter locationsAdapter;
     ArrayList<String> locations;
-    public static String selectedLocation;
+   public static String selectedLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //collect intent
-        Intent chooseProject = getIntent();
-        final Tree newVTree = chooseProject.getParcelableExtra("Tree");
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_project);
 
+        HoldSelection.setCreationPending(true);
+
+        //locations for user to choose
         locations = new ArrayList<>();
         locations.add("Karlsruhe");
         locations.add("Jena");
@@ -46,22 +45,24 @@ public class ChooseProject extends AppCompatActivity {
         confirmProjectBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //NEED TO RETRIEVE USER SELECTION
-                newVTree.setProject(selectedLocation);
+            if (selectedLocation == null) {
+                Toast.makeText(getApplicationContext(), "You need to select a location", Toast.LENGTH_LONG).show();
+            } else {
+                HoldSelection.setSelectedLocation(selectedLocation);
                 Intent confirmWifi = new Intent(ChooseProject.this, ConfirmWiFi.class);
-                confirmWifi.putExtra("Tree", newVTree);
-                Toast.makeText(getApplicationContext(), selectedLocation, Toast.LENGTH_LONG).show();
                 startActivity(confirmWifi);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            }
             }
         });
     }
 
+    //locations are displayed here
     public void buildRecyclerView() {
         locationsRecView = (RecyclerView) findViewById(R.id.locationsRecView);
         locationsRecView.setHasFixedSize(true);
         locationsLayout = new LinearLayoutManager(this);
-        locationsAdapter = new MainAdapter(locations);
+        locationsAdapter = new MainAdapter(locations); //use strings stored in locations
 
         locationsRecView.setLayoutManager(locationsLayout);
         locationsRecView.setAdapter(locationsAdapter);

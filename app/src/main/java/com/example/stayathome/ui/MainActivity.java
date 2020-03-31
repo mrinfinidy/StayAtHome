@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.stayathome.R;
 import com.example.stayathome.background.BackgroundService;
@@ -22,6 +23,8 @@ import com.example.stayathome.interfacelogic.TreeInfo;
 import com.example.stayathome.interfacelogic.TreeManager;
 import com.example.stayathome.treedatabase.Tree;
 import com.example.stayathome.treedatabase.TreeDBActions;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -54,16 +57,16 @@ public class MainActivity extends AppCompatActivity {
     private Handler mHandler;
     private Runnable runnableScreenUpdate;
 
+    private TreeManager treeManager;
+    private Tree currentTree;
+
+    private String projectName;
+    private String wifiName;
+    private String treeType;
+    private String vTreeName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Intent createTree = getIntent();
-        boolean creationPending = false;
-        Tree newVTree= null;
-        if (createTree.getParcelableExtra("Tree") != null) {
-            newVTree = createTree.getParcelableExtra("Tree");
-            creationPending = true;
-        }
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -85,36 +88,10 @@ public class MainActivity extends AppCompatActivity {
         if (isFirstUsage) {
             //first usage
             prefHelper.storeBoolean("first_usage", false);
-
             //initial setup screen
             Intent firstTime = new Intent(MainActivity.this, InitialSetup.class);
             startActivity(firstTime);
         }
-        //regular execution
-        TreeDBActions treeDBActions = new TreeDBActions(getApplicationContext());
-        final TreeInfo treeInfo = new TreeInfo(treeDBActions);
-        final TreeManager treeManager = new TreeManager(treeDBActions);
-
-        //perform action based on if new tree needs to be planted
-        try {
-            if (creationPending) {
-                if (newVTree != null) {
-                    createVirtualTree(treeManager, newVTree);
-                }
-                creationPending = false;
-            } else if (needNewVTree(treeInfo)) {
-                //show button to plant new virtual tree
-                Button plantVTreeBtn = findViewById(R.id.plantVTreeBtn);
-                plantVTreeBtn.setVisibility(View.VISIBLE);
-            } else {
-                //showCurrentTree(treeInfo);
-            }
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         //virtualTreeState = prefHelper.retrieveInt("current_growth");
         //TextView virtualTreeGrowth = findViewById(R.id.virtualTreeGrowth);
 
@@ -123,7 +100,37 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        boolean isFirstUsage = prefHelper.retrieveBoolean("first_usage");
         startScreenUpdater();
+
+
+        final TreeDBActions treeDBActions = new TreeDBActions(getApplicationContext());
+        final TreeInfo treeInfo = new TreeInfo(treeDBActions);
+        treeManager = new TreeManager(treeDBActions);
+
+        if (HoldSelection.isCreationPending()) {
+            //create new virtual tree
+            currentTree = new Tree(HoldSelection.getSelectedLocation(), HoldSelection.getWifiName(), HoldSelection.getTreeType(), HoldSelection.getTreeName(), 0);
+            createVirtualTree(treeManager, currentTree);
+            HoldSelection.setCreationPending(false);
+        } else {
+            //regular execution
+            //perform action based on if new tree needs to be planted
+            try {
+                if (needNewVTree(treeInfo)) {
+                    //show button to plant new virtual tree
+                    Button plantVTreeBtn = findViewById(R.id.plantVTreeBtn);
+                    plantVTreeBtn.setVisibility(View.VISIBLE);
+                } else {
+                    //showCurrentTree(treeInfo);
+                }
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -146,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
     public void startScreenUpdater() {
         // Update tree status every 5 seconds
         Log.i(TAG, "ScreenUpdater started");
+
         updateTree();
 
         handlerThread = new HandlerThread("ScreenUpdater");
@@ -194,15 +202,12 @@ public class MainActivity extends AppCompatActivity {
 
     //start new activities to get info what tree should be planted
     public void plantVTree(View v) {
-        Tree newVTree = new Tree("project", "wifi", "name", -1);
-
         Intent chooseProject = new Intent(MainActivity.this, ChooseProject.class);
-        chooseProject.putExtra("Tree", newVTree);
         startActivity(chooseProject);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
-    // Plant a new tree or renew an existing tree
+    // Plant a new tree or renew an existing tree. Executed when growing is possible and user taps pot
     public void plantVTree2(View v) {
         if(prefHelper.retrieveInt("current_growth") == 0){
             String treeName = "Walter";
@@ -216,13 +221,19 @@ public class MainActivity extends AppCompatActivity {
         }
         findViewById(R.id.potImageView).setEnabled(false);
         startService(new Intent(this, BackgroundService.class));
+
+        findViewById(R.id.informUser).setVisibility(View.INVISIBLE);
     }
 
     private void createVirtualTree(TreeManager treeManager, Tree newVTree) {
-        TextView virtualTreeGrowth = findViewById(R.id.virtualTreeGrowth);
-        virtualTreeGrowth.setText(newVTree.getName());
+        TextView vTreeNameDisplay = findViewById(R.id.vTreeNameDisplay);
+        vTreeNameDisplay.setText(newVTree.getName());
         treeManager.insertTree(newVTree);
         findViewById(R.id.potImageView).setEnabled(true);
+        //inform user that tree can be planted now
+        TextView informUser = findViewById(R.id.informUser);
+        informUser.setText("TAP HERE TO PUT TREE IN POT");
+        informUser.setVisibility(View.VISIBLE);
     }
 
     private void showCurrentTree(TreeInfo treeInfo) throws ExecutionException, InterruptedException {
@@ -242,7 +253,11 @@ public class MainActivity extends AppCompatActivity {
             ivPlant.setBackground(getResources().getDrawable(this.treeDrawables[new_tree_status - 1]));
             ivPlant.setVisibility(View.VISIBLE);
             prefHelper.storeInt("growth_on_screen", new_tree_status);
+            treeManager.editGrowthState(currentTree, new_tree_status);
             ivTop.setEnabled(true);
+            //TextView informUsaer = findViewById(R.id.informUser);
+            //informUsaer.setText("TAP HERE TO GROW");
+            //informUsaer.setVisibility(View.VISIBLE);
         } else if (new_tree_status == 5) {
             ivPlant.setBackground(getResources().getDrawable(this.treeDrawables[4]));
             ivTop.setEnabled(true);

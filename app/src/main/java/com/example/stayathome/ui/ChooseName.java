@@ -13,12 +13,8 @@ import com.example.stayathome.treedatabase.Tree;
 
 public class ChooseName extends AppCompatActivity {
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Intent chooseName = getIntent();
-        final Tree newVTree = chooseName.getParcelableExtra("Tree");
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_name);
@@ -28,9 +24,9 @@ public class ChooseName extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 EditText vTreeName = findViewById(R.id.vTreeName);
-                newVTree.setName(vTreeName.getText().toString());
+                String name = vTreeName.getText().toString();
+                HoldSelection.setTreeName(name);
                 Intent createTree = new Intent(ChooseName.this, MainActivity.class);
-                createTree.putExtra("Tree", newVTree);
                 startActivity(createTree);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
