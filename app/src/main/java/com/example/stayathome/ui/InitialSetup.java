@@ -47,14 +47,14 @@ public class InitialSetup extends AppCompatActivity {
                 //store SSID
                 prefHelper.storeString("wifi_name", ssid);
                 //retrieve BSSID
-                String bssid = connection.getBSSID();
+                //String bssid = connection.getBSSID();
                 //store BSSID
-                prefHelper.storeString("wifi_id", bssid);
+                //prefHelper.storeString("wifi_id", bssid);
 
                 String wifiConfirmation = getResources().getString(R.string.wifi_confirmation);
                 //Toast.makeText(getApplicationContext(), wifiConfirmation, Toast.LENGTH_LONG).show();
-                Toast.makeText(getApplicationContext(), ssid, Toast.LENGTH_LONG).show();
-                Toast.makeText(getApplicationContext(), bssid, Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), ssid, Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), bssid, Toast.LENGTH_LONG).show();
 
                 finish();
             }

@@ -43,7 +43,7 @@
         android:id="@+id/potImageView"
         android:layout_width="133dp"
         android:layout_height="89dp"
-        android:onClick="plantVTree2"
+        android:onClick="growNow"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
