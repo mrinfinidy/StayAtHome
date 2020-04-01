@@ -37,7 +37,8 @@ public class GrownTrees extends AppCompatActivity {
 
         //plant real tree if limit reached otherwise show # of virtual trees still needed
         if (numGrownTrees == virtualTreesLimit) {
-            Toast.makeText(getApplicationContext(), "Baum gepflanzt", Toast.LENGTH_LONG).show();
+
+            //Toast.makeText(getApplicationContext(), "Baum gepflanzt", Toast.LENGTH_LONG).show();
             //reset # of virtual trees
             prefHelper.storeInt("grown_trees_virtual", 0);
             finish();

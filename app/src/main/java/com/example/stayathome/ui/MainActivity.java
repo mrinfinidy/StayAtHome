@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TreeManager treeManager;
     private Tree currentTree;
+    static TreeInfo treeInfo;
 
     private String projectName;
     private String wifiName;
@@ -107,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         final TreeDBActions treeDBActions = new TreeDBActions(getApplicationContext());
-        final TreeInfo treeInfo = new TreeInfo(treeDBActions);
+        treeInfo = new TreeInfo(treeDBActions);
         treeManager = new TreeManager(treeDBActions);
 
         if (HoldSelection.isCreationPending()) {

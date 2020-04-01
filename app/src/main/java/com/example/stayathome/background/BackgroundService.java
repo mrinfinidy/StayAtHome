@@ -80,7 +80,11 @@ public class BackgroundService extends Service {
         runnableTreeUpdate = new Runnable() {
             @Override
             public void run() {
-                int growth = prefHelper.retrieveInt("current_growth") + 1;
+                int growth = prefHelper.retrieveInt("current_growth") ;
+                int onScreen = prefHelper.retrieveInt("growth_on_screen");
+                if ((growth + 1) - onScreen <= 1 ) {
+                    growth++;
+                }
                 Log.i(TAG, "Current tree size: " + growth);
                 if(growth <= 5){
                     //treeDry(); this causes crash
