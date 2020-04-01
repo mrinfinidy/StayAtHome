@@ -30,9 +30,12 @@ public class InitialSetup extends AppCompatActivity {
         // Assign SharedPreferencesHelper when the Activity is created
         prefHelper = new SharedPreferencesHelper(this);
 
+        //PROPERLY REQUEST/MANAGE PERMISSION FOR ANDROID 8.1+
+
         // Request permission for location in order to receive the name of the SSID and BSSID
         if(!locationPermissionGranted()){
             requestLocationPermission();
+            //
         }
 
         // Save SSID when 'wifi bestaetigen' is pressed
