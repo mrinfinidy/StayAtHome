@@ -12,8 +12,6 @@ public class Tree {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
-    private String project;
-
     private String wifi;
 
     private String treeType;
@@ -22,8 +20,7 @@ public class Tree {
 
     private int growthState;
 
-    public Tree(String project, String wifi, String treeType, String name, int growthState) {
-        this.project = project;
+    public Tree(String wifi, String treeType, String name, int growthState) {
         this.wifi = wifi;
         this.treeType = treeType;
         this.name = name;
@@ -31,8 +28,6 @@ public class Tree {
     }
 
     public void setId(int id) { this.id = id; }
-
-    public void setProject(String project) { this.project = project; }
 
     public void setWifi(String wifi) { this.wifi = wifi; }
 
@@ -43,10 +38,6 @@ public class Tree {
     public void setGrowthState(int growthState) { this.growthState = growthState; }
 
     public int getId() { return id; }
-
-    public String getProject() {
-        return project;
-    }
 
     public String getWifi() {
         return wifi;

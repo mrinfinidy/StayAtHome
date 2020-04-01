@@ -25,6 +25,7 @@ public class ConfirmWiFi extends AppCompatActivity {
         setContentView(R.layout.activity_confirm_wi_fi);
 
         confirmWifi = this;
+        HoldSelection.setCreationPending(true);
 
         prefHelper = new SharedPreferencesHelper(getApplicationContext());
 
@@ -42,6 +43,12 @@ public class ConfirmWiFi extends AppCompatActivity {
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        HoldSelection.setCreationPending(false);
+        super.onBackPressed();
     }
 
     @Override

@@ -25,16 +25,10 @@ public class ChooseProject extends AppCompatActivity {
     ArrayList<String> locations;
     public static String selectedLocation;
 
-    public static Activity chooseProject;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_project);
-
-        chooseProject = this;
-
-        HoldSelection.setCreationPending(true);
 
         //locations for user to choose
         locations = new ArrayList<>();
@@ -50,14 +44,15 @@ public class ChooseProject extends AppCompatActivity {
         confirmProjectBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            if (selectedLocation == null) {
-                Toast.makeText(getApplicationContext(), "You need to select a location", Toast.LENGTH_LONG).show();
-            } else {
-                HoldSelection.setSelectedLocation(selectedLocation);
-                Intent confirmWifi = new Intent(ChooseProject.this, ConfirmWiFi.class);
-                startActivity(confirmWifi);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            }
+                if (selectedLocation == null) {
+                    Toast.makeText(getApplicationContext(), "You need to select a location", Toast.LENGTH_LONG).show();
+                } else {
+                    /*
+                    Intent confirmWifi = new Intent(ChooseProject.this, ConfirmWiFi.class);
+                    startActivity(confirmWifi);
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    */
+                }
             }
         });
     }
@@ -71,12 +66,6 @@ public class ChooseProject extends AppCompatActivity {
 
         locationsRecView.setLayoutManager(locationsLayout);
         locationsRecView.setAdapter(locationsAdapter);
-    }
-
-    @Override
-    public void onBackPressed() {
-        HoldSelection.setCreationPending(false);
-        super.onBackPressed();
     }
 
     @Override

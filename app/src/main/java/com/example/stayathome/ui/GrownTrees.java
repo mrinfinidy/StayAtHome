@@ -2,6 +2,7 @@ package com.example.stayathome.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -37,7 +38,9 @@ public class GrownTrees extends AppCompatActivity {
 
         //plant real tree if limit reached otherwise show # of virtual trees still needed
         if (numGrownTrees == virtualTreesLimit) {
-
+            Intent chooseProject = new Intent(GrownTrees.this, ConfirmWiFi.class);
+            startActivity(chooseProject);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             //Toast.makeText(getApplicationContext(), "Baum gepflanzt", Toast.LENGTH_LONG).show();
             //reset # of virtual trees
             prefHelper.storeInt("grown_trees_virtual", 0);

@@ -113,17 +113,14 @@ public class MainActivity extends AppCompatActivity {
 
         if (HoldSelection.isCreationPending()) {
             //create new virtual tree
-            currentTree = new Tree(HoldSelection.getSelectedLocation(), HoldSelection.getWifiName(), HoldSelection.getTreeType(), HoldSelection.getTreeName(), 0);
+            currentTree = new Tree(HoldSelection.getWifiName(), HoldSelection.getTreeType(), HoldSelection.getTreeName(), 0);
             createVirtualTree(treeManager, currentTree);
             HoldSelection.setCreationPending(false);
             //clear held selection
             HoldSelection.setTreeName(null);
             HoldSelection.setWifiName(null);
             HoldSelection.setTreeType(null);
-            HoldSelection.setSelectedLocation(null);
             //finish selection process activities
-            ChooseProject.chooseProject.finish();
-            ChooseProject.chooseProject = null;
             ConfirmWiFi.confirmWifi.finish();
             ConfirmWiFi.confirmWifi = null;
             ChooseVTree.chooseVTree.finish();
@@ -212,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
 
     //start new activities to get info what tree should be planted
     public void plantVTree(View v) {
-        Intent chooseProject = new Intent(MainActivity.this, ChooseProject.class);
+        Intent chooseProject = new Intent(MainActivity.this, ConfirmWiFi.class);
         startActivity(chooseProject);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
@@ -239,12 +236,13 @@ public class MainActivity extends AppCompatActivity {
         //display last tree in list
         int treeStatus = prefHelper.retrieveInt("growth_on_screen");
         ImageView ivPlant = findViewById(R.id.plantImageView);
-        if (treeStatus <= 5) {
-            ivPlant.setBackground(getResources().getDrawable(this.treeDrawables[4]));
-        } else {
+        if (treeStatus > 0 && treeStatus <= 5) {
             ivPlant.setBackground(getResources().getDrawable(this.treeDrawables[treeStatus] - 1));
+            ivPlant.setVisibility(View.VISIBLE);
+        } else  if (treeStatus > 5){
+            ivPlant.setBackground(getResources().getDrawable(this.treeDrawables[4]));
+            ivPlant.setVisibility(View.VISIBLE);
         }
-        ivPlant.setVisibility(View.VISIBLE);
     }
 
     //CHANGE: after a specified time's passed pot should be tappable. As soon as tapped plant is displayed in next growth state
