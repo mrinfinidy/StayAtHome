@@ -237,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
         int treeStatus = prefHelper.retrieveInt("growth_on_screen");
         ImageView ivPlant = findViewById(R.id.plantImageView);
         if (treeStatus > 0 && treeStatus <= 5) {
-            ivPlant.setBackground(getResources().getDrawable(this.treeDrawables[treeStatus] - 1));
+            ivPlant.setBackground(getResources().getDrawable(this.treeDrawables[treeStatus - 1]));
             ivPlant.setVisibility(View.VISIBLE);
         } else  if (treeStatus > 5){
             ivPlant.setBackground(getResources().getDrawable(this.treeDrawables[4]));

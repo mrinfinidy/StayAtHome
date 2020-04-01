@@ -109,7 +109,7 @@ public class BackgroundService extends Service {
         runnableTreeDown = new Runnable() {
             @Override
             public void run() {
-                treeDown();
+                //treeDown(); this causes crash
             }
         };
         mHandler.postDelayed(runnableTreeDown, prefHelper.retrieveLong("allowed_time_disconnected") * 1000);
