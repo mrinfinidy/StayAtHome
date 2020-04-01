@@ -1,6 +1,7 @@
 package com.example.stayathome.ui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -114,6 +115,20 @@ public class MainActivity extends AppCompatActivity {
             currentTree = new Tree(HoldSelection.getSelectedLocation(), HoldSelection.getWifiName(), HoldSelection.getTreeType(), HoldSelection.getTreeName(), 0);
             createVirtualTree(treeManager, currentTree);
             HoldSelection.setCreationPending(false);
+            //clear held selection
+            HoldSelection.setTreeName(null);
+            HoldSelection.setWifiName(null);
+            HoldSelection.setTreeType(null);
+            HoldSelection.setSelectedLocation(null);
+            //finish selection process activities
+            ChooseProject.chooseProject.finish();
+            ChooseProject.chooseProject = null;
+            ConfirmWiFi.confirmWifi.finish();
+            ConfirmWiFi.confirmWifi = null;
+            ChooseVTree.chooseVTree.finish();
+            ChooseVTree.chooseVTree = null;
+            ChooseName.chooseName.finish();
+            ChooseName.chooseName = null;
         } else {
             //regular execution
             //perform action based on if new tree needs to be planted
@@ -123,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
                     Button plantVTreeBtn = findViewById(R.id.plantVTreeBtn);
                     plantVTreeBtn.setVisibility(View.VISIBLE);
                 } else {
-                    //showCurrentTree(treeInfo);
+                    showCurrentTree(treeInfo);
                 }
             } catch (ExecutionException e) {
                 e.printStackTrace();
@@ -133,12 +148,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onPause(){
-        super.onPause();
-        mHandler.removeCallbacks(runnableScreenUpdate);
-        Log.i(TAG, "ScreenUpdater stopped");
-    }
 
     private void prepareTreeDrawables(){
         int pappel1 = R.drawable.ic_pappel1;
@@ -219,10 +228,22 @@ public class MainActivity extends AppCompatActivity {
         informUser.setVisibility(View.VISIBLE);
     }
 
+    //show tree that was growing when main activity was stopped
     private void showCurrentTree(TreeInfo treeInfo) throws ExecutionException, InterruptedException {
-        String ssid = prefHelper.retrieveString("wifi_name");
-        List<Tree> currentTrees = treeInfo.treesInWifi(ssid);
+        if (currentTree == null) {
+            String ssid = prefHelper.retrieveString("wifi_name");
+            List<Tree> currentTrees = treeInfo.treesInWifi(ssid);
+            currentTree = currentTrees.get(currentTrees.size() - 1);
+        }
         //display last tree in list
+        int treeStatus = prefHelper.retrieveInt("growth_on_screen");
+        ImageView ivPlant = findViewById(R.id.plantImageView);
+        if (treeStatus <= 5) {
+            ivPlant.setBackground(getResources().getDrawable(this.treeDrawables[4]));
+        } else {
+            ivPlant.setBackground(getResources().getDrawable(this.treeDrawables[treeStatus] - 1));
+        }
+        ivPlant.setVisibility(View.VISIBLE);
     }
 
     //CHANGE: after a specified time's passed pot should be tappable. As soon as tapped plant is displayed in next growth state
@@ -278,7 +299,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause(){
+        super.onPause();
+        mHandler.removeCallbacks(runnableScreenUpdate);
+        Log.i(TAG, "ScreenUpdater stopped");
+    }
+
+    @Override
     public void onBackPressed() {
         moveTaskToBack(true);
     }
+
 } // End class MainActivity

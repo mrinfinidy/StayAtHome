@@ -2,6 +2,7 @@ package com.example.stayathome.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -16,10 +17,14 @@ public class ConfirmWiFi extends AppCompatActivity {
 
     SharedPreferencesHelper prefHelper;
 
+    public static Activity confirmWifi;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm_wi_fi);
+
+        confirmWifi = this;
 
         prefHelper = new SharedPreferencesHelper(getApplicationContext());
 

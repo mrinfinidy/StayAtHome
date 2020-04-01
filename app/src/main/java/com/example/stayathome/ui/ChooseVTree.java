@@ -2,6 +2,7 @@ package com.example.stayathome.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -12,10 +13,14 @@ import com.example.stayathome.treedatabase.Tree;
 
 public class ChooseVTree extends AppCompatActivity {
 
+    public static Activity chooseVTree;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_v_tree);
+
+        chooseVTree = this;
 
         Button confirmVTreeBtn = findViewById(R.id.confirmVTreeBtn);
         confirmVTreeBtn.setOnClickListener(new View.OnClickListener() {

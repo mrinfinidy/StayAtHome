@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -22,12 +23,16 @@ public class ChooseProject extends AppCompatActivity {
     RecyclerView.LayoutManager locationsLayout;
     RecyclerView.Adapter locationsAdapter;
     ArrayList<String> locations;
-   public static String selectedLocation;
+    public static String selectedLocation;
+
+    public static Activity chooseProject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_project);
+
+        chooseProject = this;
 
         HoldSelection.setCreationPending(true);
 
