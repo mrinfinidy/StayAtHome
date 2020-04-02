@@ -1,7 +1,11 @@
 package com.example.stayathome.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -94,9 +98,6 @@ public class MainActivity extends AppCompatActivity {
             Intent firstTime = new Intent(MainActivity.this, InitialSetup.class);
             startActivity(firstTime);
         }
-        //virtualTreeState = prefHelper.retrieveInt("current_growth");
-        //TextView virtualTreeGrowth = findViewById(R.id.virtualTreeGrowth);
-
     }
 
     @Override
@@ -220,6 +221,7 @@ public class MainActivity extends AppCompatActivity {
         treeManager.insertTree(newVTree);
         prefHelper.storeInt("current_growth", 0);
         findViewById(R.id.potImageView).setClickable(true);
+        prefHelper.storeBoolean("tree_alive", true);
         //inform user that tree can be planted now
         TextView informUser = findViewById(R.id.informUser);
         informUser.setText("TAP HERE TO PUT TREE IN POT");
@@ -245,32 +247,40 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //CHANGE: after a specified time's passed pot should be tappable. As soon as tapped plant is displayed in next growth state
-
+    //check if next growth state is available
     public void updateTree() {
         ImageView ivPot = findViewById(R.id.potImageView);
 
         int newTreeStatus = prefHelper.retrieveInt("current_growth");
         int oldTreeStatus = prefHelper.retrieveInt("growth_on_screen");
 
+        TextView informUser = findViewById(R.id.informUser);
+
+        if (!prefHelper.retrieveBoolean("tree_alive")) {
+            ivPot.setClickable(true);
+            informUser.setText("TAP POT TO KILL TREE");
+            informUser.setVisibility(View.VISIBLE);
+        }
         if (newTreeStatus != oldTreeStatus) {
             ivPot.setClickable(true);
-            TextView informUser = findViewById(R.id.informUser);
             if (oldTreeStatus == 5) {
-                informUser.setText("TAP HERE TO HARVEST");
+                informUser.setText("TAP POT TO HARVEST");
             } else {
-                informUser.setText("TAP HERE TO GROW");
+                informUser.setText("TAP POT TO GROW");
             }
             informUser.setVisibility(View.VISIBLE);
         }
     }
 
-    public void growNow(View v) {
+    //show next growth state or harvest tree on tap
+    public void growNow(View v) throws ExecutionException, InterruptedException {
         ImageView ivPlant = findViewById(R.id.plantImageView);
 
         int treeStatus = prefHelper.retrieveInt("current_growth");
 
-        if (treeStatus == 0) {
+        if (!prefHelper.retrieveBoolean("tree_alive")) {
+            killTree(ivPlant);
+        } else if (treeStatus == 0) {
             int grownTrees = prefHelper.retrieveInt("grown_trees_virtual") + 1;
             prefHelper.storeInt("grown_trees_virtual", grownTrees);
             prefHelper.storeInt("growth_on_screen", 0);
@@ -295,6 +305,14 @@ public class MainActivity extends AppCompatActivity {
 
         startService(new Intent(this, BackgroundService.class));
         Log.i(TAG, "Tree status on screen has been updated");
+    }
+
+    public void killTree(ImageView ivPlant) throws ExecutionException, InterruptedException {
+        treeManager.deleteById(currentTree.getId());
+        ivPlant.setVisibility(View.INVISIBLE);
+        prefHelper.storeInt("current_growth", -1);
+        prefHelper.storeInt("growth_on_screen", -1);
+        findViewById(R.id.plantVTreeBtn).setVisibility(View.VISIBLE);
     }
 
     @Override

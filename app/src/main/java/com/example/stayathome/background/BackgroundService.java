@@ -105,6 +105,8 @@ public class BackgroundService extends Service {
     }
 
     public void scheduleTreeDown(){
+        final int allowedTimeDisconnected = 3;
+
         Log.i(TAG, "Tree down timer has been started");
         runnableTreeDown = new Runnable() {
             @Override
@@ -112,7 +114,8 @@ public class BackgroundService extends Service {
                 //treeDown(); this causes crash
             }
         };
-        mHandler.postDelayed(runnableTreeDown, prefHelper.retrieveLong("allowed_time_disconnected") * 1000);
+        //mHandler.postDelayed(runnableTreeDown, prefHelper.retrieveLong("allowed_time_disconnected") * 1000);
+        mHandler.postDelayed(runnableTreeDown, allowedTimeDisconnected * 1000);
     }
 
     public void cancelTreeDown(){
@@ -156,9 +159,13 @@ class WifiBroadcasts extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        final int allowedTimeDisconnected = 3;
+
         String action = intent.getAction();
+
         if(WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(action)){
             WifiManager wifiMgr = (WifiManager) mainContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            //int wifiStateExtra = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN);
 
             if(wifiMgr != null && wifiMgr.isWifiEnabled()){
                 //Wi-Fi adapter is enabled (on)
@@ -178,17 +185,19 @@ class WifiBroadcasts extends BroadcastReceiver {
                             // Phone has disconnected in an active challenge, check for wifi-downtime
                             long timeDisconnected = checkInterruptionTime();
                             Log.i(TAG, "WiFi has been disconnected for " + timeDisconnected + " seconds");
-                            if (timeDisconnected < prefHelper.retrieveLong("allowed_time_disconnected")){
+                            if (timeDisconnected < allowedTimeDisconnected){
                                 backService.cancelTreeDown();
                                 long new_time_in_challenge = prefHelper.retrieveLong("last_disconnected") - prefHelper.retrieveLong("challenge_start_time");
                                 prefHelper.storeLong("actual_time_in_challenge", new_time_in_challenge);
                                 prefHelper.removeValueFromStorage("last_disconnected");
                                 long new_wakeup_in_seconds = prefHelper.retrieveLong("challenge_duration") - new_time_in_challenge;
                                 backService.scheduleTreeUpdate(prefHelper.retrieveLong("challenge_duration"));
+
                             } else {
                                 // Disconnect has been too long
                                 prefHelper.removeValueFromStorage("actual_time_in_challenge");
                                 prefHelper.removeValueFromStorage("last_disconnected");
+                                prefHelper.storeBoolean("tree_alive", false);
                             }
                         }
                         updateWifiConnectedTime();
@@ -227,6 +236,10 @@ class WifiBroadcasts extends BroadcastReceiver {
     private long checkInterruptionTime(){
         long lastDisconnectedTime = prefHelper.retrieveLong("last_disconnected");
         Instant lastDisconnectedInstant = Instant.ofEpochSecond(lastDisconnectedTime);
+
+        Log.i(TAG, "last disconnected: " + lastDisconnectedInstant);
+        Log.i(TAG, "time now:" + Instant.now());
+
         return Duration.between(lastDisconnectedInstant, Instant.now()).getSeconds();
     }
 } // End class WiFiBroadcasts
@@ -252,4 +265,6 @@ class DisplayBroadcasts extends BroadcastReceiver{
             Log.i(TAG, "Screen has been turned off");
         }
     }
+
+
 } // End class DisplayBroadcasts
