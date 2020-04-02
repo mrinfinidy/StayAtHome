@@ -72,6 +72,10 @@ public class BackgroundService extends Service {
     }
 
     public void scheduleTreeUpdate(long nextUpdateInSeconds){
+        if (!prefHelper.retrieveBoolean("ongoing_challenge")) {
+            return;
+        }
+
         Log.i(TAG, "Next tree status update has been posted (due in " + nextUpdateInSeconds + " seconds)");
         handlerThread = new HandlerThread("TreeFollower");
         handlerThread.start();
@@ -198,6 +202,7 @@ class WifiBroadcasts extends BroadcastReceiver {
                                 prefHelper.removeValueFromStorage("actual_time_in_challenge");
                                 prefHelper.removeValueFromStorage("last_disconnected");
                                 prefHelper.storeBoolean("tree_alive", false);
+                                prefHelper.storeBoolean("ongoing_challenge", false);
                             }
                         }
                         updateWifiConnectedTime();

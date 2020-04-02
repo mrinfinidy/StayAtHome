@@ -3,6 +3,7 @@ package com.example.stayathome.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkInfo;
@@ -216,6 +217,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void createVirtualTree(TreeManager treeManager, Tree newVTree) {
+        prefHelper.storeBoolean("ongoing_challenge", true);
         TextView vTreeNameDisplay = findViewById(R.id.vTreeNameDisplay);
         vTreeNameDisplay.setText(newVTree.getName());
         treeManager.insertTree(newVTree);
@@ -223,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.potImageView).setClickable(true);
         //inform user that tree can be planted now
         TextView informUser = findViewById(R.id.informUser);
-        informUser.setText("TAP HERE TO PUT TREE IN POT");
+        informUser.setText("TAP POT TO SEED");
         informUser.setVisibility(View.VISIBLE);
     }
 
@@ -264,7 +266,7 @@ public class MainActivity extends AppCompatActivity {
             ivPot.setClickable(true);
             if (oldTreeStatus == 5) {
                 informUser.setText("TAP POT TO HARVEST");
-            } else {
+            } else if (oldTreeStatus >= 0){
                 informUser.setText("TAP POT TO GROW");
             }
             informUser.setVisibility(View.VISIBLE);
@@ -278,25 +280,21 @@ public class MainActivity extends AppCompatActivity {
         int treeStatus = prefHelper.retrieveInt("current_growth");
 
         if (!prefHelper.retrieveBoolean("tree_alive")) {
+            //kill
             killTree(ivPlant);
+            Log.i(TAG, "kill");
         } else if (treeStatus == 0) {
-            int grownTrees = prefHelper.retrieveInt("grown_trees_virtual") + 1;
-            prefHelper.storeInt("grown_trees_virtual", grownTrees);
-            prefHelper.storeInt("growth_on_screen", 0);
-            prefHelper.storeLong("challenge_duration", 20);
-            prefHelper.storeLong("allowed_time_disconnected", 20);
-            prefHelper.storeString("tree_name", currentTree.getName());
-            Toast.makeText(getApplicationContext(), "Seed planted", Toast.LENGTH_LONG).show();
+            //seed
+            seedTree();
+            Log.i(TAG, "seed");
         } else if (treeStatus <= 5) {
-            ivPlant.setBackground(getResources().getDrawable(this.treeDrawables[treeStatus - 1]));
-            ivPlant.setVisibility(View.VISIBLE);
-            prefHelper.storeInt("growth_on_screen", treeStatus);
-            treeManager.editGrowthState(currentTree, treeStatus);
+            //grow
+            growTree(ivPlant, treeStatus);
+            Log.i(TAG, "grow");
         } else {
-            ivPlant.setVisibility(View.INVISIBLE);
-            prefHelper.storeInt("current_growth", -1);
-            prefHelper.storeInt("growth_on_screen", -1);
-            findViewById(R.id.plantVTreeBtn).setVisibility(View.VISIBLE);
+            //harvest
+            harvestTree(ivPlant);
+            Log.i(TAG, "harvest");
         }
 
         findViewById(R.id.informUser).setVisibility(View.INVISIBLE);
@@ -306,7 +304,33 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG, "Tree status on screen has been updated");
     }
 
+    public void seedTree() {
+        int grownTrees = prefHelper.retrieveInt("grown_trees_virtual") + 1;
+        prefHelper.storeInt("grown_trees_virtual", grownTrees);
+        prefHelper.storeInt("growth_on_screen", 0);
+        prefHelper.storeLong("challenge_duration", 20);
+        prefHelper.storeLong("allowed_time_disconnected", 20);
+        prefHelper.storeString("tree_name", currentTree.getName());
+        Toast.makeText(getApplicationContext(), "Seed planted", Toast.LENGTH_LONG).show();
+    }
+
+    public void growTree(ImageView ivPlant, int treeStatus) {
+        ivPlant.setBackground(getResources().getDrawable(this.treeDrawables[treeStatus - 1]));
+        ivPlant.setVisibility(View.VISIBLE);
+        prefHelper.storeInt("growth_on_screen", treeStatus);
+        treeManager.editGrowthState(currentTree, treeStatus);
+    }
+
+    public void harvestTree(ImageView ivPlant) {
+        prefHelper.storeBoolean("ongoing_challenge", false);
+        ivPlant.setVisibility(View.INVISIBLE);
+        prefHelper.storeInt("current_growth", -1);
+        prefHelper.storeInt("growth_on_screen", -1);
+        findViewById(R.id.plantVTreeBtn).setVisibility(View.VISIBLE);
+    }
+
     public void killTree(ImageView ivPlant) throws ExecutionException, InterruptedException {
+        prefHelper.storeBoolean("ongoing_challenge", false);
         prefHelper.storeBoolean("tree_alive", true);
         treeManager.deleteById(currentTree.getId());
         ivPlant.setVisibility(View.INVISIBLE);
