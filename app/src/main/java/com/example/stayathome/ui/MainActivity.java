@@ -333,6 +333,8 @@ public class MainActivity extends AppCompatActivity {
         prefHelper.storeBoolean("ongoing_challenge", false);
         prefHelper.storeBoolean("tree_alive", true);
         treeManager.deleteById(currentTree.getId());
+        int grownTrees = prefHelper.retrieveInt("grown_trees_virtual") - 1;
+        prefHelper.storeInt("grown_trees_virtual", grownTrees);
         ivPlant.setVisibility(View.INVISIBLE);
         prefHelper.storeInt("current_growth", -1);
         prefHelper.storeInt("growth_on_screen", -1);
