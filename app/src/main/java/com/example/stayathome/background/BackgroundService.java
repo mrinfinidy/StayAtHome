@@ -118,7 +118,6 @@ public class BackgroundService extends Service {
                 //treeDown(); this causes crash
             }
         };
-        //mHandler.postDelayed(runnableTreeDown, prefHelper.retrieveLong("allowed_time_disconnected") * 1000);
         mHandler.postDelayed(runnableTreeDown, allowedTimeDisconnected * 1000);
     }
 
@@ -207,7 +206,7 @@ class WifiBroadcasts extends BroadcastReceiver {
                         }
                         updateWifiConnectedTime();
                     } else {
-                        // Completely different network
+                        // different network
                         if (!prefHelper.contains("last_disconnected")) {
                             Log.i(TAG, "connected to new WiFi");
                             backService.cancelTreeDown();

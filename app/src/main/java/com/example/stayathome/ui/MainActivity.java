@@ -1,5 +1,6 @@
 package com.example.stayathome.ui;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -7,6 +8,7 @@ import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
@@ -31,10 +33,10 @@ import com.example.stayathome.interfacelogic.TreeManager;
 import com.example.stayathome.treedatabase.Tree;
 import com.example.stayathome.treedatabase.TreeDBActions;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+
+import com.example.stayathome.background.*;
 
 /*ALL SHARED PREFERENCES KEYS
 key: first_usage --> boolean to check if it is the first time that the app is launched
@@ -68,10 +70,7 @@ public class MainActivity extends AppCompatActivity {
     private Tree currentTree;
     static TreeInfo treeInfo;
 
-    private String projectName;
-    private String wifiName;
-    private String treeType;
-    private String vTreeName;
+    private WifiManager wifiManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +105,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
         boolean isFirstUsage = prefHelper.retrieveBoolean("first_usage");
         startScreenUpdater();
 
@@ -119,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
             currentTree = new Tree(HoldSelection.getWifiName(), HoldSelection.getTreeType(), HoldSelection.getTreeName(), 0);
             createVirtualTree(treeManager, currentTree);
             HoldSelection.setCreationPending(false);
+            prefHelper.storeBoolean("ongoing_challenge", true);
             //clear held selection
             HoldSelection.setTreeName(null);
             HoldSelection.setWifiName(null);
@@ -138,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
                     //show button to plant new virtual tree
                     Button plantVTreeBtn = findViewById(R.id.plantVTreeBtn);
                     plantVTreeBtn.setVisibility(View.VISIBLE);
+                    prefHelper.storeBoolean("ongoing_challenge", false);
                 } else {
                     showCurrentTree(treeInfo);
                 }
@@ -212,6 +215,10 @@ public class MainActivity extends AppCompatActivity {
 
     //start new activities to get info what tree should be planted
     public void plantVTree(View v) {
+        if (wifiManager != null && !wifiManager.isWifiEnabled()) {
+            Toast.makeText(getApplicationContext(), "You can only plant a new tree while connected", Toast.LENGTH_LONG).show();
+            return;
+        }
         Intent chooseProject = new Intent(MainActivity.this, ConfirmWiFi.class);
         startActivity(chooseProject);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
@@ -276,9 +283,15 @@ public class MainActivity extends AppCompatActivity {
 
     //show next growth state or harvest tree on tap
     public void growNow(View v) throws ExecutionException, InterruptedException {
+        if (wifiManager != null && !wifiManager.isWifiEnabled()) {
+            Toast.makeText(getApplicationContext(), "You can only grow while connected", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         ImageView ivPlant = findViewById(R.id.plantImageView);
 
         int treeStatus = prefHelper.retrieveInt("current_growth");
+
 
         if (!prefHelper.retrieveBoolean("tree_alive")) {
             //kill

@@ -3,7 +3,10 @@ package com.example.stayathome.ui;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -28,9 +31,11 @@ public class ConfirmWiFi extends AppCompatActivity {
         HoldSelection.setCreationPending(true);
 
         prefHelper = new SharedPreferencesHelper(getApplicationContext());
-
+        //get name of currently connected wifi
         TextView homeWiFi = findViewById(R.id.homeWiFi);
-        final String ssid = prefHelper.retrieveString("wifi_name");
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        WifiInfo wifiInfo= wifiManager.getConnectionInfo();
+        final String ssid = wifiInfo.getSSID();
         homeWiFi.setText(ssid);
 
         Button confirmWiFiBtn = findViewById(R.id.confirmWiFiBtn);
