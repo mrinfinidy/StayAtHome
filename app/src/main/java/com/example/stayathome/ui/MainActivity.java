@@ -7,6 +7,7 @@ import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkInfo;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -179,10 +180,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 mHandler.sendMessage(new Message());
-                mHandler.postDelayed(runnableScreenUpdate, 5 * 1000);
+                mHandler.postDelayed(runnableScreenUpdate, 1 * 1000);
             }
         };
-        mHandler.postDelayed(runnableScreenUpdate, 5 * 1000);
+        mHandler.postDelayed(runnableScreenUpdate, 1 * 1000);
     }
 
     //all virtual trees already grown
@@ -332,7 +333,8 @@ public class MainActivity extends AppCompatActivity {
     public void killTree(ImageView ivPlant) throws ExecutionException, InterruptedException {
         prefHelper.storeBoolean("ongoing_challenge", false);
         prefHelper.storeBoolean("tree_alive", true);
-        treeManager.deleteById(currentTree.getId());
+        treeManager.deleteByName(currentTree.getName());
+        Log.i(TAG, "total trees: " + treeInfo.totalTrees());
         int grownTrees = prefHelper.retrieveInt("grown_trees_virtual") - 1;
         prefHelper.storeInt("grown_trees_virtual", grownTrees);
         ivPlant.setVisibility(View.INVISIBLE);

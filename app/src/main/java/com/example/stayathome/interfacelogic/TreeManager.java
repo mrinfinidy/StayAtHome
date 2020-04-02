@@ -1,5 +1,7 @@
 package com.example.stayathome.interfacelogic;
 
+import android.util.Log;
+
 import com.example.stayathome.treedatabase.Tree;
 import com.example.stayathome.treedatabase.TreeDBActions;
 

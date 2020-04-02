@@ -189,7 +189,7 @@ class WifiBroadcasts extends BroadcastReceiver {
                             // Phone has disconnected in an active challenge, check for wifi-downtime
                             long timeDisconnected = checkInterruptionTime();
                             Log.i(TAG, "WiFi has been disconnected for " + timeDisconnected + " seconds");
-                            if (timeDisconnected < allowedTimeDisconnected){
+                            if (timeDisconnected < allowedTimeDisconnected || prefHelper.retrieveInt("growth_on_screen") >= 1){
                                 backService.cancelTreeDown();
                                 long new_time_in_challenge = prefHelper.retrieveLong("last_disconnected") - prefHelper.retrieveLong("challenge_start_time");
                                 prefHelper.storeLong("actual_time_in_challenge", new_time_in_challenge);
