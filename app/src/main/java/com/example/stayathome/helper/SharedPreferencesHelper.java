@@ -59,4 +59,8 @@ public class SharedPreferencesHelper {
         // Removes a key/value pair from the SharedPreferences
         this.prefs.edit().remove(key).apply();
     }
+
+    public boolean contains(String key) {
+        return this.prefs.contains(key);
+    }
 } // End class SharedPreferencesHelper

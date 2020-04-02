@@ -179,7 +179,7 @@ class WifiBroadcasts extends BroadcastReceiver {
                     if(wifiInfo.getSSID().equals(savedSSID)){
                         // Phone has connected to the user selected wifi-network
                         if(prefHelper.retrieveLong("last_disconnected") == 0){
-                            // Phone has not disconnected before, first start of a challenge
+                            // Phone has not disconnected before start of a challenge
                             backService.scheduleTreeUpdate(prefHelper.retrieveLong("challenge_duration"));
                         } else {
                             // Phone has disconnected in an active challenge, check for wifi-downtime
@@ -203,15 +203,13 @@ class WifiBroadcasts extends BroadcastReceiver {
                         updateWifiConnectedTime();
                     } else {
                         // Completely different network
-
+                        if (!prefHelper.contains("last_disconnected")) {
+                            Log.i(TAG, "connected to new WiFi");
+                            backService.cancelTreeDown();
+                            updateWifiDisconnectedTime();
+                            backService.scheduleTreeDown();
+                        }
                     }
-
-                } else {
-                    // Disconnected from an access point
-                    Log.i(TAG, "Disconnected from WiFi " + prefHelper.retrieveString("wifi_name"));
-                    backService.cancelTreeUpdates();
-                    updateWifiDisconnectedTime();
-                    backService.scheduleTreeDown();
                 }
             } else {
                 // Wi-Fi adapter is disabled (off)
@@ -236,10 +234,6 @@ class WifiBroadcasts extends BroadcastReceiver {
     private long checkInterruptionTime(){
         long lastDisconnectedTime = prefHelper.retrieveLong("last_disconnected");
         Instant lastDisconnectedInstant = Instant.ofEpochSecond(lastDisconnectedTime);
-
-        Log.i(TAG, "last disconnected: " + lastDisconnectedInstant);
-        Log.i(TAG, "time now:" + Instant.now());
-
         return Duration.between(lastDisconnectedInstant, Instant.now()).getSeconds();
     }
 } // End class WiFiBroadcasts

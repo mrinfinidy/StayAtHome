@@ -221,7 +221,6 @@ public class MainActivity extends AppCompatActivity {
         treeManager.insertTree(newVTree);
         prefHelper.storeInt("current_growth", 0);
         findViewById(R.id.potImageView).setClickable(true);
-        prefHelper.storeBoolean("tree_alive", true);
         //inform user that tree can be planted now
         TextView informUser = findViewById(R.id.informUser);
         informUser.setText("TAP HERE TO PUT TREE IN POT");
@@ -308,6 +307,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void killTree(ImageView ivPlant) throws ExecutionException, InterruptedException {
+        prefHelper.storeBoolean("tree_alive", true);
         treeManager.deleteById(currentTree.getId());
         ivPlant.setVisibility(View.INVISIBLE);
         prefHelper.storeInt("current_growth", -1);
