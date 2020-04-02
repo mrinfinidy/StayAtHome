@@ -319,11 +319,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void seedTree() {
-        int grownTrees = prefHelper.retrieveInt("grown_trees_virtual") + 1;
-        prefHelper.storeInt("grown_trees_virtual", grownTrees);
         prefHelper.storeInt("growth_on_screen", 0);
-        prefHelper.storeLong("challenge_duration", 20);
-        prefHelper.storeLong("allowed_time_disconnected", 20);
+        prefHelper.storeLong("challenge_duration", 5);
+        //prefHelper.storeLong("allowed_time_disconnected", 20);
         prefHelper.storeString("tree_name", currentTree.getName());
         Toast.makeText(getApplicationContext(), "Seed planted", Toast.LENGTH_LONG).show();
     }
@@ -336,6 +334,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void harvestTree(ImageView ivPlant) {
+        int grownTrees = prefHelper.retrieveInt("grown_trees_virtual") + 1;
+        prefHelper.storeInt("grown_trees_virtual", grownTrees);
         prefHelper.storeBoolean("ongoing_challenge", false);
         ivPlant.setVisibility(View.INVISIBLE);
         prefHelper.storeInt("current_growth", -1);

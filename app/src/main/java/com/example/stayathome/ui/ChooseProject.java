@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.example.stayathome.MainAdapter;
 import com.example.stayathome.R;
+import com.example.stayathome.helper.SharedPreferencesHelper;
 import com.example.stayathome.treedatabase.Tree;
 
 import java.util.ArrayList;
@@ -47,11 +48,11 @@ public class ChooseProject extends AppCompatActivity {
                 if (selectedLocation == null) {
                     Toast.makeText(getApplicationContext(), "You need to select a location", Toast.LENGTH_LONG).show();
                 } else {
-                    /*
-                    Intent confirmWifi = new Intent(ChooseProject.this, ConfirmWiFi.class);
-                    startActivity(confirmWifi);
+                    //TO DO: send selection to server
+                    Toast.makeText(getApplicationContext(), "Tree planted in " + selectedLocation, Toast.LENGTH_LONG).show();
+                    Intent confirmProject = new Intent(ChooseProject.this, GrownTrees.class);
+                    startActivity(confirmProject);
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                    */
                 }
             }
         });
