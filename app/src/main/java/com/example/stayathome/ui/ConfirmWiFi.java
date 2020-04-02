@@ -30,13 +30,15 @@ public class ConfirmWiFi extends AppCompatActivity {
         confirmWifi = this;
         HoldSelection.setCreationPending(true);
 
-        prefHelper = new SharedPreferencesHelper(getApplicationContext());
         //get name of currently connected wifi
-        TextView homeWiFi = findViewById(R.id.homeWiFi);
         WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         WifiInfo wifiInfo= wifiManager.getConnectionInfo();
         final String ssid = wifiInfo.getSSID();
+        TextView homeWiFi = findViewById(R.id.homeWiFi);
         homeWiFi.setText(ssid);
+        prefHelper = new SharedPreferencesHelper(getApplicationContext());
+        prefHelper.storeString("wifi_name", ssid);
+
 
         Button confirmWiFiBtn = findViewById(R.id.confirmWiFiBtn);
         confirmWiFiBtn.setOnClickListener(new View.OnClickListener() {
