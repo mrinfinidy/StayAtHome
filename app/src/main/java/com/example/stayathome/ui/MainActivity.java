@@ -33,6 +33,8 @@ import com.example.stayathome.interfacelogic.TreeManager;
 import com.example.stayathome.treedatabase.Tree;
 import com.example.stayathome.treedatabase.TreeDBActions;
 
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -200,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
     //check if new virtual tree needs to be planted
     private boolean needNewVTree(TreeInfo treeInfo) throws ExecutionException, InterruptedException {
         //if there are no trees in this wifi
-        String ssid = prefHelper.retrieveString("wifi_name");
+        String ssid = getSSID(wifiManager.getConnectionInfo().getSSID());
         List<Tree> allTreesInWifi = treeInfo.treesInWifi(ssid);
         if (allTreesInWifi == null || allTreesInWifi.size() == 0) {
             return true;
@@ -240,7 +242,7 @@ public class MainActivity extends AppCompatActivity {
     //show tree that was growing when main activity was stopped
     private void showCurrentTree(TreeInfo treeInfo) throws ExecutionException, InterruptedException {
         if (currentTree == null) {
-            String ssid = prefHelper.retrieveString("wifi_name");
+            String ssid = getSSID(wifiManager.getConnectionInfo().getSSID());
             List<Tree> currentTrees = treeInfo.treesInWifi(ssid);
             currentTree = currentTrees.get(currentTrees.size() - 1);
         }
@@ -366,6 +368,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         moveTaskToBack(true);
+    }
+
+    private String getSSID(String ssid) {
+        HashSet<String> wifis = prefHelper.retrieveSet("wifis");
+        for (String wifiName : wifis) {
+            if (wifiName.equals(ssid)) {
+                return wifiName;
+            }
+        }
+        return "N/A";
     }
 
 } // End class MainActivity

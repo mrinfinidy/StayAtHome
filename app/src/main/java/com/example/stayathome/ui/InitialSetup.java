@@ -17,6 +17,8 @@ import android.widget.Toast;
 import com.example.stayathome.R;
 import com.example.stayathome.helper.SharedPreferencesHelper;
 
+import java.util.HashSet;
+
 public class InitialSetup extends AppCompatActivity {
 
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_LOCATION = 1;
@@ -38,18 +40,16 @@ public class InitialSetup extends AppCompatActivity {
             //
         }
 
-        // Save SSID when 'wifi bestaetigen' is pressed
-        Button confirmWifi = (Button) findViewById(R.id.confirmWifi);
-        confirmWifi.setOnClickListener(new View.OnClickListener() {
+        // Save SSID when launching for first time
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        HashSet<String> wifis = new HashSet<String>();
+        wifis.add(wifiManager.getConnectionInfo().getSSID());
+        prefHelper.storeSet("wifi", wifis);
+
+        Button startBtn = (Button) findViewById(R.id.startBtn);
+        startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                WifiInfo connection = wifiManager.getConnectionInfo();
-                //retrieve SSID
-                String ssid = connection.getSSID();
-                //store SSID
-                prefHelper.storeString("wifi_name", ssid);
-
                 finish();
             }
         });

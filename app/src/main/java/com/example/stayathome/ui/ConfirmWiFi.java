@@ -11,10 +11,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.stayathome.R;
 import com.example.stayathome.helper.SharedPreferencesHelper;
 import com.example.stayathome.treedatabase.Tree;
+
+import java.util.HashSet;
 
 public class ConfirmWiFi extends AppCompatActivity {
 
@@ -36,20 +39,33 @@ public class ConfirmWiFi extends AppCompatActivity {
         final String ssid = wifiInfo.getSSID();
         TextView homeWiFi = findViewById(R.id.homeWiFi);
         homeWiFi.setText(ssid);
-        prefHelper = new SharedPreferencesHelper(getApplicationContext());
-        prefHelper.storeString("wifi_name", ssid);
-
+        addWifi(ssid);
 
         Button confirmWiFiBtn = findViewById(R.id.confirmWiFiBtn);
         confirmWiFiBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                SharedPreferencesHelper prefHelper = new SharedPreferencesHelper(getApplicationContext());
+                HashSet<String> test = prefHelper.retrieveSet("wifis");
+                String res = "";
+                for (String s : test)
+                    res += s + " ";
+                Toast.makeText(getApplicationContext(), res, Toast.LENGTH_LONG).show();
+
                 HoldSelection.setWifiName(ssid);
                 Intent chooseVTree = new Intent(ConfirmWiFi.this, ChooseVTree.class);
                 startActivity(chooseVTree);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
+    }
+
+    private void addWifi(String ssid) {
+        SharedPreferencesHelper prefHelper = new SharedPreferencesHelper(getApplicationContext());
+        HashSet<String> wifis = prefHelper.retrieveSet("wifis");
+        wifis.add(ssid);
+        prefHelper.storeSet("wifis", wifis);
     }
 
     @Override

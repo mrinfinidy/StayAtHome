@@ -21,6 +21,8 @@ import com.example.stayathome.helper.SharedPreferencesHelper;
 import org.threeten.bp.Duration;
 import org.threeten.bp.Instant;
 
+import java.util.HashSet;
+
 public class BackgroundService extends Service {
     private static final String TAG = "BackgroundService";
     private BroadcastReceiver recWifi;
@@ -177,7 +179,7 @@ class WifiBroadcasts extends BroadcastReceiver {
                 if(wifiInfo.getNetworkId() != -1){
                     // Connected to an access point
                     Log.i(TAG, "Connected to wifi " + wifiInfo.getSSID());
-                    String savedSSID = prefHelper.retrieveString("wifi_name");
+                    String savedSSID = getSSID(wifiInfo.getSSID());
 
                     if(wifiInfo.getSSID().equals(savedSSID)){
                         // Phone has connected to the user selected wifi-network
@@ -239,6 +241,16 @@ class WifiBroadcasts extends BroadcastReceiver {
         long lastDisconnectedTime = prefHelper.retrieveLong("last_disconnected");
         Instant lastDisconnectedInstant = Instant.ofEpochSecond(lastDisconnectedTime);
         return Duration.between(lastDisconnectedInstant, Instant.now()).getSeconds();
+    }
+
+    private String getSSID(String ssid) {
+        HashSet<String> wifis = prefHelper.retrieveSet("wifis");
+        for (String wifiName : wifis) {
+            if (wifiName.equals(ssid)) {
+                return wifiName;
+            }
+        }
+        return "N/A";
     }
 } // End class WiFiBroadcasts
 

@@ -5,6 +5,9 @@ import android.content.SharedPreferences;
 
 import com.example.stayathome.R;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class SharedPreferencesHelper {
 
     private SharedPreferences prefs;
@@ -60,7 +63,24 @@ public class SharedPreferencesHelper {
         this.prefs.edit().remove(key).apply();
     }
 
+    //true if shared preference with this key exists
     public boolean contains(String key) {
         return this.prefs.contains(key);
+    }
+
+    //stores string set with this key
+    public void storeSet(String key, HashSet<String> values) {
+        this.prefs.edit().putStringSet(key, values).apply();
+    }
+
+    //returns String set stored with this key. def value: empty set
+    public HashSet<String> retrieveSet(String key) {
+        Set<String> values = prefs.getStringSet(key, new HashSet<String>());
+        HashSet<String> valuesCopy = new HashSet<String>();
+        for (String value : values) {
+            valuesCopy.add(value);
+        }
+
+        return valuesCopy;
     }
 } // End class SharedPreferencesHelper
