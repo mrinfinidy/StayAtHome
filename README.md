@@ -21,25 +21,11 @@
       4. 4h
       5. 7h 30min
       6. 9h 30min
-    - Man kann auf der Fensterbank nach links und rechts scrollen um alte Bäume zu sehen
-
-  - Weiteres:
-    - Design: Bäume fangen an Früchte wachsen zu lassen gegen Ende hin
-
+      (--> ungefähr, genaue Zeit variiert)
+  
 ### Weitere Ideen
 - Suche dir ein Projekt aus, bei dem du hilfst einen Baum zu pflanzen.
   - 1000 Bäume für Karlsruhe, München, ..., Afrika
 - Erstelle eine Gruppe oder lasse dich von einer einladen und verfolge nach, wie viele Bäume die Gruppe gepflanzt hat
-
+- nach link/rechts scrollen, um alte Bäume anzuzeigen
 ### Shared Preferences:
-- #grown trees
-- state of currently growing tree
-- time wifi conneciton established 
-- SSID
-- MAC-address
-- (1 virtual tree/day)
-- (14 virtual trees --> 1 real tree)
-
-### Deadlines:
-- Sonntag 16 Uhr: Abgabe auf devpost
-  - Beachten: https://docs.google.com/document/d/1tHsAZ6pofevpRnOsFl_r2wYTSdt615HemavuiyFyf9E/preview
