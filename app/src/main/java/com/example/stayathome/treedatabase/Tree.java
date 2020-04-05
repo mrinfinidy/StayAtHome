@@ -14,13 +14,13 @@ public class Tree {
 
     private String wifi;
 
-    private String treeType;
+    private int treeType;
 
     private String name;
 
     private int growthState;
 
-    public Tree(String wifi, String treeType, String name, int growthState) {
+    public Tree(String wifi, int treeType, String name, int growthState) {
         this.wifi = wifi;
         this.treeType = treeType;
         this.name = name;
@@ -31,7 +31,7 @@ public class Tree {
 
     public void setWifi(String wifi) { this.wifi = wifi; }
 
-    public void setTreeType(String treeType) { this.treeType = treeType; }
+    public void setTreeType(int treeType) { this.treeType = treeType; }
 
     public void setName(String name) { this.name = name; }
 
@@ -43,7 +43,7 @@ public class Tree {
         return wifi;
     }
 
-    public String getTreeType() { return treeType; }
+    public int getTreeType() { return treeType; }
 
     public String getName() {
         return name;

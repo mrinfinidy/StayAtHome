@@ -2,7 +2,9 @@ package com.example.stayathome.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -10,6 +12,15 @@ import android.widget.Toast;
 
 import com.example.stayathome.R;
 import com.example.stayathome.helper.SharedPreferencesHelper;
+import com.example.stayathome.interfacelogic.TreeInfo;
+import com.example.stayathome.treedatabase.Tree;
+
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class GrownTrees extends AppCompatActivity {
 
@@ -19,7 +30,6 @@ public class GrownTrees extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
         setContentView(R.layout.activity_grown_trees);
 
         // Assign SharedPreferencesHelper when the Activity is created
@@ -28,6 +38,9 @@ public class GrownTrees extends AppCompatActivity {
         numGrownTrees = prefHelper.retrieveInt("grown_trees_virtual");
         TextView currentVirtualTrees = findViewById(R.id.currentVirtualTrees);
         currentVirtualTrees.setText(numGrownTrees + "");
+
+        TextView vTreesDisplay = findViewById(R.id.vTreesDisplay);
+        showTrees(prefHelper, vTreesDisplay);
     }
 
     public void plantTree(View v) {
@@ -48,6 +61,29 @@ public class GrownTrees extends AppCompatActivity {
             int virtualTreesNeeded = virtualTreesLimit - numGrownTrees;
             Toast.makeText(getApplicationContext(), "Dir fehlen noch " + virtualTreesNeeded + " Bäumchen", Toast.LENGTH_LONG).show();
         }
+    }
+
+    //show names grown virtual trees
+    private void showTrees(SharedPreferencesHelper prefHelper, TextView vTreesDisplay) {
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE); //currently connected wifi
+        List<Tree> treesInWifi = new ArrayList<Tree>();
+
+        //get list of trees in this wifi
+        try {
+            treesInWifi = MainActivity.treeInfo.treesInWifi(wifiManager.getConnectionInfo().getSSID());
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        //write tree names in string
+        String vTrees = "";
+        for (Tree tree : treesInWifi) {
+            vTrees += tree.getName();
+        }
+
+        vTreesDisplay.setText(vTrees);
     }
 
     @Override

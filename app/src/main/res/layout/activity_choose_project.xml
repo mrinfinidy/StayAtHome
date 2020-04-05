@@ -1,28 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.ChooseProject">
 
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/locationsRecView"
+        android:layout_width="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_height="200sp"
+        android:layout_marginBottom="90sp"
+        android:foregroundGravity="center"/>
+
     <Button
         android:id="@+id/confirmProjectBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:text="@string/baum_pflanzen"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.85" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/locationsRecView"
-        android:layout_width="305sp"
-        android:layout_height="135sp"
-        android:layout_marginBottom="32sp"
-        app:layout_constraintBottom_toTopOf="@+id/confirmProjectBtn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_below="@+id/locationsRecView"/>
+</RelativeLayout>

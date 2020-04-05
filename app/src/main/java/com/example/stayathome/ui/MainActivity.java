@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TreeManager treeManager;
     private Tree currentTree;
-    static TreeInfo treeInfo;
+    public static TreeInfo treeInfo;
 
     private WifiManager wifiManager;
 
@@ -86,9 +86,6 @@ public class MainActivity extends AppCompatActivity {
         notHelper = new NotificationHelper();
         notHelper.createGrowthProgressNotificationChannel(getApplicationContext());
 
-        // Prepare drawables
-        prepareTreeDrawables();
-
         findViewById(R.id.potImageView).setClickable(false);
 
         // Check if opened for first time
@@ -101,6 +98,8 @@ public class MainActivity extends AppCompatActivity {
             Intent firstTime = new Intent(MainActivity.this, InitialSetup.class);
             startActivity(firstTime);
         }
+
+        //swipe to refresh
     }
 
     @Override
@@ -123,10 +122,11 @@ public class MainActivity extends AppCompatActivity {
             createVirtualTree(treeManager, currentTree);
             HoldSelection.setCreationPending(false);
             prefHelper.storeBoolean("ongoing_challenge", true);
+            prepareTreeDrawables();
             //clear held selection
             HoldSelection.setTreeName(null);
             HoldSelection.setWifiName(null);
-            HoldSelection.setTreeType(null);
+            HoldSelection.setTreeType(0);
             //finish selection process activities
             ConfirmWiFi.confirmWifi.finish();
             ConfirmWiFi.confirmWifi = null;
@@ -144,7 +144,17 @@ public class MainActivity extends AppCompatActivity {
                     plantVTreeBtn.setVisibility(View.VISIBLE);
                     prefHelper.storeBoolean("ongoing_challenge", false);
                 } else {
-                    showCurrentTree(treeInfo);
+                    if (currentTree == null) {
+                        //initialize current tree
+                        String ssid = wifiManager.getConnectionInfo().getSSID();
+                        List<Tree> currentTrees = treeInfo.treesInWifi(ssid);
+                        if (currentTrees.size() > 0) {
+                            currentTree = currentTrees.get(currentTrees.size() - 1);
+                            prepareTreeDrawables(); //prepare drawables for current tree
+                            showCurrentTree(treeInfo);
+                        }
+                    }
+
                 }
             } catch (ExecutionException e) {
                 e.printStackTrace();
@@ -155,13 +165,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    //initialize tree pics to display with tree type selected for current tree
     private void prepareTreeDrawables(){
-        int pappel1 = R.drawable.ic_pappel1;
-        int pappel2 = R.drawable.ic_pappel2;
-        int pappel3 = R.drawable.ic_pappel3;
-        int pappel4 = R.drawable.ic_pappel4;
-        int pappel5 = R.drawable.ic_pappel5;
-        treeDrawables = new int[]{pappel1, pappel2, pappel3, pappel4, pappel5};
+        int tree1, tree2, tree3, tree4, tree5;
+
+        if (currentTree.getTreeType() == 1) {
+            treeDrawables = new int[] {
+                    R.drawable.ic_pappel1,
+                    R.drawable.ic_pappel2,
+                    R.drawable.ic_pappel3,
+                    R.drawable.ic_pappel4,
+                    R.drawable.ic_pappel5
+            };
+        } else if (currentTree.getTreeType() == 2) {
+            //maple
+        } else if (currentTree.getTreeType() == 3) {
+            //cherry
+        } else {
+            //no match
+        }
     }
 
     // While activity is in running in foreground --> call updateTree()
@@ -201,8 +223,11 @@ public class MainActivity extends AppCompatActivity {
 
     //check if new virtual tree needs to be planted
     private boolean needNewVTree(TreeInfo treeInfo) throws ExecutionException, InterruptedException {
+        if (!wifiManager.isWifiEnabled())
+            return false;
+
         //if there are no trees in this wifi
-        String ssid = getSSID(wifiManager.getConnectionInfo().getSSID());
+        String ssid = wifiManager.getConnectionInfo().getSSID();
         List<Tree> allTreesInWifi = treeInfo.treesInWifi(ssid);
         if (allTreesInWifi == null || allTreesInWifi.size() == 0) {
             return true;
@@ -241,11 +266,6 @@ public class MainActivity extends AppCompatActivity {
 
     //show tree that was growing when main activity was stopped
     private void showCurrentTree(TreeInfo treeInfo) throws ExecutionException, InterruptedException {
-        if (currentTree == null) {
-            String ssid = getSSID(wifiManager.getConnectionInfo().getSSID());
-            List<Tree> currentTrees = treeInfo.treesInWifi(ssid);
-            currentTree = currentTrees.get(currentTrees.size() - 1);
-        }
         //display last tree in list
         int treeStatus = prefHelper.retrieveInt("growth_on_screen");
         ImageView ivPlant = findViewById(R.id.plantImageView);
@@ -368,16 +388,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         moveTaskToBack(true);
-    }
-
-    private String getSSID(String ssid) {
-        HashSet<String> wifis = prefHelper.retrieveSet("wifis");
-        for (String wifiName : wifis) {
-            if (wifiName.equals(ssid)) {
-                return wifiName;
-            }
-        }
-        return "N/A";
     }
 
 } // End class MainActivity

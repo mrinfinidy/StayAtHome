@@ -179,9 +179,7 @@ class WifiBroadcasts extends BroadcastReceiver {
                 if(wifiInfo.getNetworkId() != -1){
                     // Connected to an access point
                     Log.i(TAG, "Connected to wifi " + wifiInfo.getSSID());
-                    String savedSSID = getSSID(wifiInfo.getSSID());
-
-                    if(wifiInfo.getSSID().equals(savedSSID)){
+                    if(isSavedSSID(wifiInfo.getSSID())){
                         // Phone has connected to the user selected wifi-network
                         if(prefHelper.retrieveLong("last_disconnected") == 0){
                             // Phone has not disconnected before start of a challenge
@@ -243,14 +241,14 @@ class WifiBroadcasts extends BroadcastReceiver {
         return Duration.between(lastDisconnectedInstant, Instant.now()).getSeconds();
     }
 
-    private String getSSID(String ssid) {
+    private boolean isSavedSSID(String ssid) {
         HashSet<String> wifis = prefHelper.retrieveSet("wifis");
         for (String wifiName : wifis) {
             if (wifiName.equals(ssid)) {
-                return wifiName;
+                return true;
             }
         }
-        return "N/A";
+        return false;
     }
 } // End class WiFiBroadcasts
 

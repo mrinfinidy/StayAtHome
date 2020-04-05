@@ -4,7 +4,7 @@ package com.example.stayathome.ui;
 public class HoldSelection {
     private static boolean creationPending;
     private static String wifiName;
-    private static String treeType;
+    private static int treeType;
     private static String treeName;
 
     public static boolean isCreationPending() {
@@ -23,11 +23,11 @@ public class HoldSelection {
         HoldSelection.wifiName = wifiName;
     }
 
-    public static String getTreeType() {
+    public static int getTreeType() {
         return treeType;
     }
 
-    public static void setTreeType(String treeType) {
+    public static void setTreeType(int treeType) {
         HoldSelection.treeType = treeType;
     }
 

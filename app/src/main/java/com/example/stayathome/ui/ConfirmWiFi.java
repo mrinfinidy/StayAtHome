@@ -45,14 +45,6 @@ public class ConfirmWiFi extends AppCompatActivity {
         confirmWiFiBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                SharedPreferencesHelper prefHelper = new SharedPreferencesHelper(getApplicationContext());
-                HashSet<String> test = prefHelper.retrieveSet("wifis");
-                String res = "";
-                for (String s : test)
-                    res += s + " ";
-                Toast.makeText(getApplicationContext(), res, Toast.LENGTH_LONG).show();
-
                 HoldSelection.setWifiName(ssid);
                 Intent chooseVTree = new Intent(ConfirmWiFi.this, ChooseVTree.class);
                 startActivity(chooseVTree);

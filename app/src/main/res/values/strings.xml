@@ -22,4 +22,7 @@
     <string name="auf_gehts">Auf gehts!</string>
     <string name="name">Name</string>
     <string name="baum_pflanzen">baum pflanzen</string>
+    <string name="pappel">PAPPEL</string>
+    <string name="maple">MAPLE</string>
+    <string name="cherry">CHERRY</string>
 </resources>

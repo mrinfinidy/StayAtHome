@@ -32,30 +32,16 @@ public class ChooseName extends AppCompatActivity {
 
         chooseName = this;
 
-        /*
-        Button confirmNameBtn = findViewById(R.id.confirmNameBtn);
-        confirmNameBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EditText vTreeName = findViewById(R.id.vTreeName);
-                String name = vTreeName.getText().toString();
-                HoldSelection.setTreeName(name);
-                Intent createTree = new Intent(ChooseName.this, MainActivity.class);
-                startActivity(createTree);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            }
-        });
-         */
     }
 
     public void confirmName(View v) throws ExecutionException, InterruptedException {
         EditText vTreeName = findViewById(R.id.vTreeName);
         String name = vTreeName.getText().toString();
-        HoldSelection.setTreeName(name);
 
         if (isDuplicate(name)) {
             Toast.makeText(getApplicationContext(), "There is already another tree with this name", Toast.LENGTH_LONG).show();
         } else {
+            HoldSelection.setTreeName(name);
             Intent createTree = new Intent(ChooseName.this, MainActivity.class);
             startActivity(createTree);
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
@@ -63,9 +49,7 @@ public class ChooseName extends AppCompatActivity {
     }
 
     private boolean isDuplicate(String name) throws ExecutionException, InterruptedException {
-        prefHelper = new SharedPreferencesHelper(getApplicationContext());
-        String ssid = prefHelper.retrieveString("wifi_name");
-        List<Tree> currentTrees =  MainActivity.treeInfo.treesInWifi(ssid);
+        List<Tree> currentTrees =  MainActivity.treeInfo.treesInWifi(HoldSelection.getWifiName());
         for (int i = 0; i < currentTrees.size(); i++) {
             if (currentTrees.get(i).getName().equals(name)) {
                 return true;
