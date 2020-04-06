@@ -6,8 +6,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,6 +29,11 @@ public class ChooseVTree extends AppCompatActivity {
         setContentView(R.layout.activity_choose_v_tree);
 
         chooseVTree = this;
+
+        //set height of scrollview according to screen size
+        ViewGroup.LayoutParams svParams = findViewById(R.id.vTreesDisplaySV).getLayoutParams();
+        svParams.height = (int) (getScreenHeight() * 0.5);
+
 
         selectedTreeType = findViewById(R.id.selectedTreeType);
         HoldSelection.setTreeType(1);
@@ -57,6 +65,13 @@ public class ChooseVTree extends AppCompatActivity {
     public void clickCherry(View w) {
         selectedTreeType.setText(R.string.cherry);
         HoldSelection.setTreeType(3);
+    }
+
+    //screen height in pixels
+    private int getScreenHeight() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        return displayMetrics.heightPixels;
     }
 
     @Override
