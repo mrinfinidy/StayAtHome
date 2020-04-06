@@ -1,15 +1,8 @@
 package com.example.stayathome.ui;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.media.Image;
-import android.net.ConnectivityManager;
-import android.net.Network;
-import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -26,6 +19,7 @@ import com.example.stayathome.R;
 import com.example.stayathome.background.BackgroundService;
 import com.example.stayathome.helper.NotificationHelper;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.stayathome.helper.SharedPreferencesHelper;
 import com.example.stayathome.interfacelogic.TreeInfo;
@@ -33,12 +27,8 @@ import com.example.stayathome.interfacelogic.TreeManager;
 import com.example.stayathome.treedatabase.Tree;
 import com.example.stayathome.treedatabase.TreeDBActions;
 
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-
-import com.example.stayathome.background.*;
 
 /*ALL SHARED PREFERENCES KEYS
 key: first_usage --> boolean to check if it is the first time that the app is launched
@@ -67,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private HandlerThread handlerThread;
     private Handler mHandler;
     private Runnable runnableScreenUpdate;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     private TreeManager treeManager;
     private Tree currentTree;
@@ -78,6 +69,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeToRefresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(false);
+                onResume();
+            }
+        });
 
         // Assign SharedPreferences object
         prefHelper = new SharedPreferencesHelper(getApplicationContext());
