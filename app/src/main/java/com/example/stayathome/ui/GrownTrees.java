@@ -80,7 +80,7 @@ public class GrownTrees extends AppCompatActivity {
         //write tree names in string
         String vTrees = "";
         for (Tree tree : treesInWifi) {
-            vTrees += tree.getName();
+            vTrees += tree.getName() + " " + tree.getTreeType() + " " + tree.getGrowthState() + "\n";
         }
 
         vTreesDisplay.setText(vTrees);
