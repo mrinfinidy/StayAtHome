@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.stayathome">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -13,16 +14,30 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.ChooseName"></activity>
-        <activity android:name=".ui.ChooseVTree" />
-        <activity android:name=".ui.ConfirmWiFi" />
+        <activity android:name=".ui.ChooseName"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".ui.ChooseVTree"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"/>
+        <activity android:name=".ui.ConfirmWiFi"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"/>
 
         <service android:name=".background.BackgroundService" />
 
-        <activity android:name=".ui.ChooseProject" />
-        <activity android:name=".ui.GrownTrees" />
-        <activity android:name=".ui.InitialSetup" />
-        <activity android:name=".ui.MainActivity">
+        <activity android:name=".ui.ChooseProject"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"/>
+        <activity android:name=".ui.GrownTrees"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"/>
+        <activity android:name=".ui.InitialSetup"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"/>
+        <activity android:name=".ui.MainActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
