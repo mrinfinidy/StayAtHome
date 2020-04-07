@@ -13,7 +13,7 @@ import java.util.concurrent.ExecutionException;
 public class TreeDBActions {
 
     private String dbName = "trees";
-    private  TreeDatabase treeDatabase;
+    private static TreeDatabase treeDatabase;
 
     public TreeDBActions(Context context) {
         treeDatabase = Room.databaseBuilder(context, TreeDatabase.class, dbName).build();
@@ -39,7 +39,7 @@ public class TreeDBActions {
     }
 
     //@SuppressLint("StaticFieldLeak")
-    public void insert(final Tree tree) {
+    public static void insert(final Tree tree) {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
@@ -49,7 +49,7 @@ public class TreeDBActions {
         }.execute();
     }
 
-    public void delete(final Tree tree) {
+    static public void delete(final Tree tree) {
         if (tree != null) {
             new AsyncTask<Void, Void, Void>() {
                 @Override
@@ -61,7 +61,7 @@ public class TreeDBActions {
         }
     }
 
-    public void update(final Tree tree) {
+    static public void update(final Tree tree) {
         if (tree != null) {
             new AsyncTask<Void, Void, Void>() {
                 @Override

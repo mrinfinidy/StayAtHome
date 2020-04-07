@@ -10,27 +10,32 @@ import java.util.concurrent.ExecutionException;
 
 public class TreeManager {
 
-    TreeDBActions treeDBActions;
-    List<Tree> allTrees;
+    private TreeDBActions treeDBActions;
+    private List<Tree> allTrees;
 
     public TreeManager(TreeDBActions treeDBActions) {
         this.treeDBActions = treeDBActions;
     }
 
     public void insertTree(Tree tree) {
-        treeDBActions.insert(tree);
+        TreeDBActions.insert(tree);
     }
 
     public void editGrowthState(Tree tree, int growthState) {
         tree.setGrowthState(growthState);
-        treeDBActions.update(tree);
+        TreeDBActions.update(tree);
+    }
+
+    public void editPlantability(Tree tree, boolean value) {
+        tree.setToPlant(value);
+        TreeDBActions.update(tree);
     }
 
     public void deleteById(int id) throws ExecutionException, InterruptedException {
         allTrees = treeDBActions.getTrees();
         for (int i = 0; i < allTrees.size(); i++) {
             if (allTrees.get(i).getId() == id) {
-                treeDBActions.delete(allTrees.get(i));
+                TreeDBActions.delete(allTrees.get(i));
             }
         }
     }
@@ -39,7 +44,7 @@ public class TreeManager {
         allTrees = treeDBActions.getTrees();
         for (int i = 0; i < allTrees.size(); i++) {
             if (allTrees.get(i).getName().equals(name)) {
-                treeDBActions.delete(allTrees.get(i));
+                TreeDBActions.delete(allTrees.get(i));
             }
         }
     }
@@ -47,7 +52,7 @@ public class TreeManager {
     public void deleteAllTrees() throws ExecutionException, InterruptedException {
         allTrees = treeDBActions.getTrees();
         for (int i = 0; i < allTrees.size(); i++) {
-            treeDBActions.delete(allTrees.get(i));
+            TreeDBActions.delete(allTrees.get(i));
         }
     }
 }

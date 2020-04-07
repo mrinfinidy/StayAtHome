@@ -11,20 +11,19 @@ public class Tree {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
-
     private String wifi;
-
     private int treeType;
-
     private String name;
-
     private int growthState;
+    private boolean toPlant;
+
 
     public Tree(String wifi, int treeType, String name, int growthState) {
         this.wifi = wifi;
         this.treeType = treeType;
         this.name = name;
         this.growthState = growthState;
+        this.toPlant = false;
     }
 
     public void setId(int id) { this.id = id; }
@@ -51,5 +50,13 @@ public class Tree {
 
     public int getGrowthState() {
         return growthState;
+    }
+
+    public boolean isToPlant() {
+        return toPlant;
+    }
+
+    public void setToPlant(boolean toPlant) {
+        this.toPlant = toPlant;
     }
 }

@@ -25,4 +25,8 @@
     <string name="pappel">PAPPEL</string>
     <string name="maple">MAPLE</string>
     <string name="cherry">CHERRY</string>
+    <string name="tapPotSeed">TAP POT TO SEED</string>
+    <string name="tapPotKill">TAP POT TO KILL TREE</string>
+    <string name="tapPotGrow">TAP POT TO GROW</string>
+    <string name="tapPotHarvest">TAP POT TO HARVEST</string>
 </resources>

@@ -59,10 +59,9 @@ public class MainActivity extends AppCompatActivity {
     private Runnable runnableScreenUpdate;
     private SwipeRefreshLayout swipeRefreshLayout;
 
-    private TreeManager treeManager;
+    static TreeManager treeManager;
     private Tree currentTree;
-    public static TreeInfo treeInfo;
-
+    static TreeInfo treeInfo;
     private WifiManager wifiManager;
 
     @Override
@@ -85,6 +84,11 @@ public class MainActivity extends AppCompatActivity {
         // Create notification channels
         notHelper = new NotificationHelper();
         notHelper.createGrowthProgressNotificationChannel(getApplicationContext());
+
+        //connect to database
+        final TreeDBActions treeDBActions = new TreeDBActions(getApplicationContext());
+        treeInfo = new TreeInfo(treeDBActions);
+        treeManager = new TreeManager(treeDBActions);
 
         findViewById(R.id.potImageView).setClickable(false);
 
@@ -111,10 +115,6 @@ public class MainActivity extends AppCompatActivity {
         boolean isFirstUsage = prefHelper.retrieveBoolean("first_usage");
         startScreenUpdater();
 
-
-        final TreeDBActions treeDBActions = new TreeDBActions(getApplicationContext());
-        treeInfo = new TreeInfo(treeDBActions);
-        treeManager = new TreeManager(treeDBActions);
 
         if (HoldSelection.isCreationPending()) {
             //create new virtual tree
@@ -156,9 +156,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                 }
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
+            } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }
         }
@@ -260,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.potImageView).setClickable(true);
         //inform user that tree can be planted now
         TextView informUser = findViewById(R.id.informUser);
-        informUser.setText("TAP POT TO SEED");
+        informUser.setText(R.string.tapPotSeed);
         informUser.setVisibility(View.VISIBLE);
     }
 
@@ -289,15 +287,15 @@ public class MainActivity extends AppCompatActivity {
 
         if (!prefHelper.retrieveBoolean("tree_alive")) {
             ivPot.setClickable(true);
-            informUser.setText("TAP POT TO KILL TREE");
+            informUser.setText(R.string.tapPotKill);
             informUser.setVisibility(View.VISIBLE);
         }
         if (newTreeStatus != oldTreeStatus) {
             ivPot.setClickable(true);
             if (oldTreeStatus == 5) {
-                informUser.setText("TAP POT TO HARVEST");
+                informUser.setText(R.string.tapPotHarvest);
             } else if (oldTreeStatus >= 0){
-                informUser.setText("TAP POT TO GROW");
+                informUser.setText(R.string.tapPotGrow);
             }
             informUser.setVisibility(View.VISIBLE);
         }
@@ -348,11 +346,11 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), "Seed planted", Toast.LENGTH_LONG).show();
     }
 
-    public void growTree(ImageView ivPlant, int treeStatus) {
-        ivPlant.setBackground(getResources().getDrawable(this.treeDrawables[treeStatus - 1]));
+    public void growTree(ImageView ivPlant, int treeState) {
+        ivPlant.setBackground(getResources().getDrawable(this.treeDrawables[treeState - 1]));
         ivPlant.setVisibility(View.VISIBLE);
-        prefHelper.storeInt("growth_on_screen", treeStatus);
-        treeManager.editGrowthState(currentTree, treeStatus);
+        prefHelper.storeInt("growth_on_screen", treeState);
+        treeManager.editGrowthState(currentTree, treeState);
     }
 
     public void harvestTree(ImageView ivPlant) {
@@ -363,6 +361,7 @@ public class MainActivity extends AppCompatActivity {
         prefHelper.storeInt("current_growth", -1);
         prefHelper.storeInt("growth_on_screen", -1);
         findViewById(R.id.plantVTreeBtn).setVisibility(View.VISIBLE);
+        treeManager.editPlantability(currentTree, true);
     }
 
     public void killTree(ImageView ivPlant) throws ExecutionException, InterruptedException {
