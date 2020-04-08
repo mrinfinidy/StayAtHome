@@ -25,7 +25,6 @@ import java.util.concurrent.ExecutionException;
 
 public class GrownTrees extends AppCompatActivity {
 
-    private TextView currentVirtualTrees;
     private TextView vTreesDisplay;
     private List<Tree> treesInWifi;
     private List<Tree> availableTrees;
@@ -50,14 +49,12 @@ public class GrownTrees extends AppCompatActivity {
                     numGrownTrees++;
                 }
             }
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
 
         //display # available trees in Wifi
-        currentVirtualTrees = findViewById(R.id.currentVirtualTrees);
+        TextView currentVirtualTrees = findViewById(R.id.currentVirtualTrees);
         currentVirtualTrees.setText(numGrownTrees + "");
 
         //display all trees in Wifi
@@ -76,10 +73,6 @@ public class GrownTrees extends AppCompatActivity {
                 MainActivity.treeManager.editPlantability(tree,false);
                 numGrownTrees--;
             }
-
-            //update display # available trees in wifi and all trees in Wifi
-            currentVirtualTrees.setText(numGrownTrees);
-            showTrees();
 
             //choose project
             Intent chooseProject = new Intent(GrownTrees.this, ChooseProject.class);

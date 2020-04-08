@@ -285,7 +285,7 @@ public class MainActivity extends AppCompatActivity {
 
         TextView informUser = findViewById(R.id.informUser);
 
-        if (!prefHelper.retrieveBoolean("tree_alive")) {
+        if ((!prefHelper.retrieveBoolean("tree_alive") && (currentTree != null) && (prefHelper.retrieveInt("growth_on_screen") >= 0))) {
             ivPot.setClickable(true);
             informUser.setText(R.string.tapPotKill);
             informUser.setVisibility(View.VISIBLE);

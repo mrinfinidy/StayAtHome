@@ -49,6 +49,7 @@ public class ChooseProject extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "You need to select a location", Toast.LENGTH_LONG).show();
                 } else {
                     //TO DO: send selection to server
+                    //update # grown virtual trees
                     Toast.makeText(getApplicationContext(), "Tree planted in " + selectedLocation, Toast.LENGTH_LONG).show();
                     Intent confirmProject = new Intent(ChooseProject.this, GrownTrees.class);
                     startActivity(confirmProject);
