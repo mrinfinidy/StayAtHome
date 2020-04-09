@@ -5,8 +5,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.LocationManager;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -172,7 +174,7 @@ class WifiBroadcasts extends BroadcastReceiver {
             WifiManager wifiMgr = (WifiManager) mainContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
             //int wifiStateExtra = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN);
 
-            if(wifiMgr != null && wifiMgr.isWifiEnabled()){
+            if(isConnected(wifiMgr)){
                 //Wi-Fi adapter is enabled (on)
                 WifiInfo wifiInfo = wifiMgr.getConnectionInfo();
 
@@ -223,6 +225,24 @@ class WifiBroadcasts extends BroadcastReceiver {
                 backService.scheduleTreeDown();
             }
         }
+    }
+
+    //check if wifi is enabled and for Android 8.1+ check gps too
+    private boolean isConnected(WifiManager wifiManager) {
+        if (wifiManager == null)
+            return false;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            LocationManager locationManager = (LocationManager)  mainContext.getSystemService(Context.LOCATION_SERVICE);
+            if ((locationManager != null && !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) || !wifiManager.isWifiEnabled()) {
+                return false;
+            }
+        }
+
+        if (!wifiManager.isWifiEnabled())
+            return false;
+
+        return true;
     }
 
     private void updateWifiConnectedTime(){

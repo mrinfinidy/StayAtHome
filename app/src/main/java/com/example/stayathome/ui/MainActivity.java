@@ -2,13 +2,16 @@ package com.example.stayathome.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.util.LruCache;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -28,6 +31,7 @@ import com.example.stayathome.treedatabase.Tree;
 import com.example.stayathome.treedatabase.TreeDBActions;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 /*ALL SHARED PREFERENCES KEYS
@@ -62,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
     static TreeManager treeManager;
     private Tree currentTree;
     static TreeInfo treeInfo;
-    private WifiManager wifiManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
         boolean isFirstUsage = prefHelper.retrieveBoolean("first_usage");
         startScreenUpdater();
@@ -138,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
             //regular execution
             //perform action based on if new tree needs to be planted
             try {
-                if (needNewVTree(treeInfo)) {
+                if (needNewVTree(treeInfo, wifiManager)) {
                     //show button to plant new virtual tree
                     Button plantVTreeBtn = findViewById(R.id.plantVTreeBtn);
                     plantVTreeBtn.setVisibility(View.VISIBLE);
@@ -220,8 +223,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     //check if new virtual tree needs to be planted
-    private boolean needNewVTree(TreeInfo treeInfo) throws ExecutionException, InterruptedException {
-        if (!wifiManager.isWifiEnabled())
+    private boolean needNewVTree(TreeInfo treeInfo, WifiManager wifiManager) throws ExecutionException, InterruptedException {
+        if (!isConnected())
             return false;
 
         //if there are no trees in this wifi
@@ -240,7 +243,7 @@ public class MainActivity extends AppCompatActivity {
 
     //start new activities to get info what tree should be planted
     public void plantVTree(View v) {
-        if (wifiManager != null && !wifiManager.isWifiEnabled()) {
+        if (!isConnected()) {
             Toast.makeText(getApplicationContext(), "You can only plant a new tree while connected", Toast.LENGTH_LONG).show();
             return;
         }
@@ -303,7 +306,7 @@ public class MainActivity extends AppCompatActivity {
 
     //show next growth state or harvest tree on tap
     public void growNow(View v) throws ExecutionException, InterruptedException {
-        if (wifiManager != null && !wifiManager.isWifiEnabled()) {
+        if (!isConnected()) {
             Toast.makeText(getApplicationContext(), "You can only grow while connected", Toast.LENGTH_LONG).show();
             return;
         }
@@ -311,7 +314,6 @@ public class MainActivity extends AppCompatActivity {
         ImageView ivPlant = findViewById(R.id.plantImageView);
 
         int treeStatus = prefHelper.retrieveInt("current_growth");
-
 
         if (!prefHelper.retrieveBoolean("tree_alive")) {
             //kill
@@ -375,6 +377,23 @@ public class MainActivity extends AppCompatActivity {
         prefHelper.storeInt("current_growth", -1);
         prefHelper.storeInt("growth_on_screen", -1);
         findViewById(R.id.plantVTreeBtn).setVisibility(View.VISIBLE);
+    }
+
+    //check if wifi is enabled and for Android 8.1+ check gps too
+    private boolean isConnected() {
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            if ((locationManager != null && !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) || !wifiManager.isWifiEnabled()) {
+                return false;
+            }
+        }
+
+        if (!wifiManager.isWifiEnabled())
+            return false;
+
+        return true;
     }
 
     @Override

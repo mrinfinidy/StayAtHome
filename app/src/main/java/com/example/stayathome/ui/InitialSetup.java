@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -34,17 +35,12 @@ public class InitialSetup extends AppCompatActivity {
 
         //PROPERLY REQUEST/MANAGE PERMISSION FOR ANDROID 8.1+
 
-        // Request permission for location in order to receive the name of the SSID and BSSID
-        if(!locationPermissionGranted()){
-            requestLocationPermission();
-            //
+        // Request location permission for Android 8.1+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            if(!locationPermissionGranted()){
+                requestLocationPermission();
+            }
         }
-
-        // Save SSID when launching for first time
-        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        HashSet<String> wifis = new HashSet<String>();
-        wifis.add(wifiManager.getConnectionInfo().getSSID());
-        prefHelper.storeSet("wifi", wifis);
 
         Button startBtn = (Button) findViewById(R.id.startBtn);
         startBtn.setOnClickListener(new View.OnClickListener() {
