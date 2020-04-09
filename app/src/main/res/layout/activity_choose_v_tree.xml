@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.ChooseVTree">
+
+
+    <TextView
+        android:id="@+id/selectedTreeType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/vTreesDisplaySV"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="50sp"
+        android:text="@string/pappel"
+        android:textSize="30sp" />
+
+
+    <HorizontalScrollView
+        android:id="@+id/vTreesDisplaySV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:scrollbars="horizontal"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/pappelImg"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingStart="25sp"
+                android:paddingEnd="25sp"
+                android:scaleType="fitStart"
+                android:adjustViewBounds="true"
+                android:onClick="clickPappel"
+                android:src="@drawable/ic_pappel5"/>
+
+            <ImageView
+                android:id="@+id/mapleImg"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingEnd="25sp"
+                android:scaleType="fitStart"
+                android:adjustViewBounds="true"
+                android:onClick="clickMaple"
+                android:src="@drawable/ic_pappel5"/>
+
+            <ImageView
+                android:id="@+id/cherryImg"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingEnd="25sp"
+                android:scaleType="fitStart"
+                android:adjustViewBounds="true"
+                android:onClick="clickCherry"
+                android:src="@drawable/ic_pappel5"/>
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+    <Button
+        android:id="@+id/confirmVTreeBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/vTreesDisplaySV"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25sp"
+        android:text="@string/best_tigen"/>
+
+
+</RelativeLayout>
