@@ -26,8 +26,6 @@ import java.util.concurrent.ExecutionException;
 public class GrownTrees extends AppCompatActivity {
 
     private TextView vTreesDisplay;
-    private List<Tree> treesInWifi;
-    private List<Tree> availableTrees;
     private int numGrownTrees;
 
     @SuppressLint("SetTextI18n")
@@ -36,24 +34,11 @@ public class GrownTrees extends AppCompatActivity {
         super.onResume();
         setContentView(R.layout.activity_grown_trees);
 
-        //calculate # available trees in Wifi
-        numGrownTrees = 0;
+        //calculate # plantable trees in Wifi
+        numGrownTrees = MainActivity.plantableTrees.size();
         WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        availableTrees = new ArrayList<Tree>();
 
-        try {
-            treesInWifi = MainActivity.treeInfo.treesInWifi(wifiManager.getConnectionInfo().getSSID());
-            for (Tree tree : treesInWifi) {
-                if (tree.isToPlant()) {
-                    availableTrees.add(tree);
-                    numGrownTrees++;
-                }
-            }
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        //display # available trees in Wifi
+        //display # plantable trees in Wifi
         TextView currentVirtualTrees = findViewById(R.id.currentVirtualTrees);
         currentVirtualTrees.setText(numGrownTrees + "");
 
@@ -69,7 +54,7 @@ public class GrownTrees extends AppCompatActivity {
         //plant real tree if limit reached otherwise show # of virtual trees still needed
         if (numGrownTrees >= virtualTreesLimit) {
             //reset # of virtual trees
-            for (Tree tree : availableTrees) {
+            for (Tree tree : MainActivity.plantableTrees) {
                 MainActivity.treeManager.editPlantability(tree,false);
                 numGrownTrees--;
             }
@@ -88,7 +73,7 @@ public class GrownTrees extends AppCompatActivity {
     private void showTrees() {
         //write tree names in string
         String vTrees = "";
-        for (Tree tree : treesInWifi) {
+        for (Tree tree : MainActivity.treesInWifi) {
             vTrees += tree.getName() + " " + tree.getTreeType() + " " + tree.getGrowthState() + " " + tree.isToPlant() + "\n";
         }
 

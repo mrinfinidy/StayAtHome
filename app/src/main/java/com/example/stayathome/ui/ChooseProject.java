@@ -54,6 +54,7 @@ public class ChooseProject extends AppCompatActivity {
                     Intent confirmProject = new Intent(ChooseProject.this, GrownTrees.class);
                     startActivity(confirmProject);
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    finish();
                 }
             }
         });

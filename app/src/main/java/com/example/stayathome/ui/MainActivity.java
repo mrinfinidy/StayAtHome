@@ -31,6 +31,7 @@ import com.example.stayathome.treedatabase.Tree;
 import com.example.stayathome.treedatabase.TreeDBActions;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
@@ -76,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //swipe to refresh
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeToRefresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -96,6 +98,9 @@ public class MainActivity extends AppCompatActivity {
         final TreeDBActions treeDBActions = new TreeDBActions(getApplicationContext());
         treeInfo = new TreeInfo(treeDBActions);
         treeManager = new TreeManager(treeDBActions);
+        treesInWifi = new ArrayList<>();
+        plantableTrees = new ArrayList<>();
+
 
         findViewById(R.id.potImageView).setClickable(false);
 
@@ -109,8 +114,6 @@ public class MainActivity extends AppCompatActivity {
             Intent firstTime = new Intent(MainActivity.this, InitialSetup.class);
             startActivity(firstTime);
         }
-
-        //swipe to refresh
     }
 
     @Override
@@ -119,9 +122,10 @@ public class MainActivity extends AppCompatActivity {
 
         WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
-        boolean isFirstUsage = prefHelper.retrieveBoolean("first_usage");
         startScreenUpdater();
 
+        Log.i(TAG, treesInWifi.size() + "");
+        initializeTreeLists(wifiManager);
 
         if (HoldSelection.isCreationPending()) {
             //create new virtual tree
@@ -130,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
             HoldSelection.setCreationPending(false);
             prefHelper.storeBoolean("ongoing_challenge", true);
             prepareTreeDrawables();
+            treesInWifi.add(currentTree);
             //clear held selection
             HoldSelection.setTreeName(null);
             HoldSelection.setWifiName(null);
@@ -368,6 +373,7 @@ public class MainActivity extends AppCompatActivity {
         prefHelper.storeInt("growth_on_screen", -1);
         findViewById(R.id.plantVTreeBtn).setVisibility(View.VISIBLE);
         treeManager.editPlantability(currentTree, true);
+        plantableTrees.add(currentTree);
     }
 
     public void killTree(ImageView ivPlant) throws ExecutionException, InterruptedException {
@@ -398,6 +404,34 @@ public class MainActivity extends AppCompatActivity {
             return false;
 
         return true;
+    }
+
+    private void initializeTreeLists(WifiManager wifiManager) {
+        try {
+            if (wifiManager != null) {
+                for (Tree tree : treeInfo.treesInWifi(wifiManager.getConnectionInfo().getSSID())) {
+                    if (!containsTree(treesInWifi, tree)) {
+                        Tree addTree = new Tree(tree.getWifi(), tree.getTreeType(), tree.getName(), tree.getGrowthState());
+                        treesInWifi.add(addTree);
+                        if (tree.isToPlant()) {
+                            plantableTrees.add(addTree);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private boolean containsTree(ArrayList<Tree> trees, Tree tree) {
+        for (Tree checkTree : trees) {
+            if (checkTree.getName().equals(tree.getName())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override
