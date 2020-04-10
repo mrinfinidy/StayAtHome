@@ -229,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
             return false;
 
         //if there are no trees in this wifi
-        if (TreeInfo.getTreesInWifi().size() == 0) {
+        if (TreeInfo.getTreesInWifi().size() == 0 && currentTree == null) {
             return true;
         }
         //if current tree is fully grown
