@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.example.stayathome.R;
 import com.example.stayathome.helper.SharedPreferencesHelper;
 import com.example.stayathome.treedatabase.Tree;
+import com.example.stayathome.treedatabase.TreeInfo;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -31,7 +32,6 @@ public class ChooseName extends AppCompatActivity {
         setContentView(R.layout.activity_choose_name);
 
         chooseName = this;
-
     }
 
     public void confirmName(View v) throws ExecutionException, InterruptedException {
@@ -49,9 +49,9 @@ public class ChooseName extends AppCompatActivity {
     }
 
     private boolean isDuplicate(String name) throws ExecutionException, InterruptedException {
-        List<Tree> currentTrees =  MainActivity.treeInfo.treesInWifi(HoldSelection.getWifiName());
-        for (int i = 0; i < currentTrees.size(); i++) {
-            if (currentTrees.get(i).getName().equals(name)) {
+
+        for (Tree tree : TreeInfo.getAllTrees()) {
+            if (tree.getName().equals(name)) {
                 return true;
             }
         }

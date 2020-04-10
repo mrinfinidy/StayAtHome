@@ -27,15 +27,11 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.stayathome.helper.SharedPreferencesHelper;
-import com.example.stayathome.interfacelogic.TreeInfo;
-import com.example.stayathome.interfacelogic.TreeManager;
 import com.example.stayathome.treedatabase.Tree;
 import com.example.stayathome.treedatabase.TreeInfo;
 import com.example.stayathome.treedatabase.TreeViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 /*ALL SHARED PREFERENCES KEYS
 key: first_usage --> boolean to check if it is the first time that the app is launched
@@ -68,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
 
     private Tree currentTree;
     private TreeViewModel treeViewModel;
-    TreeInfo treeInfo;
 
     private WifiManager wifiManager;
 
@@ -104,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
             public void onChanged(List<Tree> trees) {
                 treeInfo.updateAllTrees(trees);
                 treeInfo.updateTreesInWifi(trees, wifiManager.getConnectionInfo().getSSID());
+                treeInfo.updatePlantableTrees(trees);
             }
         });
 
@@ -151,27 +147,21 @@ public class MainActivity extends AppCompatActivity {
         } else {
             //regular execution
             //perform action based on if new tree needs to be planted
-            try {
-                if (needNewVTree(treeInfo, wifiManager)) {
-                    //show button to plant new virtual tree
-                    Button plantVTreeBtn = findViewById(R.id.plantVTreeBtn);
-                    plantVTreeBtn.setVisibility(View.VISIBLE);
-                    prefHelper.storeBoolean("ongoing_challenge", false);
-                } else {
-                    if (currentTree == null) {
-                        //initialize current tree
-                        String ssid = wifiManager.getConnectionInfo().getSSID();
-                        List<Tree> currentTrees = treeInfo.(ssid);
-                        if (currentTrees.size() > 0) {
-                            currentTree = currentTrees.get(currentTrees.size() - 1);
-                            prepareTreeDrawables(); //prepare drawables for current tree
-                            showCurrentTree(treeInfo);
-                        }
+            if (needNewVTree(wifiManager)) {
+                //show button to plant new virtual tree
+                Button plantVTreeBtn = findViewById(R.id.plantVTreeBtn);
+                plantVTreeBtn.setVisibility(View.VISIBLE);
+                prefHelper.storeBoolean("ongoing_challenge", false);
+            } else {
+                if (currentTree == null) {
+                    //initialize current tree
+                    if (TreeInfo.getAllTrees().size() > 0) {
+                        currentTree = TreeInfo.getAllTrees().get(TreeInfo.getAllTrees().size() - 1);
+                        prepareTreeDrawables(); //prepare drawables for current tree
+                        showCurrentTree();
                     }
-
                 }
-            } catch (ExecutionException | InterruptedException e) {
-                e.printStackTrace();
+
             }
         }
     }
@@ -234,14 +224,12 @@ public class MainActivity extends AppCompatActivity {
 
 
     //check if new virtual tree needs to be planted
-    private boolean needNewVTree(TreeInfo treeInfo, WifiManager wifiManager){
+    private boolean needNewVTree(WifiManager wifiManager){
         if (!isConnected())
             return false;
 
         //if there are no trees in this wifi
-        String ssid = wifiManager.getConnectionInfo().getSSID();
-        List<Tree> allTreesInWifi = treeInfo.treesInWifi(ssid);
-        if (allTreesInWifi == null || allTreesInWifi.size() == 0) {
+        if (TreeInfo.getTreesInWifi().size() == 0) {
             return true;
         }
         //if current tree is fully grown
@@ -320,19 +308,19 @@ public class MainActivity extends AppCompatActivity {
 
         ImageView ivPlant = findViewById(R.id.plantImageView);
 
-        int treeStatus = prefHelper.retrieveInt("current_growth");
+        int treeState = prefHelper.retrieveInt("current_growth");
 
         if (!prefHelper.retrieveBoolean("tree_alive")) {
             //kill
             killTree(ivPlant);
             Log.i(TAG, "kill");
-        } else if (treeStatus == 0) {
+        } else if (treeState == 0) {
             //seed
             seedTree();
             Log.i(TAG, "seed");
-        } else if (treeStatus <= 5) {
+        } else if (treeState <= 5) {
             //grow
-            growTree(ivPlant, treeStatus);
+            growTree(ivPlant, treeState);
             Log.i(TAG, "grow");
         } else {
             //harvest
@@ -370,7 +358,7 @@ public class MainActivity extends AppCompatActivity {
         prefHelper.storeInt("current_growth", -1);
         prefHelper.storeInt("growth_on_screen", -1);
         findViewById(R.id.plantVTreeBtn).setVisibility(View.VISIBLE);
-        currentTree.setToPlant(true);
+        currentTree.setPlantable(true);
         treeViewModel.update(currentTree);
     }
 

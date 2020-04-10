@@ -1,26 +1,16 @@
 package com.example.stayathome.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.annotation.SuppressLint;
-import android.content.Context;
+import androidx.lifecycle.ViewModelProvider;
 import android.content.Intent;
-import android.net.wifi.WifiManager;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.stayathome.R;
-import com.example.stayathome.helper.SharedPreferencesHelper;
-import com.example.stayathome.interfacelogic.TreeInfo;
 import com.example.stayathome.treedatabase.Tree;
-
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import com.example.stayathome.treedatabase.TreeInfo;
+import com.example.stayathome.treedatabase.TreeViewModel;
 import java.util.concurrent.ExecutionException;
 
 public class GrownTrees extends AppCompatActivity {
@@ -28,15 +18,13 @@ public class GrownTrees extends AppCompatActivity {
     private TextView vTreesDisplay;
     private int numGrownTrees;
 
-    @SuppressLint("SetTextI18n")
     @Override
     protected void onResume() {
         super.onResume();
         setContentView(R.layout.activity_grown_trees);
 
         //calculate # plantable trees in Wifi
-        numGrownTrees = MainActivity.plantableTrees.size();
-        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        numGrownTrees = TreeInfo.getPlantableTrees().size();
 
         //display # plantable trees in Wifi
         TextView currentVirtualTrees = findViewById(R.id.currentVirtualTrees);
@@ -54,8 +42,10 @@ public class GrownTrees extends AppCompatActivity {
         //plant real tree if limit reached otherwise show # of virtual trees still needed
         if (numGrownTrees >= virtualTreesLimit) {
             //reset # of virtual trees
-            for (Tree tree : MainActivity.plantableTrees) {
-                MainActivity.treeManager.editPlantability(tree,false);
+            TreeViewModel treeViewModel = new ViewModelProvider.AndroidViewModelFactory(getApplication()).create(TreeViewModel.class);
+            for (Tree tree : TreeInfo.getPlantableTrees()) {
+                tree.setPlantable(false);
+                treeViewModel.update(tree);
                 numGrownTrees--;
             }
 
@@ -73,8 +63,8 @@ public class GrownTrees extends AppCompatActivity {
     private void showTrees() {
         //write tree names in string
         String vTrees = "";
-        for (Tree tree : MainActivity.treesInWifi) {
-            vTrees += tree.getName() + " " + tree.getTreeType() + " " + tree.getGrowthState() + " " + tree.isToPlant() + "\n";
+        for (Tree tree : TreeInfo.getTreesInWifi()) {
+            vTrees += tree.getName() + " " + tree.getTreeType() + " " + tree.getGrowthState() + " " + tree.isPlantable() + "\n";
         }
 
         vTreesDisplay.setText(vTrees);

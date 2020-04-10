@@ -15,7 +15,7 @@ public class Tree {
     private int treeType;
     private String name;
     private int growthState;
-    private boolean toPlant;
+    private boolean plantable;
 
 
     public Tree(String wifi, int treeType, String name, int growthState) {
@@ -23,7 +23,7 @@ public class Tree {
         this.treeType = treeType;
         this.name = name;
         this.growthState = growthState;
-        this.toPlant = false;
+        this.plantable = false;
     }
 
     public void setId(int id) { this.id = id; }
@@ -52,11 +52,11 @@ public class Tree {
         return growthState;
     }
 
-    public boolean isToPlant() {
-        return toPlant;
+    public boolean isPlantable() {
+        return plantable;
     }
 
-    public void setToPlant(boolean toPlant) {
-        this.toPlant = toPlant;
+    public void setPlantable(boolean toPlant) {
+        this.plantable = toPlant;
     }
 }
