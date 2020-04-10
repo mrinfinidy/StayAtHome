@@ -26,10 +26,9 @@ public class TreeDBActions {
     private static class getAllAsyncTree extends android.os.AsyncTask<Void, Void, List<Tree>> {
 
         private TreeDatabase treeDatabase;
-        List<Tree> allTrees;
 
-        getAllAsyncTree(TreeDatabase dao) {
-            treeDatabase = dao;
+        getAllAsyncTree(TreeDatabase treeDatabase) {
+            this.treeDatabase = treeDatabase;
         }
 
         @Override
@@ -38,7 +37,6 @@ public class TreeDBActions {
         }
     }
 
-    //@SuppressLint("StaticFieldLeak")
     public static void insert(final Tree tree) {
         new AsyncTask<Void, Void, Void>() {
             @Override
@@ -76,6 +74,4 @@ public class TreeDBActions {
     public LiveData<Tree> getTree(int treeId) {
         return treeDatabase.treeDao().getTree(treeId);
     }
-
-
 }

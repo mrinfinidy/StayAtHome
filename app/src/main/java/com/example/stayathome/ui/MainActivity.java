@@ -30,6 +30,7 @@ import com.example.stayathome.interfacelogic.TreeManager;
 import com.example.stayathome.treedatabase.Tree;
 import com.example.stayathome.treedatabase.TreeDBActions;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
@@ -66,6 +67,9 @@ public class MainActivity extends AppCompatActivity {
     static TreeManager treeManager;
     private Tree currentTree;
     static TreeInfo treeInfo;
+
+    static ArrayList<Tree> treesInWifi;
+    static ArrayList<Tree> plantableTrees;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
