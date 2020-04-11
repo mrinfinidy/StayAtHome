@@ -1,6 +1,8 @@
 package com.example.stayathome.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,12 +11,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.stayathome.R;
 import com.example.stayathome.helper.SharedPreferencesHelper;
 import com.example.stayathome.treedatabase.Tree;
 import com.example.stayathome.treedatabase.TreeInfo;
+import com.example.stayathome.treedatabase.TreeViewModel;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -23,7 +27,7 @@ public class ChooseName extends AppCompatActivity {
 
     public static Activity chooseName;
 
-    private SharedPreferencesHelper prefHelper;
+    String[] allTreeNames;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +36,17 @@ public class ChooseName extends AppCompatActivity {
         setContentView(R.layout.activity_choose_name);
 
         chooseName = this;
+
+        TreeViewModel treeViewModel = new ViewModelProvider.AndroidViewModelFactory(getApplication()).create(TreeViewModel.class);
+        treeViewModel.getTrees().observe(this, new Observer<List<Tree>>() {
+            @Override
+            public void onChanged(List<Tree> trees) {
+                allTreeNames = new String[trees.size()];
+                for (int i = 0; i < trees.size(); i++) {
+                    allTreeNames[i] = trees.get(i).getName();
+                }
+            }
+        });
     }
 
     public void confirmName(View v) throws ExecutionException, InterruptedException {
@@ -49,9 +64,8 @@ public class ChooseName extends AppCompatActivity {
     }
 
     private boolean isDuplicate(String name) throws ExecutionException, InterruptedException {
-
-        for (Tree tree : TreeInfo.getAllTrees()) {
-            if (tree.getName().equals(name)) {
+        for (String treeName : allTreeNames) {
+            if (treeName.equals(name)) {
                 return true;
             }
         }

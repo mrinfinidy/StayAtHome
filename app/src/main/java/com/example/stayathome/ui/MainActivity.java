@@ -93,13 +93,13 @@ public class MainActivity extends AppCompatActivity {
 
         //connect to database
         treeViewModel = new ViewModelProvider.AndroidViewModelFactory(getApplication()).create(TreeViewModel.class);
-        final TreeInfo treeInfo = new TreeInfo();
         treeViewModel.getTrees().observe(this, new Observer<List<Tree>>() {
             @Override
             public void onChanged(List<Tree> trees) {
-                treeInfo.updateAllTrees(trees);
-                treeInfo.updateTreesInWifi(trees, wifiManager.getConnectionInfo().getSSID());
-                treeInfo.updatePlantableTrees(trees);
+                Log.i(TAG, "DB interaction");
+                if (trees.size() > 0) {
+                    getCurrentTree(trees);
+                }
             }
         });
 
@@ -153,19 +153,25 @@ public class MainActivity extends AppCompatActivity {
                 plantVTreeBtn.setVisibility(View.VISIBLE);
                 prefHelper.storeBoolean("ongoing_challenge", false);
             } else {
-                if (currentTree == null) {
-                    //initialize current tree
-                    if (TreeInfo.getAllTrees().size() > 0) {
-                        currentTree = TreeInfo.getAllTrees().get(TreeInfo.getAllTrees().size() - 1);
-                        prepareTreeDrawables(); //prepare drawables for current tree
-                        showCurrentTree();
-                    }
+                if (currentTree != null) {
+                    prepareTreeDrawables();
+                    showCurrentTree();
                 }
-
             }
         }
     }
 
+    //initialize currentTree
+    void getCurrentTree(List<Tree> trees) {
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if (wifiManager != null) {
+            for (int i = trees.size() - 1; i >= 0; i--) {
+                if (trees.get(i).getWifi().equals(wifiManager.getConnectionInfo().getSSID())) {
+                    currentTree = trees.get(i);
+                }
+            }
+        }
+    }
 
     //initialize tree pics to display with tree type selected for current tree
     private void prepareTreeDrawables(){
@@ -229,9 +235,9 @@ public class MainActivity extends AppCompatActivity {
             return false;
 
         //if there are no trees in this wifi
-        if (TreeInfo.getTreesInWifi().size() == 0 && currentTree == null) {
+        if (currentTree == null)
             return true;
-        }
+
         //if current tree is fully grown
         return prefHelper.retrieveInt("current_growth") < 0;
     }
