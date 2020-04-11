@@ -230,13 +230,16 @@ public class MainActivity extends AppCompatActivity {
 
 
     //check if new virtual tree needs to be planted
+    //NEED TO CORRECT
     private boolean needNewVTree(WifiManager wifiManager){
         if (!isConnected())
             return false;
 
-        //if there are no trees in this wifi
-        if (currentTree == null)
-            return true;
+        if (wifiManager.getConnectionInfo().getSSID() != null) {
+            if (prefHelper.retrieveInt(wifiManager.getConnectionInfo().getSSID()) == 0) {
+                return true;
+            }
+        }
 
         //if current tree is fully grown
         return prefHelper.retrieveInt("current_growth") < 0;
@@ -260,6 +263,9 @@ public class MainActivity extends AppCompatActivity {
         treeViewModel.insert(newVTree);
         prefHelper.storeInt("current_growth", 0);
         findViewById(R.id.potImageView).setClickable(true);
+        //update tree numbers in wifi (for fast access while db's loading
+        int wifiTreeCount = prefHelper.retrieveInt(newVTree.getWifi());
+        prefHelper.storeInt(newVTree.getWifi(), wifiTreeCount++);
         //inform user that tree can be planted now
         TextView informUser = findViewById(R.id.informUser);
         informUser.setText(R.string.tapPotSeed);
@@ -378,6 +384,9 @@ public class MainActivity extends AppCompatActivity {
         prefHelper.storeInt("current_growth", -1);
         prefHelper.storeInt("growth_on_screen", -1);
         findViewById(R.id.plantVTreeBtn).setVisibility(View.VISIBLE);
+        //update tree numbers in wifi (for fast access while db's loading
+        int wifiTreeCount = prefHelper.retrieveInt(currentTree.getWifi());
+        prefHelper.storeInt(currentTree.getWifi(), wifiTreeCount--);
     }
 
     //check if wifi is enabled and for Android 8.1+ check gps too
