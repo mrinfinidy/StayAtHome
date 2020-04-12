@@ -32,6 +32,7 @@ public class GrownTrees extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grown_trees);
 
+        //connect to database
         treeViewModel = new ViewModelProvider.AndroidViewModelFactory(getApplication()).create(TreeViewModel.class);
         treeViewModel.getTrees().observe(this, new Observer<List<Tree>>() {
             @Override
@@ -81,13 +82,6 @@ public class GrownTrees extends AppCompatActivity {
 
         //plant real tree if limit reached otherwise show # of virtual trees still needed
         if (numGrownTrees >= virtualTreesLimit) {
-            //reset # of virtual trees
-            for (Tree tree : plantableTrees) {
-                tree.setPlantable(false);
-                treeViewModel.update(tree);
-                numGrownTrees--;
-            }
-
             //choose project
             Intent chooseProject = new Intent(GrownTrees.this, ChooseProject.class);
             startActivity(chooseProject);
