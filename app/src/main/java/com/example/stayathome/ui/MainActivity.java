@@ -11,7 +11,6 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
-import android.util.LruCache;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -28,7 +27,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.stayathome.helper.SharedPreferencesHelper;
 import com.example.stayathome.treedatabase.Tree;
-import com.example.stayathome.treedatabase.TreeInfo;
 import com.example.stayathome.treedatabase.TreeViewModel;
 
 import java.util.List;
@@ -100,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
                 if (trees.size() > 0) {
                     getCurrentTree(trees);
                 }
+                onResume();
             }
         });
 
@@ -121,6 +120,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        /*
+        while (!dbLoadComplete) {
+            android.os.SystemClock.sleep(100);
+        }
+         */
 
         wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
@@ -264,8 +269,8 @@ public class MainActivity extends AppCompatActivity {
         prefHelper.storeInt("current_growth", 0);
         findViewById(R.id.potImageView).setClickable(true);
         //update tree numbers in wifi (for fast access while db's loading
-        int wifiTreeCount = prefHelper.retrieveInt(newVTree.getWifi());
-        prefHelper.storeInt(newVTree.getWifi(), wifiTreeCount++);
+        int wifiTreeCount = prefHelper.retrieveInt(newVTree.getWifi()) + 1;
+        prefHelper.storeInt(newVTree.getWifi(), wifiTreeCount);
         //inform user that tree can be planted now
         TextView informUser = findViewById(R.id.informUser);
         informUser.setText(R.string.tapPotSeed);

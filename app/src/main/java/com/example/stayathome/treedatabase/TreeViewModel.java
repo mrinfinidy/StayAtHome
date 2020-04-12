@@ -1,17 +1,13 @@
 package com.example.stayathome.treedatabase;
 
-import android.annotation.SuppressLint;
 import android.app.Application;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.room.Room;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class TreeViewModel extends AndroidViewModel {
 
@@ -97,4 +93,6 @@ public class TreeViewModel extends AndroidViewModel {
     public LiveData<Tree> getTree(int treeId) {
         return treeDatabase.treeDao().getTree(treeId);
     }
+
+
 }

@@ -15,10 +15,7 @@ import android.widget.Toast;
 
 import com.example.stayathome.R;
 import com.example.stayathome.treedatabase.Tree;
-import com.example.stayathome.treedatabase.TreeInfo;
 import com.example.stayathome.treedatabase.TreeViewModel;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
