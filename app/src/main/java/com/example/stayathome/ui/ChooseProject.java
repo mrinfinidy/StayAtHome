@@ -19,11 +19,19 @@ import android.widget.Toast;
 import com.example.stayathome.MainAdapter;
 import com.example.stayathome.R;
 import com.example.stayathome.helper.SharedPreferencesHelper;
+import com.example.stayathome.server.JsonTreeApi;
+import com.example.stayathome.server.RealTree;
 import com.example.stayathome.treedatabase.Tree;
 import com.example.stayathome.treedatabase.TreeViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ChooseProject extends AppCompatActivity {
 
@@ -75,7 +83,9 @@ public class ChooseProject extends AppCompatActivity {
                 if (selectedLocation == null) {
                     Toast.makeText(getApplicationContext(), "You need to select a location", Toast.LENGTH_LONG).show();
                 } else {
+                    //TO DO: store user name at first launch
                     //TO DO: send selection to server
+
                     //update # grown virtual trees
                     int virtualTreesLimit = 2;
                     for (int i = 0; i < virtualTreesLimit; i++) {
@@ -89,6 +99,35 @@ public class ChooseProject extends AppCompatActivity {
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     finish();
                 }
+            }
+        });
+    }
+
+    //send tree to server
+    private void sendTree() {
+        //TO DO: get base URL
+        //create retrofit instance
+        String baseURL = "";
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(baseURL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        JsonTreeApi jsonTreeApi = retrofit.create(JsonTreeApi.class);
+
+        //create tree to send
+        SharedPreferencesHelper prefHelper = new SharedPreferencesHelper(getApplicationContext());
+        RealTree realTree = new RealTree(prefHelper.retrieveString("user_name"), selectedLocation);
+        //call object for the request
+        Call<RealTree> call = jsonTreeApi.creratePost(realTree);
+        call.enqueue(new Callback<RealTree>() {
+            @Override
+            public void onResponse(Call<RealTree> call, Response<RealTree> response) {
+                Toast.makeText(ChooseProject.this, "plant instruction successful", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailure(Call<RealTree> call, Throwable t) {
+                Toast.makeText(ChooseProject.this, "something went wrong", Toast.LENGTH_LONG).show();
             }
         });
     }
