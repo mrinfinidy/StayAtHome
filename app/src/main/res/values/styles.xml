@@ -10,7 +10,7 @@
         <item name="android:windowBackground">@color/background</item>
     </style>
 
-    <style name="plantTree" parent="Widget.AppCompat.Button.Colored">
+    <style name="natural" parent="Widget.AppCompat.Button.Colored">
         <item name="android:background">@drawable/round_corner_brown</item>
         <item name="android:textColor">@color/background</item>
         <item name="android:radius">20dp</item>

@@ -3,5 +3,6 @@
     <array name="preloaded_fonts" translatable="false">
         <item>@font/coustard_black</item>
         <item>@font/habibi</item>
+        <item>@font/roboto_thin</item>
     </array>
 </resources>

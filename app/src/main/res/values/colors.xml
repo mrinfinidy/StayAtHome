@@ -7,4 +7,10 @@
     
     <color name="lightBrown">#b69134</color>
     <color name="lighrGreen">#43A047</color>
+    <color name="pappelGreen">#037956</color>
+    <color name="pappelBack">#1DE9B6</color>
+    <color name="mapleRed">#cc3d2f</color>
+    <color name="mapleBack">#EF9A9A</color>
+    <color name="cherryPink">#e27aae</color>
+    <color name="cherryBack">#F8BBD0</color>
 </resources>

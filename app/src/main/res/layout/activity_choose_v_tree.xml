@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/vTreeSelectionScreen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/pappelBack"
     tools:context=".ui.ChooseVTree">
 
 
@@ -15,6 +16,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="50sp"
         android:text="@string/pappel"
+        android:textColor="@color/pappelGreen"
         android:textSize="30sp" />
 
 
@@ -24,6 +26,8 @@
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
         android:scrollbars="horizontal"
+        android:background="@color/background"
+        android:paddingVertical="5dp"
         android:fillViewport="true">
 
         <LinearLayout
@@ -72,7 +76,8 @@
         android:layout_below="@+id/vTreesDisplaySV"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="25sp"
-        android:text="@string/best_tigen"/>
+        android:text="@string/best_tigen"
+        style="@style/natural" />
 
 
 </RelativeLayout>
