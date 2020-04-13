@@ -102,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         findViewById(R.id.potImageView).setClickable(false);
 
         // Check if opened for first time
@@ -134,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
         if (HoldSelection.isCreationPending()) {
             //create new virtual tree
             currentTree = new Tree(HoldSelection.getWifiName(), HoldSelection.getTreeType(), HoldSelection.getTreeName(), 0);
-            createVirtualTree(currentTree);
+            createVirtualTree();
             HoldSelection.setCreationPending(false);
             prefHelper.storeBoolean("ongoing_challenge", true);
             prepareTreeDrawables();
@@ -261,16 +260,16 @@ public class MainActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
-    private void createVirtualTree(Tree newVTree) {
+    private void createVirtualTree() {
         prefHelper.storeBoolean("ongoing_challenge", true);
         TextView vTreeNameDisplay = findViewById(R.id.vTreeNameDisplay);
-        vTreeNameDisplay.setText(newVTree.getName());
-        treeViewModel.insert(newVTree);
+        vTreeNameDisplay.setText(currentTree.getName());
+        treeViewModel.insert(currentTree);
         prefHelper.storeInt("current_growth", 0);
         findViewById(R.id.potImageView).setClickable(true);
         //update tree numbers in wifi (for fast access while db's loading
-        int wifiTreeCount = prefHelper.retrieveInt(newVTree.getWifi()) + 1;
-        prefHelper.storeInt(newVTree.getWifi(), wifiTreeCount);
+        int wifiTreeCount = prefHelper.retrieveInt(currentTree.getWifi()) + 1;
+        prefHelper.storeInt(currentTree.getWifi(), wifiTreeCount);
         //inform user that tree can be planted now
         TextView informUser = findViewById(R.id.informUser);
         informUser.setText(R.string.tapPotSeed);

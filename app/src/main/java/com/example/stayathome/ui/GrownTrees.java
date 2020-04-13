@@ -41,6 +41,9 @@ public class GrownTrees extends AppCompatActivity {
                 updateTreeInfos(trees);
             }
         });
+
+        plantableTrees = new ArrayList<>();
+        numGrownTrees = 0;
     }
 
     @Override
@@ -51,8 +54,6 @@ public class GrownTrees extends AppCompatActivity {
 
     //update number of plantable trees and displayed current trees
     void updateTreeInfos(List<Tree> trees) {
-        plantableTrees = new ArrayList<Tree>();
-        numGrownTrees = 0;
         String vTrees = "";
 
         WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
@@ -60,7 +61,7 @@ public class GrownTrees extends AppCompatActivity {
             for (Tree tree : trees) {
                 if (tree.getWifi().equals(wifiManager.getConnectionInfo().getSSID())) {
                     vTrees += tree.getName() + " " + tree.getGrowthState() + " " + tree.isPlantable() + "\n";
-                    if (tree.isPlantable()) {
+                    if (tree.isPlantable() && !plantableTrees.contains(tree)) {
                         plantableTrees.add(tree);
                         numGrownTrees++;
                     }
