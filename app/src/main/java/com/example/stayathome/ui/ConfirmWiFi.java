@@ -5,11 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
+import android.media.Image;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,11 +27,16 @@ public class ConfirmWiFi extends AppCompatActivity {
     SharedPreferencesHelper prefHelper;
 
     public static Activity confirmWifi;
+    private AnimationDrawable wifiAnimation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm_wi_fi);
+
+        ImageView wifiBars = (ImageView) findViewById(R.id.wifiBars);
+        wifiBars.setBackgroundResource(R.drawable.wifi_animation);
+        wifiAnimation = (AnimationDrawable) wifiBars.getBackground();
 
         confirmWifi = this;
         HoldSelection.setCreationPending(true);
@@ -58,6 +66,12 @@ public class ConfirmWiFi extends AppCompatActivity {
         HashSet<String> wifis = prefHelper.retrieveSet("wifis");
         wifis.add(ssid);
         prefHelper.storeSet("wifis", wifis);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        wifiAnimation.start();
     }
 
     @Override
