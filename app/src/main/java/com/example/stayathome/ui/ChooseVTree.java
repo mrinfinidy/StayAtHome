@@ -1,8 +1,10 @@
 package com.example.stayathome.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
@@ -55,7 +57,7 @@ public class ChooseVTree extends AppCompatActivity {
     public void clickPappel(View v) {
         selectedTreeType.setText(R.string.pappel);
         selectedTreeType.setTextColor(getResources().getColor(R.color.pappelGreen));
-        findViewById(R.id.vTreeSelectionScreen).setBackgroundColor(getResources().getColor(R.color.pappelBack));
+        findViewById(R.id.vTreeSelectionScreen).setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.pappel_back));
         HoldSelection.setTreeType(1);
     }
 
@@ -63,14 +65,14 @@ public class ChooseVTree extends AppCompatActivity {
     public void clickMaple(View v) {
         selectedTreeType.setText(R.string.maple);
         selectedTreeType.setTextColor(getResources().getColor(R.color.mapleRed));
-        findViewById(R.id.vTreeSelectionScreen).setBackgroundColor(getResources().getColor(R.color.mapleBack));
+        findViewById(R.id.vTreeSelectionScreen).setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.maple_back));
         HoldSelection.setTreeType(2);
     }
     //when user clicks on cherry img
     public void clickCherry(View w) {
         selectedTreeType.setText(R.string.cherry);
         selectedTreeType.setTextColor(getResources().getColor(R.color.cherryPink));
-        findViewById(R.id.vTreeSelectionScreen).setBackgroundColor(getResources().getColor(R.color.cherryBack));
+        findViewById(R.id.vTreeSelectionScreen).setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.cherry_back));
         HoldSelection.setTreeType(3);
     }
 
