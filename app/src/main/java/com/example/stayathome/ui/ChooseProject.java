@@ -61,7 +61,7 @@ public class ChooseProject extends AppCompatActivity {
                 Log.i("Choose Project: ", "DB intreaction");
                 if (wifiManager != null) {
                     for (Tree tree : trees) {
-                        if (tree.getWifi().equals(wifiManager.getConnectionInfo().getSSID())) {
+                        if (tree.getWifi().equals(wifiManager.getConnectionInfo().getSSID()) && tree.isPlantable()) {
                             plantableTrees.add(tree);
                         }
                     }
@@ -99,8 +99,8 @@ public class ChooseProject extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Tree planted in " + selectedLocation, Toast.LENGTH_LONG).show();
                     Intent confirmProject = new Intent(ChooseProject.this, GrownTrees.class);
                     startActivity(confirmProject);
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     finish();
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 }
             }
         });

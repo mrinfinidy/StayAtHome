@@ -8,8 +8,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,6 +53,7 @@ public class GrownTrees extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         setContentView(R.layout.activity_grown_trees);
+
         resumeDisplay();
     }
 
@@ -60,7 +63,7 @@ public class GrownTrees extends AppCompatActivity {
         treesInWifiDisplay.setText(vTrees);
         //display # plantable trees
         TextView plantableTreesDisplay = findViewById(R.id.currentVirtualTrees);
-        plantableTreesDisplay.setText(numGrownTrees + "");
+        plantableTreesDisplay.setText(numGrownTrees + " fully grown trees");
     }
 
     //update number of plantable trees and displayed current trees
@@ -71,7 +74,7 @@ public class GrownTrees extends AppCompatActivity {
         if (wifiManager != null) {
             for (Tree tree : trees) {
                 if (tree.getWifi().equals(wifiManager.getConnectionInfo().getSSID())) {
-                    vTrees += tree.getName() + " " + tree.getGrowthState() + " " + tree.isPlantable() + "\n";
+                    vTrees += tree.getName() + " " + treeTypeToString(tree) + "\n";
                     if (tree.isPlantable() && !plantableTrees.contains(tree)) {
                         plantableTrees.add(tree);
                         numGrownTrees++;
@@ -85,7 +88,7 @@ public class GrownTrees extends AppCompatActivity {
         treesInWifiDisplay.setText(vTrees);
         //display # plantable trees
         TextView plantableTreesDisplay = findViewById(R.id.currentVirtualTrees);
-        plantableTreesDisplay.setText(numGrownTrees + "");
+        plantableTreesDisplay.setText(numGrownTrees + " fully grown trees");
     }
 
     public void plantTree(View v) throws ExecutionException, InterruptedException {
@@ -97,10 +100,36 @@ public class GrownTrees extends AppCompatActivity {
             //choose project
             Intent chooseProject = new Intent(GrownTrees.this, ChooseProject.class);
             startActivity(chooseProject);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            finish();
+            overridePendingTransition(R.anim., R.anim.slide_out_left);
         } else {
             int virtualTreesNeeded = virtualTreesLimit - numGrownTrees;
             Toast.makeText(getApplicationContext(), "Dir fehlen noch " + virtualTreesNeeded + " Bäumchen", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private String treeTypeToString(Tree tree) {
+        String treeString = "";
+        if (tree.getTreeType() == 1) {
+            treeString = "(" + getResources().getString(R.string.pappel) + ")";
+            if (tree.isPlantable()) {
+                treeString += "*";
+            }
+            return treeString;
+        } else if (tree.getTreeType() == 2) {
+            treeString = "(" + getResources().getString(R.string.maple) + ")";
+            if (tree.isPlantable()) {
+                treeString += "*";
+            }
+            return treeString;
+        } else if (tree.getTreeType() == 3) {
+            treeString = "(" + getResources().getString(R.string.cherry) + ")";
+            if (tree.isPlantable()) {
+                treeString += "*";
+            }
+            return treeString;
+        } else {
+            return treeString;
         }
     }
 

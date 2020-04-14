@@ -31,4 +31,5 @@
     <string name="tapPotHarvest">TAP POT TO HARVEST</string>
     <string name="start_guide">default explanation</string>
     <string name="tap_here">TAP HERE</string>
+    <string name="plantable">PLANTABLE</string>
 </resources>
