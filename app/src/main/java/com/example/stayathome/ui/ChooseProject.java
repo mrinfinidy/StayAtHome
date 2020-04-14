@@ -140,7 +140,7 @@ public class ChooseProject extends AppCompatActivity {
         locationsRecView = (RecyclerView) findViewById(R.id.locationsRecView);
         ViewGroup.LayoutParams rvParams = locationsRecView.getLayoutParams();
         rvParams.height = (int) (getScreenHeight() * 0.4);
-        locationsRecView.setPadding(10,0,10,0);
+        locationsRecView.setPadding(10,10,10,10);
         locationsRecView.setHasFixedSize(true);
         locationsLayout = new LinearLayoutManager(this);
         locationsAdapter = new MainAdapter(getApplicationContext(), locations); //use strings stored in locations
