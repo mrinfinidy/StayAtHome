@@ -1,12 +1,16 @@
 package com.example.stayathome;
 
+import android.content.Context;
 import android.graphics.Color;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.stayathome.ui.ChooseProject;
@@ -18,8 +22,10 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
     ArrayList<String> locations;
     private TextView previousSelection;
+    private Context context;
 
-    public MainAdapter(ArrayList<String> locations) {
+    public MainAdapter(Context context, ArrayList<String> locations) {
+        this.context = context;
         this.locations = locations;
     }
 
@@ -60,9 +66,10 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         private void selectItem(TextView locationName) {
 
             if (previousSelection != null) {
-                previousSelection.setBackgroundColor(Color.WHITE);
+                previousSelection.setBackground(ContextCompat.getDrawable(context, R.drawable.light_brown));
             }
-            locationName.setBackgroundColor(Color.LTGRAY);
+
+            locationName.setBackground(ContextCompat.getDrawable(context, R.drawable.light_green));
             previousSelection = locationName;
 
             String location = locationName.getText().toString();

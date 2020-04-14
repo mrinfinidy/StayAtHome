@@ -11,8 +11,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.service.chooser.ChooserTargetService;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -135,12 +138,22 @@ public class ChooseProject extends AppCompatActivity {
     //locations are displayed here
     public void buildRecyclerView() {
         locationsRecView = (RecyclerView) findViewById(R.id.locationsRecView);
+        ViewGroup.LayoutParams rvParams = locationsRecView.getLayoutParams();
+        rvParams.height = (int) (getScreenHeight() * 0.4);
+        locationsRecView.setPadding(10,0,10,0);
         locationsRecView.setHasFixedSize(true);
         locationsLayout = new LinearLayoutManager(this);
-        locationsAdapter = new MainAdapter(locations); //use strings stored in locations
+        locationsAdapter = new MainAdapter(getApplicationContext(), locations); //use strings stored in locations
 
         locationsRecView.setLayoutManager(locationsLayout);
         locationsRecView.setAdapter(locationsAdapter);
+    }
+
+    //screen height in pixels
+    private int getScreenHeight() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        return displayMetrics.heightPixels;
     }
 
     @Override

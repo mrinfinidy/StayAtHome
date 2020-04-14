@@ -11,9 +11,14 @@
         android:id="@+id/location_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="32sp"
+        android:layout_marginVertical="5dp"
+        android:background="@drawable/light_brown"
+        android:fontFamily="sans-serif-medium"
         android:padding="8sp"
-        app:layout_constraintTop_toTopOf="parent"/>
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="32sp"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"

@@ -11,15 +11,18 @@
         android:id="@+id/locationsRecView"
         android:layout_width="match_parent"
         android:layout_centerInParent="true"
-        android:layout_height="200sp"
+        android:layout_height="0dp"
         android:layout_marginBottom="90sp"
-        android:foregroundGravity="center"/>
+        android:foregroundGravity="center"
+        android:scrollbars="vertical"/>
 
     <Button
         android:id="@+id/confirmProjectBtn"
+        style="@style/natural"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/locationsRecView"
         android:layout_centerInParent="true"
         android:text="@string/baum_pflanzen"
-        android:layout_below="@+id/locationsRecView"/>
+        android:textColor="#FFFFFF" />
 </RelativeLayout>

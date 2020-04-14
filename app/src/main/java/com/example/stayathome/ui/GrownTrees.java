@@ -24,6 +24,7 @@ import java.util.concurrent.ExecutionException;
 public class GrownTrees extends AppCompatActivity {
 
     private TreeViewModel treeViewModel;
+    private String vTrees;
     private List<Tree> plantableTrees;
     private int numGrownTrees;
 
@@ -50,11 +51,21 @@ public class GrownTrees extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         setContentView(R.layout.activity_grown_trees);
+        resumeDisplay();
+    }
+
+    private void resumeDisplay () {
+        //display trees in wifi
+        TextView treesInWifiDisplay = findViewById(R.id.vTreesDisplay);
+        treesInWifiDisplay.setText(vTrees);
+        //display # plantable trees
+        TextView plantableTreesDisplay = findViewById(R.id.currentVirtualTrees);
+        plantableTreesDisplay.setText(numGrownTrees + "");
     }
 
     //update number of plantable trees and displayed current trees
     void updateTreeInfos(List<Tree> trees) {
-        String vTrees = "";
+        vTrees = "";
 
         WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (wifiManager != null) {
