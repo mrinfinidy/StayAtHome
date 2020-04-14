@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private Runnable runnableScreenUpdate;
     private SwipeRefreshLayout swipeRefreshLayout;
 
-    //private Tree currentTree;
+    private Tree currentTree;
     private TreeViewModel treeViewModel;
 
     private WifiManager wifiManager;
@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(List<Tree> trees) {
                 Log.i(TAG, "DB interaction");
-                if (trees.size() > 0) {
+                if (trees.size() > 0 && currentTree == null) {
                     getCurrentTree(trees);
                 }
                 onResume();
@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
 
     // While activity is in running in foreground --> call updateTree()
     public void startScreenUpdater() {
-        // Update tree status every 5 seconds
+        // Update tree status every 1 seconds
         Log.i(TAG, "ScreenUpdater started");
 
         updateTree();
@@ -360,7 +360,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void seedTree() {
         prefHelper.storeInt("growth_on_screen", 0);
-        prefHelper.storeLong("challenge_duration", 5);
+        prefHelper.storeLong("challenge_duration", 1);
         prefHelper.storeString("tree_name", currentTree.getName());
         Toast.makeText(getApplicationContext(), "Seed planted", Toast.LENGTH_LONG).show();
     }
