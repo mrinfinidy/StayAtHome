@@ -8,8 +8,7 @@ import androidx.room.PrimaryKey;
 
 @Entity(tableName = "tree_table")
 public class Tree {
-
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     private int id;
     private String wifi;
     private int treeType;
@@ -18,7 +17,8 @@ public class Tree {
     private boolean plantable;
 
 
-    public Tree(String wifi, int treeType, String name, int growthState) {
+    public Tree(int id, String wifi, int treeType, String name, int growthState) {
+        this.id = id;
         this.wifi = wifi;
         this.treeType = treeType;
         this.name = name;

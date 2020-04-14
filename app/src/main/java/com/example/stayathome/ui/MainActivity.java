@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private Runnable runnableScreenUpdate;
     private SwipeRefreshLayout swipeRefreshLayout;
 
-    private Tree currentTree;
+    //private Tree currentTree;
     private TreeViewModel treeViewModel;
 
     private WifiManager wifiManager;
@@ -113,6 +113,8 @@ public class MainActivity extends AppCompatActivity {
             //initial setup screen
             Intent firstTime = new Intent(MainActivity.this, InitialSetup.class);
             startActivity(firstTime);
+            //initialize db tree id
+            prefHelper.storeInt("tree_id", 0);
         }
     }
 
@@ -132,7 +134,8 @@ public class MainActivity extends AppCompatActivity {
 
         if (HoldSelection.isCreationPending()) {
             //create new virtual tree
-            currentTree = new Tree(HoldSelection.getWifiName(), HoldSelection.getTreeType(), HoldSelection.getTreeName(), 0);
+            int treeID = prefHelper.retrieveInt("tree_id");
+            currentTree = new Tree(treeID, HoldSelection.getWifiName(), HoldSelection.getTreeType(), HoldSelection.getTreeName(), 0);
             createVirtualTree();
             HoldSelection.setCreationPending(false);
             prefHelper.storeBoolean("ongoing_challenge", true);
@@ -148,6 +151,8 @@ public class MainActivity extends AppCompatActivity {
             ChooseVTree.chooseVTree = null;
             ChooseName.chooseName.finish();
             ChooseName.chooseName = null;
+            //increment tree id for next tree
+            prefHelper.storeInt("tree_id", treeID + 1);
         } else {
             //regular execution
             //perform action based on if new tree needs to be planted
@@ -317,6 +322,8 @@ public class MainActivity extends AppCompatActivity {
 
     //show next growth state or harvest tree on tap
     public void growNow(View v) {
+        Log.i(TAG, "id: " + currentTree.getId());
+
         if (!isConnected()) {
             Toast.makeText(getApplicationContext(), "You can only grow while connected", Toast.LENGTH_LONG).show();
             return;
