@@ -101,7 +101,7 @@ public class GrownTrees extends AppCompatActivity {
             Intent chooseProject = new Intent(GrownTrees.this, ChooseProject.class);
             startActivity(chooseProject);
             finish();
-            overridePendingTransition(R.anim., R.anim.slide_out_left);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         } else {
             int virtualTreesNeeded = virtualTreesLimit - numGrownTrees;
             Toast.makeText(getApplicationContext(), "Dir fehlen noch " + virtualTreesNeeded + " Bäumchen", Toast.LENGTH_LONG).show();
