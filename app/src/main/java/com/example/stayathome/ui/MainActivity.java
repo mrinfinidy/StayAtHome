@@ -177,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
             for (int i = trees.size() - 1; i >= 0; i--) {
                 if (trees.get(i).getWifi().equals(wifiManager.getConnectionInfo().getSSID())) {
                     currentTree = trees.get(i);
+                    return;
                 }
             }
         }
@@ -293,6 +294,10 @@ public class MainActivity extends AppCompatActivity {
             ivPlant.setBackground(getResources().getDrawable(this.treeDrawables[4]));
             ivPlant.setVisibility(View.VISIBLE);
         }
+
+        //set name on name board
+        TextView treeNameDisplay = findViewById(R.id.vTreeNameDisplay);
+        treeNameDisplay.setText(currentTree.getName());
     }
 
     //check if next growth state is available
@@ -308,6 +313,7 @@ public class MainActivity extends AppCompatActivity {
             ivPot.setClickable(true);
             informUser.setText(R.string.tapPotKill);
             informUser.setVisibility(View.VISIBLE);
+            findViewById(R.id.treeDead).setVisibility(View.VISIBLE);
         }
         if (newTreeStatus != oldTreeStatus) {
             ivPot.setClickable(true);
@@ -386,6 +392,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void killTree(ImageView ivPlant) {
+        findViewById(R.id.treeDead).setVisibility(View.INVISIBLE);
         prefHelper.storeBoolean("ongoing_challenge", false);
         prefHelper.storeBoolean("tree_alive", true);
         treeViewModel.delete(currentTree);

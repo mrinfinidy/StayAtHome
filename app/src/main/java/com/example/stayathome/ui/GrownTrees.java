@@ -51,12 +51,12 @@ public class GrownTrees extends AppCompatActivity {
             public void onChanged(List<Tree> trees) {
                 Log.i("GrownTrees: ", "DB intreaction");
                 updateTreeInfos(trees);
+
+                buildRecyclerView();
             }
         });
 
         treeListItems = new ArrayList<>();
-
-        buildRecyclerView();
 
         plantableTrees = new ArrayList<>();
         numGrownTrees = 0;
@@ -68,6 +68,7 @@ public class GrownTrees extends AppCompatActivity {
         setContentView(R.layout.activity_grown_trees);
 
         resumeDisplay();
+        buildRecyclerView();
     }
 
     private void resumeDisplay () {
@@ -95,7 +96,13 @@ public class GrownTrees extends AppCompatActivity {
 
         //display # plantable trees
         TextView plantableTreesDisplay = findViewById(R.id.currentVirtualTrees);
-        plantableTreesDisplay.setText(numGrownTrees + " fully grown trees");
+        String fullyGrownNum = numGrownTrees + " ";
+        if (numGrownTrees == 1) {
+            fullyGrownNum += getResources().getString(R.string.fully_grown_singular);
+        } else {
+            fullyGrownNum += getResources().getString(R.string.fully_grown_plural);
+        }
+        plantableTreesDisplay.setText(fullyGrownNum);
     }
 
     //format tree to add in recycle view
@@ -112,11 +119,12 @@ public class GrownTrees extends AppCompatActivity {
 
         //get tree name and plantability
         String treeName = tree.getName();
+        String plantable = "";
         if (tree.isPlantable()) {
-            treeName += " (" + R.string.plantable + ")";
+            plantable = "(" + getResources().getString(R.string.plantable) + ")";
         }
 
-        return new TreeListItem(treeImg, treeName);
+        return new TreeListItem(treeImg, treeName, plantable);
     }
 
     public void plantTree(View v) throws ExecutionException, InterruptedException {

@@ -10,6 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 public class GrownTreesAdapter extends RecyclerView.Adapter<GrownTreesAdapter.GrownTreesViewHolder> {
@@ -19,11 +21,13 @@ public class GrownTreesAdapter extends RecyclerView.Adapter<GrownTreesAdapter.Gr
     public static class GrownTreesViewHolder extends RecyclerView.ViewHolder {
         public ImageView treeListImg;
         public TextView treeListName;
+        public TextView plantabilityInfo;
 
         public GrownTreesViewHolder(@NonNull View itemView) {
             super(itemView);
             treeListImg = itemView.findViewById(R.id.treeListImg);
             treeListName = itemView.findViewById(R.id.treeListName);
+            plantabilityInfo = itemView.findViewById(R.id.plantabilityInfo);
         }
     }
 
@@ -44,6 +48,7 @@ public class GrownTreesAdapter extends RecyclerView.Adapter<GrownTreesAdapter.Gr
 
         holder.treeListImg.setImageResource(currentItem.getTreeListImg());
         holder.treeListName.setText(currentItem.getTreeListName());
+        holder.plantabilityInfo.setText(currentItem.getPlantable());
     }
 
     @Override

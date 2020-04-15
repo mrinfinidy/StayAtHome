@@ -29,6 +29,16 @@
             android:layout_alignParentTop="true"
             android:layout_marginStart="20sp"
             android:layout_toEndOf="@id/treeListImg"/>
+
+        <TextView
+            android:id="@+id/plantabilityInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:layout_below="@id/treeListName"
+            android:layout_toEndOf="@id/treeListName"
+            android:textColor="#FFFFFF"
+            android:text="test"/>
         
     </RelativeLayout>
 

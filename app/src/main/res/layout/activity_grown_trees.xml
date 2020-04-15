@@ -9,7 +9,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/treesList"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="0dp"
         android:layout_centerInParent="true"
         android:scrollbars="vertical"
         android:background="@drawable/light_green"/>
@@ -32,7 +32,9 @@
         android:layout_marginTop="8dp"
         android:text="@string/textview"
         android:textSize="24sp"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/lightGreen"
+        android:fontFamily="sans-serif-medium"/>
 
 
 </RelativeLayout>
