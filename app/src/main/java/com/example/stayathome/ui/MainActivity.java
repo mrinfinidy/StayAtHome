@@ -30,6 +30,8 @@ import com.example.stayathome.treedatabase.Tree;
 import com.example.stayathome.treedatabase.TreeViewModel;
 
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /*ALL SHARED PREFERENCES KEYS
 key: first_usage --> boolean to check if it is the first time that the app is launched
@@ -365,13 +367,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void seedTree() {
+        int challengeDuration = ThreadLocalRandom.current().nextInt(15 * 60, 46 * 60); //in seconds
         prefHelper.storeInt("growth_on_screen", 0);
-        prefHelper.storeLong("challenge_duration", 1);
+        prefHelper.storeLong("challenge_duration", challengeDuration);
         prefHelper.storeString("tree_name", currentTree.getName());
         Toast.makeText(getApplicationContext(), "Seed planted", Toast.LENGTH_LONG).show();
     }
 
     public void growTree(ImageView ivPlant, int treeState) {
+        int challengeDuration = ThreadLocalRandom.current().nextInt(4 * 3600, 5 * 3600); //in seconds
+        prefHelper.storeInt("challenge_duration", challengeDuration);
         ivPlant.setBackground(getResources().getDrawable(this.treeDrawables[treeState - 1]));
         ivPlant.setVisibility(View.VISIBLE);
         prefHelper.storeInt("growth_on_screen", treeState);
