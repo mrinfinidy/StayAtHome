@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="5dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="5sp"
+        android:background="@drawable/light_brown">
+
+        <ImageView
+            android:id="@+id/treeListImg"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:padding="2dp"
+            app:srcCompat="@drawable/ic_pappel5"/>
+
+        <TextView
+            android:id="@+id/treeListName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:text="test"
+            android:textSize="32sp"
+            android:textColor="#FFFFFF"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="20sp"
+            android:layout_toEndOf="@id/treeListImg"/>
+        
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

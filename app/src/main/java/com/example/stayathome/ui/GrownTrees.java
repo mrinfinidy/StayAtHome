@@ -3,9 +3,12 @@ package com.example.stayathome.ui;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -15,7 +18,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.stayathome.GrownTreesAdapter;
 import com.example.stayathome.R;
+import com.example.stayathome.TreeListItem;
 import com.example.stayathome.treedatabase.Tree;
 import com.example.stayathome.treedatabase.TreeViewModel;
 
@@ -25,8 +30,12 @@ import java.util.concurrent.ExecutionException;
 
 public class GrownTrees extends AppCompatActivity {
 
+    private RecyclerView treesRecView;
+    private RecyclerView.LayoutManager treeListLayout;
+    private RecyclerView.Adapter grownTreesAdapter;
+
+    private ArrayList<TreeListItem> treeListItems;
     private TreeViewModel treeViewModel;
-    private String vTrees;
     private List<Tree> plantableTrees;
     private int numGrownTrees;
 
@@ -45,6 +54,10 @@ public class GrownTrees extends AppCompatActivity {
             }
         });
 
+        treeListItems = new ArrayList<>();
+
+        buildRecyclerView();
+
         plantableTrees = new ArrayList<>();
         numGrownTrees = 0;
     }
@@ -58,9 +71,6 @@ public class GrownTrees extends AppCompatActivity {
     }
 
     private void resumeDisplay () {
-        //display trees in wifi
-        TextView treesInWifiDisplay = findViewById(R.id.vTreesDisplay);
-        treesInWifiDisplay.setText(vTrees);
         //display # plantable trees
         TextView plantableTreesDisplay = findViewById(R.id.currentVirtualTrees);
         plantableTreesDisplay.setText(numGrownTrees + " fully grown trees");
@@ -68,13 +78,13 @@ public class GrownTrees extends AppCompatActivity {
 
     //update number of plantable trees and displayed current trees
     void updateTreeInfos(List<Tree> trees) {
-        vTrees = "";
+
 
         WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (wifiManager != null) {
             for (Tree tree : trees) {
                 if (tree.getWifi().equals(wifiManager.getConnectionInfo().getSSID())) {
-                    vTrees += tree.getName() + " " + treeTypeToString(tree) + "\n";
+                    treeListItems.add(formatTreeItem(tree));
                     if (tree.isPlantable() && !plantableTrees.contains(tree)) {
                         plantableTrees.add(tree);
                         numGrownTrees++;
@@ -83,12 +93,30 @@ public class GrownTrees extends AppCompatActivity {
             }
         }
 
-        //display trees in wifi
-        TextView treesInWifiDisplay = findViewById(R.id.vTreesDisplay);
-        treesInWifiDisplay.setText(vTrees);
         //display # plantable trees
         TextView plantableTreesDisplay = findViewById(R.id.currentVirtualTrees);
         plantableTreesDisplay.setText(numGrownTrees + " fully grown trees");
+    }
+
+    //format tree to add in recycle view
+    private TreeListItem formatTreeItem(Tree tree) {
+        //get image of correct tree type
+        int treeImg = 0;
+        if (tree.getTreeType() == 1) {
+            treeImg = R.drawable.ic_pappel5;
+        } else if (tree.getTreeType() == 2) {
+            //treeImg = mapleImg;
+        } else if (tree.getTreeType() == 3) {
+            //treeImg = cherryImg;
+        }
+
+        //get tree name and plantability
+        String treeName = tree.getName();
+        if (tree.isPlantable()) {
+            treeName += " (" + R.string.plantable + ")";
+        }
+
+        return new TreeListItem(treeImg, treeName);
     }
 
     public void plantTree(View v) throws ExecutionException, InterruptedException {
@@ -100,7 +128,6 @@ public class GrownTrees extends AppCompatActivity {
             //choose project
             Intent chooseProject = new Intent(GrownTrees.this, ChooseProject.class);
             startActivity(chooseProject);
-            finish();
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         } else {
             int virtualTreesNeeded = virtualTreesLimit - numGrownTrees;
@@ -108,29 +135,24 @@ public class GrownTrees extends AppCompatActivity {
         }
     }
 
-    private String treeTypeToString(Tree tree) {
-        String treeString = "";
-        if (tree.getTreeType() == 1) {
-            treeString = "(" + getResources().getString(R.string.pappel) + ")";
-            if (tree.isPlantable()) {
-                treeString += "*";
-            }
-            return treeString;
-        } else if (tree.getTreeType() == 2) {
-            treeString = "(" + getResources().getString(R.string.maple) + ")";
-            if (tree.isPlantable()) {
-                treeString += "*";
-            }
-            return treeString;
-        } else if (tree.getTreeType() == 3) {
-            treeString = "(" + getResources().getString(R.string.cherry) + ")";
-            if (tree.isPlantable()) {
-                treeString += "*";
-            }
-            return treeString;
-        } else {
-            return treeString;
-        }
+
+    public void buildRecyclerView() {
+        treesRecView = findViewById(R.id.treesList);
+        ViewGroup.LayoutParams rvParams = treesRecView.getLayoutParams();
+        rvParams.height = (int) (getScreenHeight() * 0.4);
+        treesRecView.setPadding(10,10,10,10);
+        treesRecView.setHasFixedSize(true);
+        treeListLayout = new LinearLayoutManager(this);
+        grownTreesAdapter = new GrownTreesAdapter(treeListItems);
+
+        treesRecView.setLayoutManager(treeListLayout);
+        treesRecView.setAdapter(grownTreesAdapter);
+    }
+
+    private int getScreenHeight() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        return displayMetrics.heightPixels;
     }
 
     @Override

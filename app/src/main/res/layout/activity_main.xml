@@ -41,7 +41,6 @@
                     android:scaleType="fitXY"
                     android:background="@color/background"
                     android:onClick="showGrownTrees"
-
                     app:srcCompat="@drawable/ic_pappel5" />
             </LinearLayout>
 
