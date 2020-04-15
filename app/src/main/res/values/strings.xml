@@ -29,10 +29,12 @@
     <string name="tapPotKill">TAP POT TO KILL TREE</string>
     <string name="tapPotGrow">TAP POT TO GROW</string>
     <string name="tapPotHarvest">TAP POT TO HARVEST</string>
-    <string name="start_guide">default explanation</string>
+    <string name="start_guide">Raise and collect your own Virtual Trees and plant as many as 1 Real Tree a week through Stay4Tree.</string>
     <string name="tap_here">TAP HERE</string>
     <string name="plantable">PLANTABLE</string>
     <string name="tree_dead">Oh no, it dried out…</string>
     <string name="fully_grown_singular">fully grown tree</string>
     <string name="fully_grown_plural">fully grown trees</string>
+    <string name="connectivity_guide_pre10">Virtual Trees only grow as long as your phone is connected to the WiFi</string>
+    <string name="connectivity_guide_10plus">Virtual Trees only grow as long as your phone is connected to the WiFi.\nOn Android 10 GPS must be activated for technical reasons but rest assured Stay4Tree does not track your location.</string>
 </resources>

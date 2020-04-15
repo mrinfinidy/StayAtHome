@@ -8,6 +8,7 @@
 
     <Button
         android:id="@+id/startBtn"
+        style="@style/natural"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/start_initial"
@@ -22,10 +23,27 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-medium"
         android:text="@string/start_guide"
+        android:textColor="@color/lightGreen"
         android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/warnConnection"
+        android:paddingHorizontal="8dp"/>
+
+    <TextView
+        android:id="@+id/warnConnection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="@color/lightBrown"
+        android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/startBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintVertical_bias="0.75"
+        android:paddingHorizontal="8dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

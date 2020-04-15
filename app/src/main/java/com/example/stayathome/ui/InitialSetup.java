@@ -13,10 +13,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.stayathome.R;
 import com.example.stayathome.helper.SharedPreferencesHelper;
+
+import org.w3c.dom.Text;
 
 import java.util.HashSet;
 
@@ -40,6 +43,13 @@ public class InitialSetup extends AppCompatActivity {
             if(!locationPermissionGranted()){
                 requestLocationPermission();
             }
+        }
+
+        TextView warnConnection = findViewById(R.id.warnConnection);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            warnConnection.setText(getResources().getString(R.string.connectivity_guide_10plus));
+        } else {
+            warnConnection.setText(getResources().getString(R.string.connectivity_guide_pre10));
         }
 
         Button startBtn = (Button) findViewById(R.id.startBtn);
