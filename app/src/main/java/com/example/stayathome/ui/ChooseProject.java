@@ -21,17 +21,14 @@ import android.widget.Toast;
 
 import com.example.stayathome.MainAdapter;
 import com.example.stayathome.R;
+import com.example.stayathome.helper.SharedPreferencesHelper;
+import com.example.stayathome.server.ServerBackground;
 import com.example.stayathome.treedatabase.Tree;
 import com.example.stayathome.treedatabase.TreeViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ChooseProject extends AppCompatActivity {
 
@@ -85,7 +82,7 @@ public class ChooseProject extends AppCompatActivity {
                 } else {
                     //TO DO: store user name at first launch
                     //TO DO: send selection to server
-
+                    sendTree();
                     //update # grown virtual trees
                     int virtualTreesLimit = 2;
                     for (int i = 0; i < virtualTreesLimit; i++) {
@@ -101,6 +98,14 @@ public class ChooseProject extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void sendTree() {
+        SharedPreferencesHelper prefHelper = new SharedPreferencesHelper(getApplicationContext());
+        String userName = prefHelper.retrieveString("user_name");
+
+        ServerBackground serverBackground = new ServerBackground(this);
+        serverBackground.execute("assignment" ,userName, selectedLocation);
     }
 
     //locations are displayed here
