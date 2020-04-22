@@ -80,8 +80,7 @@ public class ChooseProject extends AppCompatActivity {
                 if (selectedLocation == null) {
                     Toast.makeText(getApplicationContext(), "You need to select a location", Toast.LENGTH_LONG).show();
                 } else {
-                    //TO DO: store user name at first launch
-                    //TO DO: send selection to server
+                    //send plant real tree assignment to server
                     sendTree();
                     //update # grown virtual trees
                     int virtualTreesLimit = 2;

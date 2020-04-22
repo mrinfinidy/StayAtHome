@@ -2,6 +2,7 @@ package com.example.stayathome.server;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -58,6 +59,7 @@ public class ServerBackground extends AsyncTask<String, Void, String> {
                 while ((line = readResponse.readLine()) != null) {
                     result += line;
                 }
+
                 readResponse.close();
                 getResponse.close();
                 httpURLConnection.disconnect();
@@ -75,13 +77,26 @@ public class ServerBackground extends AsyncTask<String, Void, String> {
                 httpURLConnection.setRequestMethod("POST");
                 httpURLConnection.setDoOutput(true);
                 httpURLConnection.setDoInput(true);
-                OutputStream outputStream = httpURLConnection.getOutputStream();
-                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
+                OutputStream getUsername = httpURLConnection.getOutputStream();
+                BufferedWriter writeUername = new BufferedWriter(new OutputStreamWriter(getUsername, StandardCharsets.UTF_8));
                 String postData = URLEncoder.encode("username", "UTF-8") + "=" + URLEncoder.encode(userName, "UTF-8");
-                bufferedWriter.write(postData);
-                bufferedWriter.flush();
-                bufferedWriter.close();
-                outputStream.close();
+                writeUername.write(postData);
+                writeUername.flush();
+                writeUername.close();
+                getUsername.close();
+                //getResponse
+                InputStream getResponse = httpURLConnection.getInputStream();
+                BufferedReader readResponse = new BufferedReader(new InputStreamReader(getResponse, StandardCharsets.ISO_8859_1));
+                String result = "", line = "";
+
+                while ((line = readResponse.readLine()) != null) {
+                    result += line;
+                }
+
+                readResponse.close();
+                getResponse.close();
+                httpURLConnection.disconnect();
+                return result;
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -98,6 +113,8 @@ public class ServerBackground extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String aVoid) {
         super.onPostExecute(aVoid);
+
+        Toast.makeText(context, "Planted successfully", Toast.LENGTH_LONG).show();
     }
 
     @Override
