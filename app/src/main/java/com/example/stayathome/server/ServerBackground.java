@@ -2,6 +2,7 @@ package com.example.stayathome.server;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -34,6 +35,7 @@ public class ServerBackground extends AsyncTask<String, Void, String> {
 
         if (type.equals("assignment")) {
             try {
+                Log.i("Server: ", "connecting to server");
                 //extract content to send
                 String userName = params[1];
                 String project = params[2];
@@ -63,6 +65,9 @@ public class ServerBackground extends AsyncTask<String, Void, String> {
                 readResponse.close();
                 getResponse.close();
                 httpURLConnection.disconnect();
+
+                Log.i("Server: ", result);
+
                 return result;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -114,7 +119,7 @@ public class ServerBackground extends AsyncTask<String, Void, String> {
     protected void onPostExecute(String aVoid) {
         super.onPostExecute(aVoid);
 
-        Toast.makeText(context, "Planted successfully", Toast.LENGTH_LONG).show();
+        Log.i("Server: ", "Assignment or Registration successful");
     }
 
     @Override

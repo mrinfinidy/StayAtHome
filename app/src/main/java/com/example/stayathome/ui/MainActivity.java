@@ -367,7 +367,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void seedTree() {
-        int challengeDuration = ThreadLocalRandom.current().nextInt(15 * 60, 46 * 60); //in seconds
+        //int challengeDuration = ThreadLocalRandom.current().nextInt(15 * 60, 46 * 60); //in seconds
+        long challengeDuration = 1;
         prefHelper.storeInt("growth_on_screen", 0);
         prefHelper.storeLong("challenge_duration", challengeDuration);
         prefHelper.storeString("tree_name", currentTree.getName());
@@ -375,8 +376,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void growTree(ImageView ivPlant, int treeState) {
-        int challengeDuration = ThreadLocalRandom.current().nextInt(4 * 3600, 5 * 3600); //in seconds
-        prefHelper.storeInt("challenge_duration", challengeDuration);
+        //int challengeDuration = ThreadLocalRandom.current().nextInt(4 * 3600, 5 * 3600); //in seconds
+        long challengeDuration = 1;
+        prefHelper.storeLong("challenge_duration", challengeDuration);
         ivPlant.setBackground(getResources().getDrawable(this.treeDrawables[treeState - 1]));
         ivPlant.setVisibility(View.VISIBLE);
         prefHelper.storeInt("growth_on_screen", treeState);
@@ -391,6 +393,8 @@ public class MainActivity extends AppCompatActivity {
         ivPlant.setVisibility(View.INVISIBLE);
         prefHelper.storeInt("current_growth", -1);
         prefHelper.storeInt("growth_on_screen", -1);
+        TextView vTreeNameDisplay = findViewById(R.id.vTreeNameDisplay);
+        vTreeNameDisplay.setText("");
         findViewById(R.id.plantVTreeBtn).setVisibility(View.VISIBLE);
         currentTree.setPlantable(true);
         treeViewModel.update(currentTree);
@@ -406,6 +410,8 @@ public class MainActivity extends AppCompatActivity {
         ivPlant.setVisibility(View.INVISIBLE);
         prefHelper.storeInt("current_growth", -1);
         prefHelper.storeInt("growth_on_screen", -1);
+        TextView vTreeNameDisplay = findViewById(R.id.vTreeNameDisplay);
+        vTreeNameDisplay.setText("");
         findViewById(R.id.plantVTreeBtn).setVisibility(View.VISIBLE);
         //update tree numbers in wifi (for fast access while db's loading
         int wifiTreeCount = prefHelper.retrieveInt(currentTree.getWifi());

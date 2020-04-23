@@ -43,6 +43,9 @@ public class ChooseProject extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_project);
 
+        //initialize selecteLocation
+        selectedLocation = "";
+
         //get ssid
         final WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
@@ -77,7 +80,7 @@ public class ChooseProject extends AppCompatActivity {
         confirmProjectBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (selectedLocation == null) {
+                if (selectedLocation == null || selectedLocation.equals("")) {
                     Toast.makeText(getApplicationContext(), "You need to select a location", Toast.LENGTH_LONG).show();
                 } else {
                     //send plant real tree assignment to server
@@ -90,7 +93,7 @@ public class ChooseProject extends AppCompatActivity {
                     }
                     //return to grwon trees activity
                     Toast.makeText(getApplicationContext(), "Tree planted in " + selectedLocation, Toast.LENGTH_LONG).show();
-                    Intent confirmProject = new Intent(ChooseProject.this, GrownTrees.class);
+                    Intent confirmProject = new Intent(ChooseProject.this, MainActivity.class);
                     startActivity(confirmProject);
                     finish();
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
