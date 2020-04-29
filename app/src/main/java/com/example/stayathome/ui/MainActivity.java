@@ -10,8 +10,10 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,6 +23,8 @@ import com.example.stayathome.R;
 import com.example.stayathome.background.BackgroundService;
 import com.example.stayathome.helper.NotificationHelper;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -105,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.potImageView).setClickable(false);
+        setNamePosition();
 
         // Check if opened for first time
         boolean isFirstUsage = prefHelper.retrieveBoolean("first_usage");
@@ -231,6 +236,32 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         mHandler.postDelayed(runnableScreenUpdate, 1 * 1000);
+    }
+
+    private void setNamePosition() {
+        TextView vTreeNameDisplay = findViewById(R.id.vTreeNameDisplay);
+        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) vTreeNameDisplay.getLayoutParams();
+
+        layoutParams.setMargins(
+                getScreenWidth() / 2,
+                (int) Math.round(getScreenHeight()),
+                getScreenWidth() / 2,
+                (int) Math.round(getScreenHeight() / 10.0)
+        );
+
+        vTreeNameDisplay.setLayoutParams(layoutParams);
+    }
+
+    private int getScreenHeight() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        return displayMetrics.heightPixels;
+    }
+
+    private int getScreenWidth() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        return displayMetrics.widthPixels;
     }
 
     //all virtual trees already grown
@@ -367,8 +398,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void seedTree() {
-        //int challengeDuration = ThreadLocalRandom.current().nextInt(15 * 60, 46 * 60); //in seconds
-        long challengeDuration = 1;
+        //change challenge duration here
+        long challengeDuration = ThreadLocalRandom.current().nextInt(15 * 60, 46 * 60); //in seconds
+        //long challengeDuration = 1;
         prefHelper.storeInt("growth_on_screen", 0);
         prefHelper.storeLong("challenge_duration", challengeDuration);
         prefHelper.storeString("tree_name", currentTree.getName());
@@ -376,8 +408,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void growTree(ImageView ivPlant, int treeState) {
-        //int challengeDuration = ThreadLocalRandom.current().nextInt(4 * 3600, 5 * 3600); //in seconds
-        long challengeDuration = 1;
+        //change challenge duration here
+        long challengeDuration = ThreadLocalRandom.current().nextInt(4 * 3600, 5 * 3600); //in seconds
+        //long challengeDuration = 1;
         prefHelper.storeLong("challenge_duration", challengeDuration);
         ivPlant.setBackground(getResources().getDrawable(this.treeDrawables[treeState - 1]));
         ivPlant.setVisibility(View.VISIBLE);

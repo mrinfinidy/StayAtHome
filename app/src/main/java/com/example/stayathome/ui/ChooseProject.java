@@ -84,7 +84,7 @@ public class ChooseProject extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "You need to select a location", Toast.LENGTH_LONG).show();
                 } else {
                     //send plant real tree assignment to server
-                    sendTree();
+                    //sendTree();
                     //update # grown virtual trees
                     int virtualTreesLimit = 2;
                     for (int i = 0; i < virtualTreesLimit; i++) {
