@@ -404,12 +404,12 @@ public class MainActivity extends AppCompatActivity {
         prefHelper.storeInt("growth_on_screen", 0);
         prefHelper.storeLong("challenge_duration", challengeDuration);
         prefHelper.storeString("tree_name", currentTree.getName());
-        Toast.makeText(getApplicationContext(), "Seed planted", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "Seed planted, check back in ~30 minutes", Toast.LENGTH_LONG).show();
     }
 
     public void growTree(ImageView ivPlant, int treeState) {
         //change challenge duration here
-        long challengeDuration = ThreadLocalRandom.current().nextInt(4 * 3600, 5 * 3600); //in seconds
+        long challengeDuration = ThreadLocalRandom.current().nextInt(4 * 3600, 6 * 3600); //in seconds
         //long challengeDuration = 1;
         prefHelper.storeLong("challenge_duration", challengeDuration);
         ivPlant.setBackground(getResources().getDrawable(this.treeDrawables[treeState - 1]));
@@ -417,6 +417,7 @@ public class MainActivity extends AppCompatActivity {
         prefHelper.storeInt("growth_on_screen", treeState);
         currentTree.setGrowthState(treeState);
         treeViewModel.update(currentTree);
+        Toast.makeText(getApplicationContext(), "Check back in ~5 hours", Toast.LENGTH_LONG).show();
     }
 
     public void harvestTree(ImageView ivPlant) {
