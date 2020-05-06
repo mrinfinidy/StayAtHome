@@ -399,8 +399,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void seedTree() {
         //change challenge duration here
-        long challengeDuration = ThreadLocalRandom.current().nextInt(15 * 60, 46 * 60); //in seconds
-        //long challengeDuration = 1;
+        //long challengeDuration = ThreadLocalRandom.current().nextInt(15 * 60, 46 * 60); //in seconds
+        long challengeDuration = 1;
         prefHelper.storeInt("growth_on_screen", 0);
         prefHelper.storeLong("challenge_duration", challengeDuration);
         prefHelper.storeString("tree_name", currentTree.getName());
@@ -409,8 +409,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void growTree(ImageView ivPlant, int treeState) {
         //change challenge duration here
-        long challengeDuration = ThreadLocalRandom.current().nextInt(4 * 3600, 6 * 3600); //in seconds
-        //long challengeDuration = 1;
+        //long challengeDuration = ThreadLocalRandom.current().nextInt(4 * 3600, 6 * 3600); //in seconds
+        long challengeDuration = 1;
         prefHelper.storeLong("challenge_duration", challengeDuration);
         ivPlant.setBackground(getResources().getDrawable(this.treeDrawables[treeState - 1]));
         ivPlant.setVisibility(View.VISIBLE);
